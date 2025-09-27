@@ -1,5 +1,5 @@
 ## practice on 1 machine
-VERSION=v00.001 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.001.yaml > temp_config_01.yaml && accelerate launch --config_file recipes/accelerate_configs/zero3_claude.yaml --num_processes=1 src/open_r1/sft.py --config temp_config_01.yaml
+VERSION=v00.001 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.001.yaml > temp_config_01.yaml && accelerate launch --config_file recipes/accelerate_configs/zero3_last.yaml --num_processes=1 src/open_r1/sft.py --config temp_config_01.yaml
 
 
 ### SFT distillation
