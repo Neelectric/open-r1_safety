@@ -14,7 +14,7 @@ eos_token: <|eot_id|>
 
 
 #SFT hyperparam
-max_length: 8192 #16384 # 65536 
+max_length: 6144 #8192 #16384 # 65536 
 # weight_decay: 0.0001
 optim: adamw_torch
 lr_scheduler_type: constant_with_warmup
