@@ -1,0 +1,135 @@
+{
+  "config_general": {
+    "lighteval_sha": "?",
+    "num_fewshot_seeds": 1,
+    "max_samples": null,
+    "job_id": "0",
+    "start_time": 12884428.975581137,
+    "end_time": 12892729.53180196,
+    "total_evaluation_time_secondes": "8300.556220822036",
+    "model_config": {
+      "model_name": "Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_mathv00.01",
+      "generation_parameters": {
+        "num_blocks": null,
+        "block_size": null,
+        "early_stopping": null,
+        "repetition_penalty": null,
+        "frequency_penalty": null,
+        "length_penalty": null,
+        "presence_penalty": null,
+        "max_new_tokens": 32768,
+        "min_new_tokens": null,
+        "seed": null,
+        "stop_tokens": null,
+        "temperature": 0.6,
+        "top_k": null,
+        "min_p": null,
+        "top_p": 0.95,
+        "truncate_prompt": null,
+        "cache_implementation": null,
+        "response_format": null
+      },
+      "system_prompt": null,
+      "cache_dir": "~/.cache/huggingface/lighteval",
+      "tokenizer": null,
+      "revision": "v00.01-step-000002344",
+      "dtype": "bfloat16",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 2,
+      "pipeline_parallel_size": 1,
+      "gpu_memory_utilization": 0.85,
+      "max_model_length": 32768,
+      "quantization": null,
+      "load_format": null,
+      "swap_space": 4,
+      "seed": 1234,
+      "trust_remote_code": false,
+      "add_special_tokens": true,
+      "multichoice_continuations_start_space": true,
+      "pairwise_tokenization": false,
+      "max_num_seqs": 128,
+      "max_num_batched_tokens": 2048,
+      "subfolder": null,
+      "is_async": false,
+      "override_chat_template": null
+    },
+    "model_name": "Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_mathv00.01"
+  },
+  "results": {
+    "lighteval|math_500|0": {
+      "pass@k_with_k&n": 0.252,
+      "pass@k_with_k&n_stderr": 0.019435727282249526
+    },
+    "all": {
+      "pass@k_with_k&n": 0.252,
+      "pass@k_with_k&n_stderr": 0.019435727282249526
+    }
+  },
+  "versions": {},
+  "config_tasks": {
+    "lighteval|math_500|0": {
+      "name": "math_500",
+      "prompt_function": "math_500",
+      "hf_repo": "HuggingFaceH4/MATH-500",
+      "hf_subset": "default",
+      "metrics": [
+        {
+          "metric_name": "pass@k_with_k&n",
+          "higher_is_better": true,
+          "category": "GENERATIVE",
+          "sample_level_fn": "PassAtK(normalize=None, strip_strings=True, score_sample=compute, type_exact_match=None, k=1, n=1, attribute_must_be_set=['k'])",
+          "corpus_level_fn": "mean",
+          "batched_compute": false
+        }
+      ],
+      "hf_revision": null,
+      "hf_filter": null,
+      "hf_avail_splits": [
+        "test"
+      ],
+      "evaluation_splits": [
+        "test"
+      ],
+      "few_shots_split": null,
+      "few_shots_select": null,
+      "generation_size": 32768,
+      "generation_grammar": null,
+      "stop_sequence": [],
+      "num_samples": null,
+      "suite": [
+        "lighteval"
+      ],
+      "original_num_docs": -1,
+      "effective_num_docs": -1,
+      "must_remove_duplicate_docs": false,
+      "num_fewshots": 0,
+      "version": 2
+    }
+  },
+  "summary_tasks": {
+    "lighteval|math_500|0": {
+      "hashes": {
+        "hash_examples": "adf0cc8311011db2",
+        "hash_full_prompts": "ef46db3751d8e999",
+        "hash_input_tokens": "7cdf03713988baef",
+        "hash_cont_tokens": "de6cd2a0ce649b5d"
+      },
+      "truncated": 0,
+      "non_truncated": 0,
+      "padded": 0,
+      "non_padded": 0
+    }
+  },
+  "summary_general": {
+    "hashes": {
+      "hash_examples": "bfaad1993ff37a60",
+      "hash_full_prompts": "c166e5d20ad58f4e",
+      "hash_input_tokens": "be53248ac358103a",
+      "hash_cont_tokens": "0deb67b6902361eb"
+    },
+    "truncated": 0,
+    "non_truncated": 0,
+    "padded": 0,
+    "non_padded": 0
+  }
+}
