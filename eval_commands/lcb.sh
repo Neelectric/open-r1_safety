@@ -4,7 +4,7 @@ MODEL=meta-llama/Llama-3.1-8B-Instruct
 
 MODEL_ARGS="model_name=$MODEL,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=32768,gpu_memory_utilization=0.85,generation_parameters={max_new_tokens:32768,temperature:0.6,top_p:0.95}"
 TASK=lcb:codegeneration
-OUTPUT_DIR=data/evals/$REVISION
+OUTPUT_DIR=data/evals/
 
 VLLM_WORKER_MULTIPROC_METHOD=spawn lighteval vllm $MODEL_ARGS "extended|$TASK|0|0" \
     --use-chat-template \
