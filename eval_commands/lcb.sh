@@ -1,8 +1,4 @@
 # LiveCodeBench
-lighteval vllm $MODEL_ARGS "extended|lcb:codegeneration|0|0" \
-    --use-chat-template \
-    --output-dir $OUTPUT_DIR 
-
 NUM_GPUS=1
 MODEL=meta-llama/Llama-3.1-8B-Instruct
 
