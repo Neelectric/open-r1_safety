@@ -6,9 +6,9 @@ MODEL_ARGS="model_name=$MODEL,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_mo
 TASK=lcb:codegeneration
 OUTPUT_DIR=data/evals/
 
-VLLM_WORKER_MULTIPROC_METHOD=spawn lighteval vllm $MODEL_ARGS "extended|$TASK|0|0" \
-    --use-chat-template \
-    --output-dir $OUTPUT_DIR 
+# VLLM_WORKER_MULTIPROC_METHOD=spawn lighteval vllm $MODEL_ARGS "extended|$TASK|0|0" \
+#     --use-chat-template \
+#     --output-dir $OUTPUT_DIR 
 
 
 #2k
