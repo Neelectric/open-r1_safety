@@ -1,7 +1,7 @@
 # LiveCodeBench
-NUM_GPUS=1
-# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_codev00.03
-MODEL=meta-llama/Llama-3.1-8B-Instruct
+NUM_GPUS=2
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_codev00.03
+# MODEL=meta-llama/Llama-3.1-8B-Instruct
 
 MODEL_ARGS="model_name=$MODEL,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=32768,gpu_memory_utilization=0.85,generation_parameters={max_new_tokens:32768,temperature:0.6,top_p:0.95}"
 TASK=lcb:codegeneration
