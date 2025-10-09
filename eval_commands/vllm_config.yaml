@@ -17,3 +17,6 @@ metric_options:
     num_samples: 1
   pass@k_with_k&n:
     num_samples: 1
+
+task_options:
+  num_samples: 1
