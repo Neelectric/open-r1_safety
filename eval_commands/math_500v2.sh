@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# Add current directory to PYTHONPATH
+export PYTHONPATH="${PYTHONPATH}:$(dirname "$0")"
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
 
 lighteval vllm \
