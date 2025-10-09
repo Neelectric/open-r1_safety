@@ -1,14 +1,20 @@
-from lighteval.metrics.normalizations import math_normalizer
-from lighteval.metrics.math_tasks_metrics import pass_at_k_math
+from lighteval.metrics.metrics import Metrics
 from lighteval.tasks.lighteval_task import LightevalTaskConfig
 from lighteval.tasks.requests import Doc
 
 def math_500_prompt(line, task_name: str = None):
+    # Prompt template adapted from the default math_500 task
+    MATH_QUERY_TEMPLATE = """
+Solve the following math problem efficiently and clearly. The last line of your response should be of the following format: 'Therefore, the final answer is: $\\boxed{{ANSWER}}$. I hope it is correct' (without quotes) where ANSWER is just the final number or expression that solves the problem. Think step by step before answering.
+
+{Question}
+""".strip()
+    
     return Doc(
         task_name=task_name,
-        query=line["problem"],
-        choices=[line.get("solution", "")],
-        gold_index=0
+        query=MATH_QUERY_TEMPLATE.format(Question=line["problem"]),
+        gold_index=0,
+        choices=[line["solution"]],
     )
 
 TASKS_TABLE = [
@@ -21,7 +27,7 @@ TASKS_TABLE = [
         hf_avail_splits=["test"],
         evaluation_splits=["test"],
         generation_size=32768,
-        metric=[pass_at_k_math(k=1, n=1, normalize_fn=math_normalizer)],
+        metric=[Metrics.math_pass_at_1_1n],  # or use Metrics.quasi_exact_match_math
         num_samples=[1]
     )
 ]
