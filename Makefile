@@ -9,11 +9,14 @@ check_dirs := src tests
 # dev dependencies
 install:
 	uv venv openr1 --python 3.11
-	. openr1/bin/activate && uv pip install --upgrade pip && \
-	uv pip install vllm==0.8.5.post1 && \
+	. openr1/bin/activate && \
+	uv pip install --upgrade pip && \
 	uv pip install setuptools && \
-	uv pip install flash-attn --no-build-isolation && \
-	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
+	uv pip install "torch==2.7.0" --index-url https://download.pytorch.org/whl/cu128 && \
+	uv pip install vllm==0.8.5.post1 && \
+	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]" && \
+	uv pip install --force-reinstall "torch==2.7.0" --index-url https://download.pytorch.org/whl/cu128 && \
+	uv pip install --no-cache-dir --no-build-isolation flash-attn
 
 style:
 	ruff format --line-length 119 --target-version py310 $(check_dirs) setup.py
