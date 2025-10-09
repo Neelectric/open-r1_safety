@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 import os
+import multiprocessing
+
+# CRITICAL: Set this BEFORE any imports that use CUDA
+multiprocessing.set_start_method('spawn', force=True)
+os.environ['VLLM_WORKER_MULTIPROC_METHOD'] = 'spawn'
+
 from lighteval.logging.evaluation_tracker import EvaluationTracker
 from lighteval.models.vllm.vllm_model import VLLMModelConfig
 from lighteval.pipeline import ParallelismManager, Pipeline, PipelineParameters
@@ -48,7 +54,7 @@ pipeline = Pipeline(
     pipeline_parameters=pipeline_params,
     evaluation_tracker=evaluation_tracker,
     model_config=model_config,
-    metric_options=metric_options,  # This overrides the default num_samples
+    metric_options=metric_options,
 )
 
 results = pipeline.evaluate()
