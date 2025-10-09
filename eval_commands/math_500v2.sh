@@ -1,9 +1,8 @@
-NUM_GPUS=1
-TASK=math_500
-OUTPUT_DIR=data/evals/
+export VLLM_WORKER_MULTIPROC_METHOD=spawn
 
-VLLM_WORKER_MULTIPROC_METHOD=spawn lighteval vllm \
-    eval_commands/vllm_config.yaml \
-    "lighteval|$TASK|0|0" \
-    --use-chat-template \
-    --output-dir $OUTPUT_DIR
+lighteval vllm \
+  "model_name=Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_mathv00.04,dtype=bfloat16,max_model_length=32768,gpu_memory_utilization=0.9,generation_parameters={max_new_tokens:32768,temperature:0.6,top_p:0.95}" \
+  "custom|math_500_n1|0|0" \
+  --custom-tasks math_500_single.py \
+  --use-chat-template \
+  --output-dir data/evals/
