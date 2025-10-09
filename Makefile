@@ -12,8 +12,8 @@ install:
 	. openr1/bin/activate && uv pip install --upgrade pip && \
 	uv pip install vllm==0.8.5.post1 && \
 	uv pip install setuptools && \
-	uv pip install flash-attn --no-build-isolation && \
-	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
+	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]" && \
+	MAX_JOBS=16 pip install flash-attn==2.7.0.post2 --no-build-isolation --no-cache-dir
 
 style:
 	ruff format --line-length 119 --target-version py310 $(check_dirs) setup.py
