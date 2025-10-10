@@ -3,3 +3,9 @@
 ## ignore .env
 .env
 eval_commands/__pycache__/
+wandb/
+data/
+!data/evals
+!data/evals_no_chat_template
+
+*/__pycache__
