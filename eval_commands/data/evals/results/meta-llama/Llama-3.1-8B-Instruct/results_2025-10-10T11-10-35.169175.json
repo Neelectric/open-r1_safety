@@ -1,0 +1,116 @@
+{
+  "config_general": {
+    "lighteval_sha": "?",
+    "num_fewshot_seeds": 1,
+    "max_samples": null,
+    "job_id": 0,
+    "start_time": 13306547.36898572,
+    "end_time": 13311503.585559292,
+    "total_evaluation_time_secondes": "4956.216573571786",
+    "model_name": "meta-llama/Llama-3.1-8B-Instruct",
+    "model_sha": "",
+    "model_dtype": null,
+    "model_size": null,
+    "generation_parameters": {
+      "early_stopping": null,
+      "repetition_penalty": null,
+      "frequency_penalty": null,
+      "length_penalty": null,
+      "presence_penalty": null,
+      "max_new_tokens": 32768,
+      "min_new_tokens": null,
+      "seed": null,
+      "stop_tokens": null,
+      "temperature": 0.6,
+      "top_k": null,
+      "min_p": null,
+      "top_p": 0.95,
+      "truncate_prompt": null,
+      "response_format": null
+    }
+  },
+  "results": {
+    "custom|math_500_n1|0": {
+      "math_pass@1:1_samples": 0.46,
+      "math_pass@1:1_samples_stderr": 0.022311333245289663
+    },
+    "all": {
+      "math_pass@1:1_samples": 0.46,
+      "math_pass@1:1_samples_stderr": 0.022311333245289663
+    }
+  },
+  "versions": {
+    "custom|math_500_n1|0": 0
+  },
+  "config_tasks": {
+    "custom|math_500_n1": {
+      "name": "math_500_n1",
+      "prompt_function": "math_500_prompt",
+      "hf_repo": "HuggingFaceH4/MATH-500",
+      "hf_subset": "default",
+      "metric": [
+        {
+          "metric_name": "math_pass@1:1_samples",
+          "higher_is_better": true,
+          "category": "5",
+          "use_case": "6",
+          "sample_level_fn": "compute",
+          "corpus_level_fn": "mean"
+        }
+      ],
+      "hf_revision": null,
+      "hf_filter": null,
+      "hf_avail_splits": [
+        "test"
+      ],
+      "trust_dataset": false,
+      "evaluation_splits": [
+        "test"
+      ],
+      "few_shots_split": null,
+      "few_shots_select": null,
+      "generation_size": 32768,
+      "generation_grammar": null,
+      "stop_sequence": [],
+      "num_samples": [
+        1
+      ],
+      "suite": [
+        "custom"
+      ],
+      "original_num_docs": 500,
+      "effective_num_docs": 500,
+      "must_remove_duplicate_docs": false,
+      "version": 0
+    }
+  },
+  "summary_tasks": {
+    "custom|math_500_n1|0": {
+      "hashes": {
+        "hash_examples": "a911e1f4bd5e0c75",
+        "hash_full_prompts": "6c3ea904f212e537",
+        "hash_input_tokens": "30ba5f17cd61d0af",
+        "hash_cont_tokens": "0960b0050bd4c065"
+      },
+      "truncated": 0,
+      "non_truncated": 500,
+      "padded": 0,
+      "non_padded": 500,
+      "effective_few_shots": 0.0,
+      "num_truncated_few_shots": 0
+    }
+  },
+  "summary_general": {
+    "hashes": {
+      "hash_examples": "382014da35c4c1c2",
+      "hash_full_prompts": "e74c34ddf480af16",
+      "hash_input_tokens": "b074a5c8f701d32a",
+      "hash_cont_tokens": "009aa291cba7776a"
+    },
+    "truncated": 0,
+    "non_truncated": 500,
+    "padded": 0,
+    "non_padded": 500,
+    "num_truncated_few_shots": 0
+  }
+}
