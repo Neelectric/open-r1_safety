@@ -9,3 +9,4 @@ data/
 !data/evals_no_chat_template
 
 */__pycache__
+eval_commands/test.py
