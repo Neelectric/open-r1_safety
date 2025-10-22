@@ -1,4 +1,5 @@
 #!/bin/bash
+uv pip install more_itertools
 
 # Add current directory to PYTHONPATH
 export PYTHONPATH="${PYTHONPATH}:$(dirname "$0")"
