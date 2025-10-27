@@ -13,7 +13,6 @@ install:
 	uv pip install vllm==0.8.5.post1 && \
 	uv pip install setuptools && \
 	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
-	MAX_JOBS=4 uv pip install flash-attn --no-build-isolation
 	
 
 style:
