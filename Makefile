@@ -12,6 +12,7 @@ install:
 	. openr1/bin/activate && uv pip install --upgrade pip && \
 	uv pip install setuptools && \
 	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
+	. openr1/bin/activate
 	uv pip uninstall torch
 	uv pip install torch==2.8.0
 	uv pip install --python openr1/bin/python https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp311-cp311-linux_x86_64.whl --no-build-isolation --no-deps
