@@ -10,11 +10,15 @@ check_dirs := src tests
 install:
 	uv venv openr1 --python 3.11
 	. openr1/bin/activate && uv pip install --upgrade pip && \
-	uv pip install vllm==0.8.5.post1 && \
 	uv pip install setuptools && \
-	uv pip install flash-attn --no-build-isolation && \
 	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
+	uv pip uninstall torch
+	uv pip install torch==2.8.0
+	uv pip install --python openr1/bin/python https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp311-cp311-linux_x86_64.whl --no-build-isolation --no-deps
+	uv pip install vllm==0.11.0
 	
+	
+# uv pip install --python openr1/bin/python https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp311-cp311-linux_x86_64.whl --no-build-isolation --no-deps
 
 style:
 	ruff format --line-length 119 --target-version py310 $(check_dirs) setup.py
