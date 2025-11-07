@@ -19,7 +19,7 @@ max_length: 4096 #6144 #8192 #16384 # 65536
 optim: adamw_torch
 lr_scheduler_type: constant_with_warmup
 warmup_ratio: 0.1
-learning_rate: 4.0e-05
+learning_rate: 5.0e-05
 gradient_accumulation_steps: 1
 per_device_eval_batch_size: 1
 per_device_train_batch_size: 4
