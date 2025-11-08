@@ -6,7 +6,7 @@ export PYTHONPATH="${PYTHONPATH}:$(dirname "$0")"
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
 NUM_GPUS=1
 MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.07
-$REVISION=Main
+REVISION=Main
 MAX_TOKS=4096
 
 lighteval vllm \
