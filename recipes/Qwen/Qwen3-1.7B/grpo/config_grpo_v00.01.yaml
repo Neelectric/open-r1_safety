@@ -69,5 +69,5 @@ scale_rewards: false
 shuffle_dataset: true
 seed: 42
 temperature: 0.7
-use_liger_kernel: true
+use_liger_kernel: false #NotImplementedError: Liger Kernels currently only support token-level importance sampling. Please set`importance_sampling_level` to 'token'.
 warmup_ratio: 0.05
