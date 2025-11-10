@@ -1,7 +1,7 @@
 # Model arguments
 model_name_or_path: Qwen/Qwen3-1.7B
 model_revision: main
-torch_dtype: float16
+torch_dtype: bfloat16
 attn_implementation: flash_attention_2
 
 # Data training arguments
@@ -12,15 +12,15 @@ dataset_prompt_column: problem
 system_prompt: "You are a helpful AI Assistant that provides well-reasoned and detailed responses. You first think about the reasoning process as an internal monologue and then provide the user with the answer. Respond in the following format: <think>\n...\n</think>\n<answer>\n...\n</answer>"
 
 # VLLM settings
-vllm_dtype: float16
+vllm_dtype: bfloat16
 use_vllm: true
 vllm_mode: colocate
 vllm_gpu_memory_utilization: 0.35
 vllm_tensor_parallel_size: 1
 
 # GRPO trainer config
-bf16: false
-fp16: true
+bf16: true
+fp16: false
 beta: 0.01
 epsilon: 0.2
 epsilon_high: 0.28
