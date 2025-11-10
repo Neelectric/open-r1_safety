@@ -15,7 +15,7 @@ install:
 	. openr1/bin/activate && uv pip uninstall torch && \
 	uv pip install torch==2.8.0 && \
 	uv pip install trl==0.23.0 && \
-	uv pip install --python openr1/bin/python https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp311-cp311-linux_x86_64.whl --no-build-isolation --no-deps && \
+	uv pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp311-cp311-linux_x86_64.whl --no-build-isolation --no-deps && \
 	uv pip install vllm==0.11.0
 	
 	
