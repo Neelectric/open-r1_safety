@@ -1,0 +1,5 @@
+
+
+### GRPO with qwen
+VERSION=v00.01 CUDA_VISIBLE_DEVICES=1, ACCELERATE_LOG_LEVEL=info envsubst < recipes/Qwen/Qwen3-1.7B/grpo/grpo_config_v00.01.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero2.yaml --num_processes=1 src/open_r1/grpo.py --config temp_config.yaml
+

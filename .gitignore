@@ -10,3 +10,6 @@ data/
 
 */__pycache__
 eval_commands/test.py
+
+openr1/
+.venv/

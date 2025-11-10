@@ -1,0 +1,9 @@
+mkdir $HOME/glibc/ && cd $HOME/glibc
+wget http://ftp.gnu.org/gnu/libc/glibc-2.32.tar.gz
+tar -xvzf glibc-2.32.tar.gz
+mkdir build 
+mkdir glibc-2.32-install
+cd build
+~/glibc/glibc-2.32/configure --prefix=$HOME/glibc/glibc-2.32-install
+make
+make install
