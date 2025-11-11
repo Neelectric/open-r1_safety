@@ -1,8 +1,8 @@
 uv pip install more_itertools
 NUM_GPUS=2
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_mathv00.04
-MODEL=Neelectric/Llama-3.1-8B-Instruct_GRPO_MoT_mathv00.19
-REVISION=checkpoint-68
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.09
+REVISION=main
 NUM_TOKS=4096
 
 # base
