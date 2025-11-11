@@ -8,7 +8,7 @@ check_dirs := src tests
 
 # dev dependencies
 install:
-	uv venv openr1_clone_clone --python 3.11
+	uv venv openr1_clone --python 3.11
 	. openr1_clone/bin/activate && uv pip install --upgrade pip && \
 	uv pip install setuptools && \
 	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
