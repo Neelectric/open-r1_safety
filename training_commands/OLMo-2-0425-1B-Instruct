@@ -10,7 +10,12 @@ VLLM_TORCH_COMPILE_LEVEL=0 VERSION=v00.01 ACCELERATE_LOG_LEVEL=info envsubst < r
 VLLM_TORCH_COMPILE_LEVEL=0 \
 VLLM_ATTENTION_BACKEND=FLASH_ATTN \
 VLLM_USE_TORCH_COMPILE=0 \
-VERSION=v00.01 \
+VERSION=v00.02 \
 ACCELERATE_LOG_LEVEL=info \
-envsubst < recipes/allenai/OLMo-2-0425-1B-Instruct/grpo/config_grpo_v00.01.yaml > temp_config.yaml && \
+envsubst < recipes/allenai/OLMo-2-0425-1B-Instruct/grpo/config_grpo_v00.02.yaml > temp_config.yaml && \
+accelerate launch --config_file recipes/accelerate_configs/zero2.yaml --num_processes=2 src/open_r1/grpo.py --config temp_config.yaml
+
+
+## this works now!
+VERSION=v00.02 envsubst < recipes/allenai/OLMo-2-0425-1B-Instruct/grpo/config_grpo_v00.02.yaml > temp_config.yaml && \
 accelerate launch --config_file recipes/accelerate_configs/zero2.yaml --num_processes=2 src/open_r1/grpo.py --config temp_config.yaml
