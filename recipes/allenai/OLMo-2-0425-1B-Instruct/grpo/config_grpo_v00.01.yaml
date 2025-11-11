@@ -20,6 +20,7 @@ vllm_tensor_parallel_size: 1
 vllm_importance_sampling_correction: true
 
 # GRPO trainer config
+cast_lm_head_to_fp32: true
 bf16: true
 fp16: false
 beta: 0.01
