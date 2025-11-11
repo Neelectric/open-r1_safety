@@ -13,3 +13,5 @@ eval_commands/test.py
 
 openr1/
 .venv/
+
+*__pycache__
