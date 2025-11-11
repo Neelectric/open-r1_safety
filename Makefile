@@ -8,11 +8,11 @@ check_dirs := src tests
 
 # dev dependencies
 install:
-	uv venv openr1 --python 3.11
-	. openr1/bin/activate && uv pip install --upgrade pip && \
+	uv venv openr1_clone_clone --python 3.11
+	. openr1_clone/bin/activate && uv pip install --upgrade pip && \
 	uv pip install setuptools && \
 	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
-	. openr1/bin/activate && uv pip uninstall torch && \
+	. openr1_clone/bin/activate && uv pip uninstall torch && \
 	uv pip install torch==2.8.0 && \
 	uv pip install trl==0.23.0 && \
 	uv pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp311-cp311-linux_x86_64.whl --no-build-isolation --no-deps && \
