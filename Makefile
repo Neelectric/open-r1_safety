@@ -17,7 +17,8 @@ install:
 	uv pip install trl==0.23.0 && \
 	uv pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp311-cp311-linux_x86_64.whl --no-build-isolation --no-deps && \
 	uv pip install vllm==0.10.2 \
-	uv pip install rich
+	uv pip install rich \
+	pip install flashinfer-python
 	
 	
 # uv pip install --python openr1/bin/python https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp311-cp311-linux_x86_64.whl --no-build-isolation --no-deps
