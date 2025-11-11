@@ -20,7 +20,12 @@ vllm_tensor_parallel_size: 1
 vllm_importance_sampling_correction: true
 
 # GRPO trainer config
-cast_lm_head_to_fp32: true
+cast_lm_head_to_fp32: false #this causes the following
+# [rank1]:   File "/home/user/repos/open-r1_safety/openr1_clone/lib/python3.11/site-packages/transformers/models/olmo2/modeling_olmo2.py", line 455, in forward              [40/3403]
+# [rank1]:     logits = self.lm_head(hidden_states[:, slice_indices,
+# [rank1]:   File "/home/user/repos/open-r1_safety/openr1_clone/lib/python3.11/site-packages/torch/nn/modules/linear.py", line 125, in forward  
+# [rank1]:     return F.linear(input, self.weight, self.bias)                                                                                                                         
+# [rank1]: RuntimeError: expected mat1 and mat2 to have the same dtype, but got: float != c10::BFloat16
 bf16: true
 fp16: false
 beta: 0.01
