@@ -15,3 +15,5 @@ openr1/
 .venv/
 
 *__pycache__
+
+models_in_fp16/

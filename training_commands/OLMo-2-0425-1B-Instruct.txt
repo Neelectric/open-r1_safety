@@ -19,3 +19,8 @@ accelerate launch --config_file recipes/accelerate_configs/zero2.yaml --num_proc
 ## this works now!
 VERSION=v00.02 envsubst < recipes/allenai/OLMo-2-0425-1B-Instruct/grpo/config_grpo_v00.02.yaml > temp_config.yaml && \
 accelerate launch --config_file recipes/accelerate_configs/zero2.yaml --num_processes=2 src/open_r1/grpo.py --config temp_config.yaml
+
+
+## trying fp16
+VERSION=v00.03 envsubst < recipes/allenai/OLMo-2-0425-1B-Instruct/grpo/config_grpo_v00.03.yaml > temp_config.yaml && \
+accelerate launch --config_file recipes/accelerate_configs/zero2_fp16.yaml --num_processes=2 src/open_r1/grpo.py --config temp_config.yaml
