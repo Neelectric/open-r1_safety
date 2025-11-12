@@ -16,9 +16,10 @@ system_prompt: "You are a helpful AI Assistant that provides well-reasoned and d
 # vllm_dtype: bfloat16
 use_vllm: true
 vllm_mode: colocate
-vllm_gpu_memory_utilization: 0.4
+vllm_gpu_memory_utilization: 0.35
 vllm_tensor_parallel_size: 1
 vllm_importance_sampling_correction: true
+# vllm_model_impl: "transformers"
 
 # GRPO trainer config
 cast_lm_head_to_fp32: false #this can cause the following
@@ -67,13 +68,15 @@ report_to:
 reward_funcs:
 - accuracy
 - format
+- tag_count
 reward_weights:
 - 1.0
 - 0.25
+- 0.05
 save_strategy: "steps"
 save_steps: 0.05
 save_total_limit: 1
-scale_rewards: true
+scale_rewards: "batch"
 shuffle_dataset: true
 seed: 42
 temperature: 0.7
