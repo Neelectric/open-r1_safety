@@ -35,6 +35,7 @@ def main():
     model_path = "Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/"
     checkpoint = "checkpoint-12924/"
     abs_path = "/data/repos/open-r1_safety/data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/checkpoint-12924"
+    alternative_path = "/workspace/writeable/repos/open-r1_safety/data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/checkpoint-12924"
     # full_checkpoint_path = base_path + model_path + checkpoint
     full_checkpoint_path = abs_path
     
@@ -45,8 +46,10 @@ def main():
 
     # Check if model exists
     if not Path(abs_path).exists():
-        print(f"Model not found at: {abs_path}")
-        sys.exit(1)
+        abs_path = alternative_path
+        if not Path(abs_path).exists():
+            print(f"Model not found at: {abs_path}")
+            sys.exit(1)
 
     # Push to hub
     push_model_to_hub(full_checkpoint_path, hub_model_id, hub_revision_id)
