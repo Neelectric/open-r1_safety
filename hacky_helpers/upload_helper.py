@@ -44,8 +44,8 @@ def main():
     hub_revision_id = "v00.10-step-000012924"
 
     # Check if model exists
-    if not Path(model_path).exists():
-        print(f"Model not found at: {model_path}")
+    if not Path(abs_path).exists():
+        print(f"Model not found at: {abs_path}")
         sys.exit(1)
 
     # Push to hub
