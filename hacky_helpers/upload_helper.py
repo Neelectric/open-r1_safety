@@ -31,7 +31,7 @@ def push_model_to_hub(model_path: str, hub_model_id: str, hub_revision_id: str):
 
 def main():
     # Model path and hub ID for olmo_2_0425_1b_instruct_v00.01
-    base_path = "/data/repos/open-r1_safety/data/"
+    base_path = "data/"
     model_path = "Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/"
     checkpoint = "checkpoint-12924"
     full_checkpoint_path = base_path + model_path + checkpoint
