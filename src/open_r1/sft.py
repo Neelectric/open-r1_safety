@@ -47,6 +47,7 @@ from open_r1.utils import get_dataset, get_model, get_tokenizer
 from open_r1.utils.callbacks import get_callbacks
 from open_r1.utils.wandb_logging import init_wandb_training
 from trl import ModelConfig, SFTTrainer, TrlParser, get_peft_config, setup_chat_format
+from open_r1.optims.dadamw import AdamW
 
 
 logger = logging.getLogger(__name__)
@@ -98,15 +99,29 @@ def main(script_args, training_args, model_args):
     ############################
     # Initialize the SFT Trainer
     ############################
-    trainer = SFTTrainer(
-        model=model,
-        args=training_args,
-        train_dataset=dataset[script_args.dataset_train_split],
-        eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
-        processing_class=tokenizer,
-        peft_config=get_peft_config(model_args),
-        callbacks=get_callbacks(training_args, model_args),
-    )
+    if training_args.optim == "dadamw":
+        dadamw = AdamW(model.parameters(), lr=training_args.learning_rate)
+        
+        trainer = SFTTrainer(
+            model=model,
+            args=training_args,
+            optimizers=dadamw,
+            train_dataset=dataset[script_args.dataset_train_split],
+            eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
+            processing_class=tokenizer,
+            peft_config=get_peft_config(model_args),
+            callbacks=get_callbacks(training_args, model_args),
+        )
+    else:
+        trainer = SFTTrainer(
+            model=model,
+            args=training_args,
+            train_dataset=dataset[script_args.dataset_train_split],
+            eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
+            processing_class=tokenizer,
+            peft_config=get_peft_config(model_args),
+            callbacks=get_callbacks(training_args, model_args),
+        )
 
     ###############
     # Training loop
