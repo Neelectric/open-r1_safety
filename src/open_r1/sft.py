@@ -47,6 +47,9 @@ from open_r1.utils import get_dataset, get_model, get_tokenizer
 from open_r1.utils.callbacks import get_callbacks
 from open_r1.utils.wandb_logging import init_wandb_training
 from trl import ModelConfig, SFTTrainer, TrlParser, get_peft_config, setup_chat_format
+# custom optim work
+from torch.optim.lr_scheduler import LambdaLR
+from transformers.optimization import get_constant_schedule_with_warmup
 from open_r1.optims.dadamw import AdamW
 
 
@@ -99,13 +102,15 @@ def main(script_args, training_args, model_args):
     ############################
     # Initialize the SFT Trainer
     ############################
-    if script_args.optimiser == "dadamw":
+    if script_args.custom_optim == "dadamw":
         dadamw = AdamW(model.parameters(), lr=training_args.learning_rate)
+        lr_scheduler = get_constant_schedule_with_warmup(dadamw, num_warmup_steps=100)
+        optimizers_tuple = (dadamw, lr_scheduler)
         
         trainer = SFTTrainer(
             model=model,
             args=training_args,
-            optimizers=dadamw,
+            optimizers=optimizers_tuple,
             train_dataset=dataset[script_args.dataset_train_split],
             eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
             processing_class=tokenizer,
