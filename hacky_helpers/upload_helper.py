@@ -33,7 +33,7 @@ def main():
     # Model path and hub ID for olmo_2_0425_1b_instruct_v00.01
     base_path = "data/"
     model_path = "Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/"
-    checkpoint = "checkpoint-12924"
+    checkpoint = "checkpoint-12924/"
     full_checkpoint_path = base_path + model_path + checkpoint
     
     
