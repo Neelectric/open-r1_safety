@@ -99,7 +99,7 @@ def main(script_args, training_args, model_args):
     ############################
     # Initialize the SFT Trainer
     ############################
-    if training_args.optim == "dadamw":
+    if script_args.optimiser == "dadamw":
         dadamw = AdamW(model.parameters(), lr=training_args.learning_rate)
         
         trainer = SFTTrainer(

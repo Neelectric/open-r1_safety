@@ -35,14 +35,14 @@ def main():
     model_path = "Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/"
     checkpoint = "checkpoint-12924/"
     abs_path = "/data/repos/open-r1_safety/data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/checkpoint-12924"
-    alternative_path = "/workspace/writeable/repos/open-r1_safety/data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/checkpoint-12924"
+    alternative_path = "/workspace/writeable/repos/open-r1_safety/data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/checkpoint-16155"
     # full_checkpoint_path = base_path + model_path + checkpoint
     full_checkpoint_path = abs_path
     
     
     
     hub_model_id = "Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10"
-    hub_revision_id = "v00.10-step-000012924"
+    hub_revision_id = "v00.10-step-000016155"
 
     # Check if model exists
     if not Path(full_checkpoint_path).exists():
