@@ -19,3 +19,5 @@ openr1/
 models_in_fp16/
 .cache/
 openr1_clone/
+openr1_v2/
+openr1_v3/

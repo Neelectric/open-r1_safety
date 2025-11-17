@@ -2,7 +2,7 @@ uv pip install vllm==0.8.5
 uv pip install more_itertools
 NUM_GPUS=1
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_mathv00.04
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.08
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10
 REVISION=main
 NUM_TOKS=4096
 
