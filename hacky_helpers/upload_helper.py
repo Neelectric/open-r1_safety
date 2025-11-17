@@ -45,10 +45,10 @@ def main():
     hub_revision_id = "v00.10-step-000012924"
 
     # Check if model exists
-    if not Path(abs_path).exists():
-        abs_path = alternative_path
-        if not Path(abs_path).exists():
-            print(f"Model not found at: {abs_path}")
+    if not Path(full_checkpoint_path).exists():
+        full_checkpoint_path = alternative_path
+        if not Path(full_checkpoint_path).exists():
+            print(f"Model not found at: {full_checkpoint_path}")
             sys.exit(1)
 
     # Push to hub
