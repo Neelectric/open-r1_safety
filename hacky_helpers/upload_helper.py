@@ -34,7 +34,10 @@ def main():
     base_path = "data/"
     model_path = "Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/"
     checkpoint = "checkpoint-12924/"
-    full_checkpoint_path = base_path + model_path + checkpoint
+    abs_path = "pwd/data/repos/open-r1_safety/data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10/checkpoint-12924"
+    # full_checkpoint_path = base_path + model_path + checkpoint
+    full_checkpoint_path = abs_path
+    
     
     
     hub_model_id = "Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10"
