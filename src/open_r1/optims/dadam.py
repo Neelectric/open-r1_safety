@@ -49,6 +49,7 @@ class DAdam(Optimizer):
         differentiable: bool = False,
         fused: Optional[bool] = None,
         decoupled_weight_decay: bool = False,
+        preconditioner_power: Union[float, Tensor] = 0.5,
     ):
         if isinstance(lr, Tensor):
             if foreach and not capturable:
@@ -112,6 +113,9 @@ class DAdam(Optimizer):
             # alleviate the loss of information.
             if foreach:
                 raise RuntimeError("`fused` and `foreach` cannot be `True` together.")
+            
+        #Added by Neel: here we set preconditioner power so that step() can access it
+        self.preconditioner_power = preconditioner_power
 
     def __setstate__(self, state):
         super().__setstate__(state)
@@ -268,6 +272,7 @@ class DAdam(Optimizer):
                 grad_scale=getattr(self, "grad_scale", None),
                 found_inf=getattr(self, "found_inf", None),
                 decoupled_weight_decay=group["decoupled_weight_decay"],
+                preconditioner_power=self.preconditioner_power,
             )
 
         return loss
@@ -365,6 +370,7 @@ def _single_tensor_adam(
     capturable: bool,
     differentiable: bool,
     decoupled_weight_decay: bool,
+    preconditioner_power: Union[float, Tensor],
 ):
     assert grad_scale is None and found_inf is None
 
@@ -526,7 +532,7 @@ def _single_tensor_adam(
 
             step_size = lr / bias_correction1
 
-            bias_correction2_sqrt = bias_correction2**0.5
+            bias_correction2_sqrt = bias_correction2**preconditioner_power
 
             if amsgrad:
                 # Maintains the maximum of all 2nd moment running avg. till now
@@ -535,7 +541,7 @@ def _single_tensor_adam(
                 # Use the max. for normalizing running avg. of gradient
                 denom = (max_exp_avg_sqs[i].sqrt() / bias_correction2_sqrt).add_(eps)
             else:
-                denom = (exp_avg_sq.sqrt() / bias_correction2_sqrt).add_(eps)
+                denom = (exp_avg_sq**preconditioner_power / bias_correction2_sqrt).add_(eps)
 
             param.addcdiv_(exp_avg, denom, value=-step_size)  # type: ignore[arg-type]
 
@@ -792,100 +798,100 @@ def _single_tensor_adam(
 #             )
 
 
-def _fused_adam(
-    params: list[Tensor],
-    grads: list[Tensor],
-    exp_avgs: list[Tensor],
-    exp_avg_sqs: list[Tensor],
-    max_exp_avg_sqs: list[Tensor],
-    state_steps: list[Tensor],
-    grad_scale: Optional[Tensor],
-    found_inf: Optional[Tensor],
-    *,
-    amsgrad: bool,
-    has_complex: bool,  # Needed for consistency.
-    beta1: float,
-    beta2: float,
-    lr: Union[float, Tensor],
-    weight_decay: float,
-    eps: float,
-    maximize: bool,
-    capturable: bool,  # Needed for consistency.
-    differentiable: bool,
-    decoupled_weight_decay: bool,
-) -> None:
-    if not params:
-        return
-    if differentiable:
-        raise RuntimeError("Adam with fused=True does not support differentiable=True")
+# def _fused_adam(
+#     params: list[Tensor],
+#     grads: list[Tensor],
+#     exp_avgs: list[Tensor],
+#     exp_avg_sqs: list[Tensor],
+#     max_exp_avg_sqs: list[Tensor],
+#     state_steps: list[Tensor],
+#     grad_scale: Optional[Tensor],
+#     found_inf: Optional[Tensor],
+#     *,
+#     amsgrad: bool,
+#     has_complex: bool,  # Needed for consistency.
+#     beta1: float,
+#     beta2: float,
+#     lr: Union[float, Tensor],
+#     weight_decay: float,
+#     eps: float,
+#     maximize: bool,
+#     capturable: bool,  # Needed for consistency.
+#     differentiable: bool,
+#     decoupled_weight_decay: bool,
+# ) -> None:
+#     if not params:
+#         return
+#     if differentiable:
+#         raise RuntimeError("Adam with fused=True does not support differentiable=True")
 
-    grad_scale_dict: DeviceDict = (
-        {grad_scale.device: grad_scale} if grad_scale is not None else {}
-    )
-    found_inf_dict: DeviceDict = (
-        {found_inf.device: found_inf} if found_inf is not None else {}
-    )
+#     grad_scale_dict: DeviceDict = (
+#         {grad_scale.device: grad_scale} if grad_scale is not None else {}
+#     )
+#     found_inf_dict: DeviceDict = (
+#         {found_inf.device: found_inf} if found_inf is not None else {}
+#     )
 
-    # We only shuffle around the lr when it is a Tensor and on CUDA, otherwise, we prefer
-    # treating it as a scalar.
-    lr_dict: Optional[DeviceDict] = (
-        {lr.device: lr} if isinstance(lr, Tensor) and str(lr.device) != "cpu" else None
-    )
-    grouped_tensors = Optimizer._group_tensors_by_device_and_dtype(
-        [params, grads, exp_avgs, exp_avg_sqs, max_exp_avg_sqs, state_steps]  # type: ignore[list-item]
-    )
-    for (device, _), (
-        (
-            device_params_,
-            device_grads_,
-            device_exp_avgs_,
-            device_exp_avg_sqs_,
-            device_max_exp_avg_sqs,
-            device_state_steps_,
-        ),
-        _,
-    ) in grouped_tensors.items():
-        device_params = cast(list[Tensor], device_params_)
-        device_grads = cast(list[Tensor], device_grads_)
-        device_exp_avgs = cast(list[Tensor], device_exp_avgs_)
-        device_exp_avg_sqs = cast(list[Tensor], device_exp_avg_sqs_)
-        device_state_steps = cast(list[Tensor], device_state_steps_)
+#     # We only shuffle around the lr when it is a Tensor and on CUDA, otherwise, we prefer
+#     # treating it as a scalar.
+#     lr_dict: Optional[DeviceDict] = (
+#         {lr.device: lr} if isinstance(lr, Tensor) and str(lr.device) != "cpu" else None
+#     )
+#     grouped_tensors = Optimizer._group_tensors_by_device_and_dtype(
+#         [params, grads, exp_avgs, exp_avg_sqs, max_exp_avg_sqs, state_steps]  # type: ignore[list-item]
+#     )
+#     for (device, _), (
+#         (
+#             device_params_,
+#             device_grads_,
+#             device_exp_avgs_,
+#             device_exp_avg_sqs_,
+#             device_max_exp_avg_sqs,
+#             device_state_steps_,
+#         ),
+#         _,
+#     ) in grouped_tensors.items():
+#         device_params = cast(list[Tensor], device_params_)
+#         device_grads = cast(list[Tensor], device_grads_)
+#         device_exp_avgs = cast(list[Tensor], device_exp_avgs_)
+#         device_exp_avg_sqs = cast(list[Tensor], device_exp_avg_sqs_)
+#         device_state_steps = cast(list[Tensor], device_state_steps_)
 
-        device_grad_scale, device_found_inf = None, None
-        if grad_scale is not None:
-            device_grad_scale = grad_scale_dict.setdefault(
-                device, grad_scale.to(device, non_blocking=True)
-            )
-        if found_inf is not None:
-            device_found_inf = found_inf_dict.setdefault(
-                device, found_inf.to(device, non_blocking=True)
-            )
-        if lr_dict is not None and device not in lr_dict:
-            lr_dict[device] = lr.to(device=device, non_blocking=True)  # type: ignore[union-attr]
-            lr = lr_dict[device]
-        torch._foreach_add_(device_state_steps, 1)
-        func = torch._fused_adam_ if not decoupled_weight_decay else torch._fused_adamw_
-        func(
-            device_params,
-            device_grads,
-            device_exp_avgs,
-            device_exp_avg_sqs,
-            device_max_exp_avg_sqs,  # type: ignore[arg-type]
-            device_state_steps,
-            amsgrad=amsgrad,
-            lr=lr,  # type: ignore[arg-type]
-            beta1=beta1,
-            beta2=beta2,
-            weight_decay=weight_decay,
-            eps=eps,
-            maximize=maximize,
-            grad_scale=device_grad_scale,
-            found_inf=device_found_inf,
-        )
-        if device_found_inf is not None:
-            torch._foreach_sub_(
-                device_state_steps, [device_found_inf] * len(device_state_steps)
-            )
+#         device_grad_scale, device_found_inf = None, None
+#         if grad_scale is not None:
+#             device_grad_scale = grad_scale_dict.setdefault(
+#                 device, grad_scale.to(device, non_blocking=True)
+#             )
+#         if found_inf is not None:
+#             device_found_inf = found_inf_dict.setdefault(
+#                 device, found_inf.to(device, non_blocking=True)
+#             )
+#         if lr_dict is not None and device not in lr_dict:
+#             lr_dict[device] = lr.to(device=device, non_blocking=True)  # type: ignore[union-attr]
+#             lr = lr_dict[device]
+#         torch._foreach_add_(device_state_steps, 1)
+#         func = torch._fused_adam_ if not decoupled_weight_decay else torch._fused_adamw_
+#         func(
+#             device_params,
+#             device_grads,
+#             device_exp_avgs,
+#             device_exp_avg_sqs,
+#             device_max_exp_avg_sqs,  # type: ignore[arg-type]
+#             device_state_steps,
+#             amsgrad=amsgrad,
+#             lr=lr,  # type: ignore[arg-type]
+#             beta1=beta1,
+#             beta2=beta2,
+#             weight_decay=weight_decay,
+#             eps=eps,
+#             maximize=maximize,
+#             grad_scale=device_grad_scale,
+#             found_inf=device_found_inf,
+#         )
+#         if device_found_inf is not None:
+#             torch._foreach_sub_(
+#                 device_state_steps, [device_found_inf] * len(device_state_steps)
+#             )
 
 
 @_disable_dynamo_if_unsupported(single_tensor_fn=_single_tensor_adam)
@@ -914,6 +920,7 @@ def dadam(
     weight_decay: float,
     eps: float,
     maximize: bool,
+    preconditioner_power: Union[float, Tensor],
 ):
     r"""Functional API that performs Adam algorithm computation.
 
@@ -950,10 +957,14 @@ def dadam(
         raise RuntimeError("torch.jit.script not supported with fused optimizers")
 
     if fused and not torch.jit.is_scripting():
-        func = _fused_adam
+        # func = _fused_adam
+        # _fused_adam IS NOT YET IMPLEMENTED! I DO NOT YET TRUST MYSELF WITH ALL THE FOREACH BITS OF LOGIC AND WILL DO IT WHEN I HAVE A MOMENT OF FOCUS
+        func = _single_tensor_adam
+        # WHEN I DO IMPLEMENT, I NEED TO ADD VAR preconditioner_power
     elif foreach and not torch.jit.is_scripting():
         # func = _multi_tensor_adam
         # MULTI_TENSOR_ADAM IS NOT YET IMPLEMENTED! I DO NOT YET TRUST MYSELF WITH ALL THE FOREACH BITS OF LOGIC AND WILL DO IT WHEN I HAVE A MOMENT OF FOCUS
+        # WHEN I DO IMPLEMENT, I NEED TO ADD VAR preconditioner_power
         func = _single_tensor_adam
     else:
         func = _single_tensor_adam
@@ -978,4 +989,5 @@ def dadam(
         grad_scale=grad_scale,
         found_inf=found_inf,
         decoupled_weight_decay=decoupled_weight_decay,
+        preconditioner_power=preconditioner_power,
     )

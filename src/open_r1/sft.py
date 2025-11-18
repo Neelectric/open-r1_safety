@@ -56,11 +56,17 @@ import torch
 from accelerate import Accelerator
 
 class SFTTrainerWithDAdamW(SFTTrainer):
+    def __init__(self, *args, preconditioner_power=0.5, **kwargs):
+        # Call parent __init__ with all its arguments so I pass that correctly
+        super().__init__(*args, **kwargs)
+        # Then I can set custom precond power
+        self.preconditioner_power = preconditioner_power
+
     def create_optimizer(self):
         """Override to use DAdamW instead of default optimizer. A custom trainer is necessary to handle the DS Z-3 stuff correctly"""
         if self.optimizer is None:
             # Model is already wrapped by Accelerator at this point
-            optimizer = setup_dadamw(self.args, self.model)
+            optimizer = setup_dadamw(self.args, self.model, self.preconditioner_power)
             self.optimizer = optimizer
         return self.optimizer
     
@@ -141,6 +147,7 @@ def main(script_args, training_args, model_args):
             processing_class=tokenizer,
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
+            preconditioner_power=script_args.script_args,
         )
 
     else:

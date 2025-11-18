@@ -39,6 +39,7 @@ class DAdamW(DAdam):
         capturable: bool = False,
         differentiable: bool = False,
         fused: Optional[bool] = None,
+        preconditioner_power: Union[float, Tensor] = 0.5,
     ):
         super().__init__(
             params,
@@ -53,6 +54,7 @@ class DAdamW(DAdam):
             differentiable=differentiable,
             fused=fused,
             decoupled_weight_decay=True,
+            preconditioner_power=preconditioner_power,
         )
 
     # Preserve decoupled_weight_decay from AdamW for backwards compatibility. The following
@@ -157,6 +159,7 @@ def dadamw(
     weight_decay: float,
     eps: float,
     maximize: bool,
+    preconditioner_power: Union[float, Tensor],
 ):
     r"""Functional API that performs AdamW algorithm computation.
 
@@ -184,10 +187,11 @@ def dadamw(
         eps=eps,
         maximize=maximize,
         decoupled_weight_decay=True,
+        preconditioner_power=preconditioner_power,
     )
     
 
-def setup_dadamw(training_args, model):
+def setup_dadamw(training_args, model, preconditioner_power):
     """Setup DAdamW optimizer without creating a Trainer instance"""
     
     from accelerate.utils import set_seed
@@ -228,7 +232,7 @@ def setup_dadamw(training_args, model):
         optimizer_kwargs["fused"] = True
     
     # Create DAdamW optimizer
-    optimizer = DAdamW(optimizer_grouped_parameters, **optimizer_kwargs)
+    optimizer = DAdamW(optimizer_grouped_parameters, **optimizer_kwargs, preconditioner_power=preconditioner_power)
     
     # Add required attributes for Trainer compatibility
     optimizer._step_supports_amp_scaling = True  # For mixed precision training

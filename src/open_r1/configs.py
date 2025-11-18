@@ -16,6 +16,7 @@
 from dataclasses import dataclass, field
 from typing import Any, Literal, Optional
 
+from torch import Tensor
 import trl
 
 
@@ -77,6 +78,10 @@ class ScriptArguments(trl.ScriptArguments):
     custom_optim: Optional[str] = field(
         default=None,
         metadata={"help": "Custom optimiser."},
+    )
+    preconditioner_power: Optional[float] = field(
+        default=0.5,
+        metadata={"help": "Power to use in the preconditioner for DAdamW"}
     )
 
     def __post_init__(self):
