@@ -532,7 +532,7 @@ def _single_tensor_adam(
 
             step_size = lr / bias_correction1
 
-            bias_correction2_sqrt = bias_correction2**preconditioner_power
+            bias_correction2_sqrt = bias_correction2**0.5
 
             if amsgrad:
                 # Maintains the maximum of all 2nd moment running avg. till now
@@ -541,7 +541,7 @@ def _single_tensor_adam(
                 # Use the max. for normalizing running avg. of gradient
                 denom = (max_exp_avg_sqs[i].sqrt() / bias_correction2_sqrt).add_(eps)
             else:
-                denom = (exp_avg_sq**preconditioner_power / bias_correction2_sqrt).add_(eps)
+                denom = (exp_avg_sq.sqrt() / bias_correction2_sqrt).add_(eps)
 
             param.addcdiv_(exp_avg, denom, value=-step_size)  # type: ignore[arg-type]
 
