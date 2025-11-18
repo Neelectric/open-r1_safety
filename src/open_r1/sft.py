@@ -147,7 +147,7 @@ def main(script_args, training_args, model_args):
             processing_class=tokenizer,
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
-            preconditioner_power=script_args.script_args,
+            preconditioner_power=script_args.preconditioner_power,
         )
 
     else:
