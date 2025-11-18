@@ -66,6 +66,7 @@ class SFTTrainerWithDAdamW(SFTTrainer):
     
     def create_scheduler(self, num_training_steps, optimizer=None):
         """Override to use custom scheduler"""
+        print("Currently warmup_ratio hardcoded to 0.1!")
         if optimizer is None:
             optimizer = self.optimizer
         self.lr_scheduler = get_constant_schedule_with_warmup(
