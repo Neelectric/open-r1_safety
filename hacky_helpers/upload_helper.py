@@ -5,6 +5,7 @@ import os
 import sys
 from pathlib import Path
 from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
 
 def push_model_to_hub(model_path: str, hub_model_id: str, hub_revision_id: str):
     """Push a fine-tuned model to Hugging Face Hub."""
@@ -13,7 +14,10 @@ def push_model_to_hub(model_path: str, hub_model_id: str, hub_revision_id: str):
 
     try:
         # Load model and tokenizer
-        model = AutoModelForCausalLM.from_pretrained(model_path)
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path,
+            dtype=torch.bfloat16,
+            )
         tokenizer = AutoTokenizer.from_pretrained(model_path)
 
         # Push to hub

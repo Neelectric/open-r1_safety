@@ -38,14 +38,14 @@ eval_strategy: 'no'
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-hub_model_id: Neelectric/SmolLM2-135M-Instruct_SFT_Math-220kv00.05
-hub_model_revision: v00.05
+hub_model_id: Neelectric/SmolLM2-135M-Instruct_SFT_Math-220k${VERSION}
+hub_model_revision: ${VERSION}
 hub_strategy: every_save
 log_level: info
 logging_steps: 1
 logging_strategy: steps
 packing: false
-output_dir: data/Neelectric/SmolLM2-135M-Instruct_SFT_Math-220kv00.05
+output_dir: data/Neelectric/SmolLM2-135M-Instruct_SFT_Math-220k${VERSION}
 overwrite_output_dir: true
 push_to_hub: true
 report_to:
@@ -58,6 +58,6 @@ torch_compile: false
 use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_safety
-run_name: Neelectric/SmolLM2-135M-Instruct_SFT_Math-220kv00.05
+run_name: Neelectric/SmolLM2-135M-Instruct_SFT_Math-220k${VERSION}
 callbacks:
 - push_to_hub_revision

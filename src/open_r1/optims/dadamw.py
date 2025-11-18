@@ -1,9 +1,9 @@
 # mypy: allow-untyped-defs
-from typing import Optional, Union
+from typing import Optional, Union, Tuple, Type
 
 from torch import Tensor
 
-from .dadam import Adam, adam
+from .dadam import DAdam, dadam
 from torch.optim.optimizer import (
     _capturable_doc,
     _differentiable_doc,
@@ -14,11 +14,17 @@ from torch.optim.optimizer import (
     ParamsT,
 )
 
+# Neel: added these next 2 imports
+from transformers import Trainer, TrainingArguments
+from transformers.trainer_pt_utils import get_parameter_names
+# from transformers.trainer_utils import OptimizerNames
+import torch
 
-__all__ = ["AdamW", "adamw"]
+
+__all__ = ["DAdamW", "dadamw"]
 
 
-class AdamW(Adam):
+class DAdamW(DAdam):
     def __init__(
         self,
         params: ParamsT,
@@ -58,7 +64,7 @@ class AdamW(Adam):
             group["decoupled_weight_decay"] = True
 
 
-AdamW.__doc__ = (
+DAdamW.__doc__ = (
     r"""Implements AdamW algorithm, where weight decay does not accumulate in the momentum nor variance.
 
     .. math::
@@ -127,7 +133,7 @@ AdamW.__doc__ = (
 
 
 # @_disable_dynamo_if_unsupported logic occurs in the decorator that's applied to F.adam
-def adamw(
+def dadamw(
     params: list[Tensor],
     grads: list[Tensor],
     exp_avgs: list[Tensor],
@@ -156,7 +162,7 @@ def adamw(
 
     See :class:`~torch.optim.AdamW` for details.
     """
-    adam(
+    dadam(
         params,
         grads,
         exp_avgs,
@@ -179,3 +185,52 @@ def adamw(
         maximize=maximize,
         decoupled_weight_decay=True,
     )
+    
+
+def setup_dadamw(training_args, model):
+    """Setup DAdamW optimizer without creating a Trainer instance"""
+    
+    from accelerate.utils import set_seed
+    set_seed(training_args.seed)
+    
+    # Get decay parameter names (copied from Trainer.get_decay_parameter_names)
+    ALL_LAYERNORM_LAYERS = [torch.nn.LayerNorm]
+    decay_parameters = get_parameter_names(model, ALL_LAYERNORM_LAYERS)
+    decay_parameters = [name for name in decay_parameters if "bias" not in name]
+    
+    # Create optimizer grouped parameters
+    optimizer_grouped_parameters = [
+        {
+            "params": [
+                p for n, p in model.named_parameters() 
+                if (n in decay_parameters and p.requires_grad)
+            ],
+            "weight_decay": training_args.weight_decay,
+        },
+        {
+            "params": [
+                p for n, p in model.named_parameters() 
+                if (n not in decay_parameters and p.requires_grad)
+            ],
+            "weight_decay": 0.0,
+        },
+    ]
+    
+    # Get optimizer kwargs (simplified from Trainer.get_optimizer_cls_and_kwargs)
+    optimizer_kwargs = {
+        "lr": training_args.learning_rate,
+        "betas": (training_args.adam_beta1, training_args.adam_beta2),
+        "eps": training_args.adam_epsilon,
+    }
+    
+    # Add fused flag if available (for better performance)
+    if hasattr(training_args, 'adam_fused') and training_args.adam_fused:
+        optimizer_kwargs["fused"] = True
+    
+    # Create DAdamW optimizer
+    optimizer = DAdamW(optimizer_grouped_parameters, **optimizer_kwargs)
+    
+    # Add required attributes for Trainer compatibility
+    optimizer._step_supports_amp_scaling = True  # For mixed precision training
+    
+    return optimizer

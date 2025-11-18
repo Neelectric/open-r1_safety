@@ -21,3 +21,5 @@ models_in_fp16/
 openr1_clone/
 openr1_v2/
 openr1_v3/
+
+.vscode/

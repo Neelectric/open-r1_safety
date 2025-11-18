@@ -47,10 +47,32 @@ from open_r1.utils import get_dataset, get_model, get_tokenizer
 from open_r1.utils.callbacks import get_callbacks
 from open_r1.utils.wandb_logging import init_wandb_training
 from trl import ModelConfig, SFTTrainer, TrlParser, get_peft_config, setup_chat_format
+
 # custom optim work
 from torch.optim.lr_scheduler import LambdaLR
 from transformers.optimization import get_constant_schedule_with_warmup
-from open_r1.optims.dadamw import AdamW
+from open_r1.optims.dadamw import DAdamW, setup_dadamw
+import torch
+from accelerate import Accelerator
+
+class SFTTrainerWithDAdamW(SFTTrainer):
+    def create_optimizer(self):
+        """Override to use DAdamW instead of default optimizer. A custom trainer is necessary to handle the DS Z-3 stuff correctly"""
+        if self.optimizer is None:
+            # Model is already wrapped by Accelerator at this point
+            optimizer = setup_dadamw(self.args, self.model)
+            self.optimizer = optimizer
+        return self.optimizer
+    
+    def create_scheduler(self, num_training_steps, optimizer=None):
+        """Override to use custom scheduler"""
+        if optimizer is None:
+            optimizer = self.optimizer
+        self.lr_scheduler = get_constant_schedule_with_warmup(
+            optimizer, 
+            num_warmup_steps=int(0.1 * num_training_steps)  # warmup_ratio=0.1
+        )
+        return self.lr_scheduler
 
 
 logger = logging.getLogger(__name__)
@@ -59,6 +81,11 @@ logger = logging.getLogger(__name__)
 def main(script_args, training_args, model_args):
     set_seed(training_args.seed)
 
+    # For deterministic behavior (slower but reproducible)
+    if training_args.seed is not None:
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        
     ###############
     # Setup logging
     ###############
@@ -102,21 +129,19 @@ def main(script_args, training_args, model_args):
     ############################
     # Initialize the SFT Trainer
     ############################
+    print(f"RNG state hash before optimizer: {hash(torch.get_rng_state().cpu().numpy().tobytes())}")
     if script_args.custom_optim == "dadamw":
-        dadamw = AdamW(model.parameters(), lr=training_args.learning_rate)
-        lr_scheduler = get_constant_schedule_with_warmup(dadamw, num_warmup_steps=100)
-        optimizers_tuple = (dadamw, lr_scheduler)
         
-        trainer = SFTTrainer(
+        trainer = SFTTrainerWithDAdamW( 
             model=model,
             args=training_args,
-            optimizers=optimizers_tuple,
             train_dataset=dataset[script_args.dataset_train_split],
             eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
             processing_class=tokenizer,
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
         )
+
     else:
         trainer = SFTTrainer(
             model=model,
@@ -127,6 +152,8 @@ def main(script_args, training_args, model_args):
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
         )
+        print(f"RNG state hash after optimizer: {hash(torch.get_rng_state().cpu().numpy().tobytes())}")
+
 
     ###############
     # Training loop

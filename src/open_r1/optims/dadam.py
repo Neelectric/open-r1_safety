@@ -30,10 +30,10 @@ from torch.optim.optimizer import (
 )
 
 
-__all__ = ["Adam", "adam"]
+__all__ = ["DAdam", "dadam"]
 
 
-class Adam(Optimizer):
+class DAdam(Optimizer):
     def __init__(
         self,
         params: ParamsT,
@@ -246,7 +246,7 @@ class Adam(Optimizer):
                 state_steps,
             )
 
-            adam(
+            dadam(
                 params_with_grad,
                 grads,
                 exp_avgs,
@@ -273,7 +273,7 @@ class Adam(Optimizer):
         return loss
 
 
-Adam.__doc__ = (
+DAdam.__doc__ = (
     r"""Implements Adam algorithm.
 
     .. math::
@@ -885,7 +885,7 @@ def _fused_adam(
 
 
 @_disable_dynamo_if_unsupported(single_tensor_fn=_single_tensor_adam)
-def adam(
+def dadam(
     params: list[Tensor],
     grads: list[Tensor],
     exp_avgs: list[Tensor],
