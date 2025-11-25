@@ -31,7 +31,7 @@ print(sum(lengths) / len(lengths))
 
 
 # check tokenized length
-n = 4096
+n = 8192
 def filter_long_rows(example):
     messages = example['messages']
     tokenized = tokenizer.apply_chat_template(messages, tokenize=True)
@@ -47,4 +47,4 @@ filter_long_rows(first)
 
 code_filtered = code.filter(filter_long_rows, num_proc=16)
 
-code_filtered.push_to_hub("Neelectric/codeforces-cots_solutions_Llama3_4096toks")
+code_filtered.push_to_hub("Neelectric/codeforces-cots_solutions_Llama3_8192toks")
