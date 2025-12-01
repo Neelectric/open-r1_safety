@@ -14,7 +14,7 @@ messages = [
     {"role": "assistant", "content": "yo"}
 ]
 
-print(tokenizer.apply_chat_template(messages, tokenize=False))
+# print(tokenizer.apply_chat_template(messages, tokenize=False))
 
 
 
@@ -26,25 +26,30 @@ for i in tqdm(range(100)):
     tokenized = tokenizer.apply_chat_template(messages, tokenize=True)
     length = len(tokenized)
     lengths.append(length)
-print(lengths)
-print(sum(lengths) / len(lengths))
+# print(lengths)
+# print(sum(lengths) / len(lengths))
 
 
 # check tokenized length
-n = 8192
+n = 16384
 def filter_long_rows(example):
     messages = example['messages']
     tokenized = tokenizer.apply_chat_template(messages, tokenize=True)
     length = len(tokenized)
-    return length <= 4096
+    return length <= n
 
 first = code[8]
 # print(first['messages'])
-print(tokenizer.apply_chat_template(first['messages'], tokenize=False))
-print(len(tokenizer.apply_chat_template(first['messages'], tokenize=True)))
+# print(tokenizer.apply_chat_template(first['messages'], tokenize=False))
+# print(len(tokenizer.apply_chat_template(first['messages'], tokenize=True)))
 filter_long_rows(first)
 
 
 code_filtered = code.filter(filter_long_rows, num_proc=16)
+print(code_filtered)
 
-code_filtered.push_to_hub("Neelectric/codeforces-cots_solutions_Llama3_8192toks")
+code_filtered = code_filtered.remove_columns(['id', 'aliases', 'contest_id', 'contest_name', 'contest_type', 'contest_start', 'contest_start_year', 'index', 'time_limit', 'memory_limit', 'title', 'description', 'input_format', 'output_format', 'examples', 'note', 'editorial', 'prompt', 'generation', 'finish_reason', 'api_metadata', 'interaction_format',],)
+
+print(code_filtered)
+
+code_filtered.push_to_hub(f"Neelectric/codeforces-cots_solutions_Llama3_{n}toks")

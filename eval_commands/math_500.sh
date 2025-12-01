@@ -1,9 +1,9 @@
 uv pip install vllm==0.8.5
 uv pip install more_itertools
-NUM_GPUS=2
+NUM_GPUS=8
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_mathv00.04
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10
-REVISION=v00.10-step-000016155
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.01
+REVISION=main
 NUM_TOKS=4096
 
 # base
@@ -12,7 +12,7 @@ TASK=math_500
 OUTPUT_DIR=data/evals/
 
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
-CUDA_VISIBLE_DEVICES="0,1" \
+CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" \
 TORCHINDUCTOR_CACHE_DIR=./.cache/${CUDA_VISIBLE_DEVICES}/ \
 lighteval vllm $MODEL_ARGS "lighteval|$TASK|0|0" \
     --use-chat-template \
