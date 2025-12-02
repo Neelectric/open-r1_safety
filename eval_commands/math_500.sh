@@ -13,7 +13,7 @@ TASK=math_500
 OUTPUT_DIR=data/evals/
 
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
-CUDA_VISIBLE_DEVICES="0,1" \
+CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" \
 TORCHINDUCTOR_CACHE_DIR=./.cache/${CUDA_VISIBLE_DEVICES}/ \
 lighteval vllm $MODEL_ARGS "lighteval|$TASK|0|0" \
     --use-chat-template \
