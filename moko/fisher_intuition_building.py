@@ -1,10 +1,13 @@
 # %%
-from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorWithPadding, set_seed, get_scheduler
+from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorWithPadding, set_seed, get_scheduler, AutoConfig
 from datasets import load_dataset
+import torch
 from torch.utils.data import DataLoader
 from torch.optim import AdamW
 from tqdm.auto import tqdm
 
+# claude suggested this approach:
+from accelerate import infer_auto_device_map, init_empty_weights
 
 set_seed(
     42, 
@@ -13,14 +16,40 @@ set_seed(
 
 ### Model, Tokenizer, hyperparams prep
 # model_id = "HuggingFaceTB/SmolLM2-135M-Instruct"
-model_id = "allenai/OLMo-2-0425-1B-Instruct"
+# model_id = "allenai/OLMo-2-0425-1B-Instruct"
+model_id = "allenai/OLMo-2-1124-13B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(model_id, padding_side='left')
+
+#claude's way
+# config = AutoConfig.from_pretrained(model_id)
+
+# with init_empty_weights():
+#     empty_model = AutoModelForCausalLM.from_config(config)
+
+# # Create balanced map across all 8 GPUs
+# device_map = infer_auto_device_map(
+#     empty_model,
+#     # max_memory={i: "90GiB" for i in range(8)},  # leave headroom
+#     no_split_module_classes=["Olmo2DecoderLayer"],
+# )
+
+# model = AutoModelForCausalLM.from_pretrained(
+#     model_id,
+#     dtype=torch.bfloat16,
+#     device_map=device_map,
+# )
+
+#my way
 model = AutoModelForCausalLM.from_pretrained(
     model_id, 
     dtype="bfloat16",
-    device_map="cuda:0",
+    device_map="balanced",
+    # attn_implementation="flash_attention_2",
     )
-max_length = 2048
+
+
+
+max_length = 4096
 batch_size = 1
 num_epochs = 1
 
@@ -30,7 +59,8 @@ num_epochs = 1
 dataset_id = "Neelectric/OpenR1-Math-220k_CN-K12_OLMo-2_4096toks"
 
 dataset_raw = load_dataset(dataset_id)["train"]
-dataset_subset = dataset_raw.select(range(0,100))
+dataset_raw = dataset_raw.shuffle()
+dataset_subset = dataset_raw.select(range(0,2500))
 
 # %%
 ### Dataset tokenization
@@ -116,13 +146,14 @@ for name, param in deepcopy(params).items():
 model.eval()
 for epoch in range(num_epochs):
     for batch in train_dataloader:
+        model.zero_grad()
         batch = {k: v.to(device) for k, v in batch.items()}
         outputs = model(**batch)
         loss = outputs.loss
         loss.backward()
         # print(outputs)
         progress_bar.update(1)
-        tqdm.write(f"loss is {loss}")
+        tqdm.write(f"loss is {loss.item()}")
         for name, param in model.named_parameters():
             fisher[name].data += param.grad.data ** 2 / len(train_dataloader)
     break
@@ -147,25 +178,36 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# Define parameter types in order (matching your plot)
-param_types = ['q_proj', 'k_proj', 'v_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj']
+
 
 # Adjust based on your model
 num_layers = len(model.model.layers)
 
+# Map display names to actual parameter substrings
+param_map = {
+    'Queries': 'q_proj',
+    'Keys': 'k_proj', 
+    'Values': 'v_proj',
+    'Outputs': 'o_proj',
+    'Gate': 'gate_proj',
+    'Up': 'up_proj',
+    'Down': 'down_proj'
+}
+param_types = list(param_map.keys())
+
 # Create matrix to store mean FIM values
 fim_matrix = np.zeros((num_layers, len(param_types)))
+
+
 
 # Populate the matrix
 for name, fim_values in fisher.items():
     for i, ptype in enumerate(param_types):
-        if ptype in name:
-            # Extract layer number (assumes naming like model.layers.X....)
+        if param_map[ptype] in name:  # Match against actual param names
             parts = name.split('.')
             for j, part in enumerate(parts):
                 if part == 'layers' and j + 1 < len(parts):
                     layer_num = int(parts[j + 1])
-                    # Option 1: mean FIM (normalized by param count)
                     fim_matrix[layer_num, i] = fim_values.mean().item()
                     break
             break

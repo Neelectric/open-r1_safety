@@ -23,3 +23,6 @@ openr1_v2/
 openr1_v3/
 
 .vscode/
+
+git_login.sh
+hacky_helpers/
