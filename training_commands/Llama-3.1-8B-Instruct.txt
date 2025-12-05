@@ -18,4 +18,4 @@ accelerate launch --config_file recipes/accelerate_configs/zero2.yaml --num_proc
 
 
 ## SFT with code
-accelerate launch --config_file recipes/accelerate_configs/zero3_last.yaml --num_processes=8 src/open_r1/sft.py --config recipes/meta-llama/Llama-3.1-8B-Instruct/sft_code/config_distill_v00.01.yaml
+accelerate launch --config_file recipes/accelerate_configs/zero3_last.yaml --num_processes=8 src/open_r1/sft.py --config recipes/meta-llama/Llama-3.1-8B-Instruct/sft_code/config_distill_v00.02.yaml
