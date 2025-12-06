@@ -1,28 +1,21 @@
-[2025-12-06 13:26:50,723] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-W1206 13:26:52.266000 965174 torch/distributed/run.py:774] 
-W1206 13:26:52.266000 965174 torch/distributed/run.py:774] *****************************************
-W1206 13:26:52.266000 965174 torch/distributed/run.py:774] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
-W1206 13:26:52.266000 965174 torch/distributed/run.py:774] *****************************************
-[2025-12-06 13:26:57,467] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-[2025-12-06 13:26:57,468] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-[2025-12-06 13:26:58,300] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-[2025-12-06 13:26:58,304] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-[2025-12-06 13:26:58,309] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-[2025-12-06 13:26:58,311] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-[2025-12-06 13:26:58,321] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-[2025-12-06 13:26:58,326] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
-[2025-12-06 13:26:58,685] [INFO] [comm.py:669:init_distributed] cdb=None
-[2025-12-06 13:26:58,686] [INFO] [comm.py:669:init_distributed] cdb=None
-[2025-12-06 13:26:59,566] [INFO] [comm.py:669:init_distributed] cdb=None
-[2025-12-06 13:26:59,609] [INFO] [comm.py:669:init_distributed] cdb=None
-[2025-12-06 13:26:59,659] [INFO] [comm.py:669:init_distributed] cdb=None
-[2025-12-06 13:26:59,660] [INFO] [comm.py:700:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
-[2025-12-06 13:26:59,689] [INFO] [comm.py:669:init_distributed] cdb=None
-[2025-12-06 13:26:59,717] [INFO] [comm.py:669:init_distributed] cdb=None
-[2025-12-06 13:26:59,725] [INFO] [comm.py:669:init_distributed] cdb=None
-2025-12-06 13:27:00 - INFO - __main__ - Model parameters ModelConfig(model_name_or_path='meta-llama/Llama-3.1-8B-Instruct', model_revision='main', dtype='bfloat16', trust_remote_code=False, attn_implementation='flash_attention_2', use_peft=False, lora_r=16, lora_alpha=32, lora_dropout=0.05, lora_target_modules=None, lora_target_parameters=None, lora_modules_to_save=None, lora_task_type='CAUSAL_LM', use_rslora=False, use_dora=False, load_in_8bit=False, load_in_4bit=False, bnb_4bit_quant_type='nf4', use_bnb_nested_quant=False, bnb_4bit_quant_storage=None, torch_dtype=None)
-2025-12-06 13:27:00 - INFO - __main__ - Script parameters ScriptArguments(dataset_name='Neelectric/codeforces-cots_solutions_Llama3_16384toks', dataset_config='default', dataset_train_split='train', dataset_test_split='test', dataset_streaming=False, gradient_checkpointing_use_reentrant=False, ignore_bias_buffers=False, dataset_mixture=None, custom_optim=None, preconditioner_power=0.5)
-2025-12-06 13:27:00 - INFO - __main__ - Training parameters SFTConfig(
+[2025-12-06 14:29:36,546] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+W1206 14:29:38.076000 992683 torch/distributed/run.py:774] 
+W1206 14:29:38.076000 992683 torch/distributed/run.py:774] *****************************************
+W1206 14:29:38.076000 992683 torch/distributed/run.py:774] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1206 14:29:38.076000 992683 torch/distributed/run.py:774] *****************************************
+[2025-12-06 14:29:43,733] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 14:29:44,227] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 14:29:44,239] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 14:29:44,240] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 14:29:44,240] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 14:29:44,241] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 14:29:44,247] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 14:29:44,258] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 14:29:44,924] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 14:29:44,924] [INFO] [comm.py:700:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+2025-12-06 14:29:45 - INFO - __main__ - Model parameters ModelConfig(model_name_or_path='meta-llama/Llama-3.1-8B-Instruct', model_revision='main', dtype='bfloat16', trust_remote_code=False, attn_implementation='flash_attention_2', use_peft=False, lora_r=16, lora_alpha=32, lora_dropout=0.05, lora_target_modules=None, lora_target_parameters=None, lora_modules_to_save=None, lora_task_type='CAUSAL_LM', use_rslora=False, use_dora=False, load_in_8bit=False, load_in_4bit=False, bnb_4bit_quant_type='nf4', use_bnb_nested_quant=False, bnb_4bit_quant_storage=None, torch_dtype=None)
+2025-12-06 14:29:45 - INFO - __main__ - Script parameters ScriptArguments(dataset_name='Neelectric/codeforces-cots_solutions_Llama3_16384toks', dataset_config='default', dataset_train_split='train', dataset_test_split='test', dataset_streaming=False, gradient_checkpointing_use_reentrant=False, ignore_bias_buffers=False, dataset_mixture=None, custom_optim=None, preconditioner_power=0.5)
+2025-12-06 14:29:45 - INFO - __main__ - Training parameters SFTConfig(
 _n_gpu=1,
 accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
 activation_offloading=False,
@@ -222,7 +215,7 @@ local_rank=0,
 log_level=info,
 log_level_replica=warning,
 log_on_each_node=True,
-logging_dir=data/Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.02/runs/Dec06_13-26-58_d49310782408,
+logging_dir=data/Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.02/runs/Dec06_14-29-43_d49310782408,
 logging_first_step=False,
 logging_nan_inf_filter=True,
 logging_steps=1,
@@ -297,34 +290,24 @@ warmup_ratio=0.1,
 warmup_steps=0,
 weight_decay=0.0,
 )
+[2025-12-06 14:29:45,510] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 14:29:45,517] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 14:29:45,521] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 14:29:45,525] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 14:29:45,569] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 14:29:45,577] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 14:29:45,600] [INFO] [comm.py:669:init_distributed] cdb=None
 Found cached dataset codeforces-cots_solutions_llama3_16384toks (/home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed)
-2025-12-06 13:27:02 - INFO - datasets.builder - Found cached dataset codeforces-cots_solutions_llama3_16384toks (/home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed)
-[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,522 >> loading file tokenizer.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/tokenizer.json
-[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,522 >> loading file tokenizer.model from cache at None
-[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,522 >> loading file added_tokens.json from cache at None
-[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,523 >> loading file special_tokens_map.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/special_tokens_map.json
-[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,523 >> loading file tokenizer_config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/tokenizer_config.json
-[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,523 >> loading file chat_template.jinja from cache at None
-[2025-12-06 13:27:03,632] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[WARNING|logging.py:328] 2025-12-06 13:27:03,640 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[WARNING|logging.py:328] 2025-12-06 13:27:03,644 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[2025-12-06 13:27:03,691] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[WARNING|logging.py:328] 2025-12-06 13:27:03,702 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[WARNING|logging.py:328] 2025-12-06 13:27:03,709 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[INFO|tokenization_utils_base.py:2380] 2025-12-06 13:27:03,814 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
-[2025-12-06 13:27:04,231] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[WARNING|logging.py:328] 2025-12-06 13:27:04,241 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[WARNING|logging.py:328] 2025-12-06 13:27:04,245 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[2025-12-06 13:27:04,363] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[WARNING|logging.py:328] 2025-12-06 13:27:04,373 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[WARNING|logging.py:328] 2025-12-06 13:27:04,376 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[2025-12-06 13:27:04,397] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[2025-12-06 13:27:04,402] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[WARNING|logging.py:328] 2025-12-06 13:27:04,407 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[INFO|configuration_utils.py:765] 2025-12-06 13:27:04,410 >> loading configuration file config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/config.json
-[WARNING|logging.py:328] 2025-12-06 13:27:04,411 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[WARNING|logging.py:328] 2025-12-06 13:27:04,413 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[INFO|configuration_utils.py:839] 2025-12-06 13:27:04,413 >> Model config LlamaConfig {
+2025-12-06 14:29:48 - INFO - datasets.builder - Found cached dataset codeforces-cots_solutions_llama3_16384toks (/home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed)
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 14:29:48,730 >> loading file tokenizer.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/tokenizer.json
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 14:29:48,730 >> loading file tokenizer.model from cache at None
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 14:29:48,730 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 14:29:48,730 >> loading file special_tokens_map.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 14:29:48,730 >> loading file tokenizer_config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 14:29:48,730 >> loading file chat_template.jinja from cache at None
+[INFO|tokenization_utils_base.py:2380] 2025-12-06 14:29:49,006 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|configuration_utils.py:765] 2025-12-06 14:29:49,483 >> loading configuration file config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/config.json
+[INFO|configuration_utils.py:839] 2025-12-06 14:29:49,485 >> Model config LlamaConfig {
   "architectures": [
     "LlamaForCausalLM"
   ],
@@ -364,12 +347,11 @@ Found cached dataset codeforces-cots_solutions_llama3_16384toks (/home/user/.cac
   "vocab_size": 128256
 }
 
-[WARNING|logging.py:328] 2025-12-06 13:27:04,417 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[INFO|modeling_utils.py:1172] 2025-12-06 13:27:04,418 >> loading weights file model.safetensors from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/model.safetensors.index.json
-[INFO|modeling_utils.py:4373] 2025-12-06 13:27:04,418 >> Detected DeepSpeed ZeRO-3: activating zero.init() for this model
-[2025-12-06 13:27:04,418] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[WARNING|logging.py:328] 2025-12-06 13:27:04,429 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[INFO|configuration_utils.py:986] 2025-12-06 13:27:04,431 >> Generate config GenerationConfig {
+[INFO|modeling_utils.py:1172] 2025-12-06 14:29:49,489 >> loading weights file model.safetensors from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/model.safetensors.index.json
+[INFO|modeling_utils.py:4373] 2025-12-06 14:29:49,489 >> Detected DeepSpeed ZeRO-3: activating zero.init() for this model
+[2025-12-06 14:29:49,490] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 14:29:49,497 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[INFO|configuration_utils.py:986] 2025-12-06 14:29:49,498 >> Generate config GenerationConfig {
   "bos_token_id": 128000,
   "eos_token_id": [
     128001,
@@ -379,42 +361,60 @@ Found cached dataset codeforces-cots_solutions_llama3_16384toks (/home/user/.cac
   "use_cache": false
 }
 
-[WARNING|logging.py:328] 2025-12-06 13:27:04,433 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[2025-12-06 13:27:04,463] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[WARNING|logging.py:328] 2025-12-06 13:27:04,472 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[WARNING|logging.py:328] 2025-12-06 13:27:04,476 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
-[2025-12-06 13:27:07,588] [INFO] [partition_parameters.py:348:__exit__] finished initializing model - num_params = 291, num_elems = 8.03B
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.00it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.81it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.83it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.02it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.40it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
+[WARNING|logging.py:328] 2025-12-06 14:29:49,500 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 14:29:50,354] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 14:29:50,363 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 14:29:50,367 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 14:29:50,426] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 14:29:50,435 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 14:29:50,439 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 14:29:50,483] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 14:29:50,490 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 14:29:50,494 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 14:29:50,599] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 14:29:50,608 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 14:29:50,612 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 14:29:50,892] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 14:29:50,902 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 14:29:50,906 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 14:29:50,983] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 14:29:50,992 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 14:29:50,996 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 14:29:51,061] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 14:29:51,070 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 14:29:51,074 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 14:29:53,124] [INFO] [partition_parameters.py:348:__exit__] finished initializing model - num_params = 291, num_elems = 8.03B
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.22it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  2.24it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  2.25it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  2.25it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  2.25it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  2.26it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  2.24it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  2.24it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.26it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.74it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.74it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.74it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.75it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.74it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.74it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.74it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.35it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.36it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.35it/s]
+Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.36it/s]
 
-Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
-Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
-Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
 
-Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
-RNG state hash before optimizer: -8796664525527803880
-/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
-  warnings.warn(  # warn only once
-RNG state hash before optimizer: -1091779950582786948
-/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
-  warnings.warn(  # warn only once
-RNG state hash before optimizer: 3171218187502958531
-/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
-  warnings.warn(  # warn only once
-RNG state hash before optimizer: 49816195807050828
-/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
-  warnings.warn(  # warn only once
-RNG state hash before optimizer: -5091604841730194999
-RNG state hash before optimizer: 9047386031293732252
+Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.35it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.35it/s]
+
+Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.35it/s]
+RNG state hash before optimizer: 7902044864116880474
+RNG state hash before optimizer: 1980418015475582162
 /data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
   warnings.warn(  # warn only once
 /data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
   warnings.warn(  # warn only once
-RNG state hash before optimizer: 1075158632588383056
+RNG state hash before optimizer: 8906786945415833895
+RNG state hash before optimizer: 7588542328848481546
 /data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
   warnings.warn(  # warn only once
-Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.03it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.47it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.27it/s]
-[INFO|configuration_utils.py:941] 2025-12-06 13:27:11,010 >> loading configuration file generation_config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/generation_config.json
-[INFO|configuration_utils.py:986] 2025-12-06 13:27:11,010 >> Generate config GenerationConfig {
+RNG state hash before optimizer: 8258317129003000935
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+RNG state hash before optimizer: -6461285576294079822
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+RNG state hash before optimizer: 8192169391814977482
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.28it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.84it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.57it/s]
+[INFO|configuration_utils.py:941] 2025-12-06 14:29:55,929 >> loading configuration file generation_config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/generation_config.json
+[INFO|configuration_utils.py:986] 2025-12-06 14:29:55,930 >> Generate config GenerationConfig {
   "bos_token_id": 128000,
   "do_sample": true,
   "eos_token_id": [
@@ -426,85 +426,85 @@ RNG state hash before optimizer: 1075158632588383056
   "top_p": 0.9
 }
 
-[INFO|dynamic_module_utils.py:423] 2025-12-06 13:27:11,243 >> Could not locate the custom_generate/generate.py inside meta-llama/Llama-3.1-8B-Instruct.
-RNG state hash before optimizer: 1054809861673010529
+[INFO|dynamic_module_utils.py:423] 2025-12-06 14:29:56,189 >> Could not locate the custom_generate/generate.py inside meta-llama/Llama-3.1-8B-Instruct.
+RNG state hash before optimizer: -3823098266864112290
 Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-c69e5fffbc4ca07b_*_of_00012.arrow
-2025-12-06 13:27:11 - INFO - datasets.arrow_dataset - Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-c69e5fffbc4ca07b_*_of_00012.arrow
+2025-12-06 14:29:56 - INFO - datasets.arrow_dataset - Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-c69e5fffbc4ca07b_*_of_00012.arrow
 Concatenating 12 shards
-2025-12-06 13:27:11 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+2025-12-06 14:29:56 - INFO - datasets.arrow_dataset - Concatenating 12 shards
 Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-b583a20f43f6ebb9_*_of_00012.arrow
-2025-12-06 13:27:11 - INFO - datasets.arrow_dataset - Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-b583a20f43f6ebb9_*_of_00012.arrow
+2025-12-06 14:29:56 - INFO - datasets.arrow_dataset - Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-b583a20f43f6ebb9_*_of_00012.arrow
 Concatenating 12 shards
-2025-12-06 13:27:11 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+2025-12-06 14:29:56 - INFO - datasets.arrow_dataset - Concatenating 12 shards
 /data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
   warnings.warn(  # warn only once
-RNG state hash after optimizer: 49816195807050828
-[WARNING|trainer.py:982] 2025-12-06 13:27:11,760 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
-RNG state hash after optimizer: -8796664525527803880
-[WARNING|trainer.py:982] 2025-12-06 13:27:11,761 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
-RNG state hash after optimizer: 9047386031293732252
-[WARNING|trainer.py:982] 2025-12-06 13:27:11,775 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
-RNG state hash after optimizer: -1091779950582786948
-RNG state hash after optimizer: 1075158632588383056
-RNG state hash after optimizer: -5091604841730194999[WARNING|trainer.py:982] 2025-12-06 13:27:11,778 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: -6461285576294079822
+RNG state hash after optimizer: 8258317129003000935[WARNING|trainer.py:982] 2025-12-06 14:29:56,714 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
 
-[WARNING|trainer.py:982] 2025-12-06 13:27:11,779 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
-[WARNING|trainer.py:982] 2025-12-06 13:27:11,779 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
-RNG state hash after optimizer: 3171218187502958531
-[WARNING|trainer.py:982] 2025-12-06 13:27:11,780 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
-[INFO|trainer.py:749] 2025-12-06 13:27:11,845 >> Using auto half precision backend
-RNG state hash after optimizer: 1054809861673010529
-2025-12-06 13:27:11 - INFO - __main__ - *** Train ***
-[WARNING|trainer.py:982] 2025-12-06 13:27:11,845 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
-[2025-12-06 13:27:12,397] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed info: version=0.16.8, git-hash=unknown, git-branch=unknown
-[2025-12-06 13:27:12,397] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
-[2025-12-06 13:27:12,405] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Flops Profiler Enabled: False
-[2025-12-06 13:27:12,406] [INFO] [logging.py:107:log_dist] [Rank 0] Using client Optimizer as basic optimizer
-[2025-12-06 13:27:12,406] [INFO] [logging.py:107:log_dist] [Rank 0] Removing param_group that has no 'params' in the basic Optimizer
-[2025-12-06 13:27:12,412] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Basic Optimizer = AdamW
-[2025-12-06 13:27:12,412] [INFO] [utils.py:59:is_zero_supported_optimizer] Checking ZeRO support for optimizer=AdamW type=<class 'torch.optim.adamw.AdamW'>
-[2025-12-06 13:27:12,412] [INFO] [logging.py:107:log_dist] [Rank 0] Creating fp16 ZeRO stage 3 optimizer, MiCS is enabled False, Hierarchical params gather False
-[2025-12-06 13:27:12,412] [INFO] [logging.py:107:log_dist] [Rank 0] Creating torch.bfloat16 ZeRO stage 3 optimizer
-[2025-12-06 13:27:12,639] [INFO] [utils.py:781:see_memory_usage] Stage 3 initialize beginning
-[2025-12-06 13:27:12,640] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 4.68 GB         CA 3.0 GB         Max_CA 5 GB 
-[2025-12-06 13:27:12,640] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.17 GB, percent = 3.7%
-[2025-12-06 13:27:12,641] [INFO] [stage3.py:170:__init__] Reduce bucket size 500000000
-[2025-12-06 13:27:12,641] [INFO] [stage3.py:171:__init__] Prefetch bucket size 50000000
-[2025-12-06 13:27:12,838] [INFO] [utils.py:781:see_memory_usage] DeepSpeedZeRoOffload initialize [begin]
-[2025-12-06 13:27:12,839] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
-[2025-12-06 13:27:12,839] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.17 GB, percent = 3.7%
+[WARNING|trainer.py:982] 2025-12-06 14:29:56,714 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: 8192169391814977482
+[WARNING|trainer.py:982] 2025-12-06 14:29:56,715 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: 7902044864116880474
+[WARNING|trainer.py:982] 2025-12-06 14:29:56,717 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: 1980418015475582162
+[WARNING|trainer.py:982] 2025-12-06 14:29:56,718 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: 8906786945415833895
+[WARNING|trainer.py:982] 2025-12-06 14:29:56,721 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: 7588542328848481546
+[WARNING|trainer.py:982] 2025-12-06 14:29:56,722 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+[INFO|trainer.py:749] 2025-12-06 14:29:56,792 >> Using auto half precision backend
+RNG state hash after optimizer: -3823098266864112290
+2025-12-06 14:29:56 - INFO - __main__ - *** Train ***
+[WARNING|trainer.py:982] 2025-12-06 14:29:56,793 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+[2025-12-06 14:29:57,099] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed info: version=0.16.8, git-hash=unknown, git-branch=unknown
+[2025-12-06 14:29:57,099] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[2025-12-06 14:29:57,105] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Flops Profiler Enabled: False
+[2025-12-06 14:29:57,106] [INFO] [logging.py:107:log_dist] [Rank 0] Using client Optimizer as basic optimizer
+[2025-12-06 14:29:57,106] [INFO] [logging.py:107:log_dist] [Rank 0] Removing param_group that has no 'params' in the basic Optimizer
+[2025-12-06 14:29:57,112] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Basic Optimizer = AdamW
+[2025-12-06 14:29:57,112] [INFO] [utils.py:59:is_zero_supported_optimizer] Checking ZeRO support for optimizer=AdamW type=<class 'torch.optim.adamw.AdamW'>
+[2025-12-06 14:29:57,112] [INFO] [logging.py:107:log_dist] [Rank 0] Creating fp16 ZeRO stage 3 optimizer, MiCS is enabled False, Hierarchical params gather False
+[2025-12-06 14:29:57,112] [INFO] [logging.py:107:log_dist] [Rank 0] Creating torch.bfloat16 ZeRO stage 3 optimizer
+[2025-12-06 14:29:57,290] [INFO] [utils.py:781:see_memory_usage] Stage 3 initialize beginning
+[2025-12-06 14:29:57,290] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 4.68 GB         CA 3.0 GB         Max_CA 5 GB 
+[2025-12-06 14:29:57,291] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.37 GB, percent = 3.6%
+[2025-12-06 14:29:57,292] [INFO] [stage3.py:170:__init__] Reduce bucket size 500000000
+[2025-12-06 14:29:57,292] [INFO] [stage3.py:171:__init__] Prefetch bucket size 50000000
+[2025-12-06 14:29:57,447] [INFO] [utils.py:781:see_memory_usage] DeepSpeedZeRoOffload initialize [begin]
+[2025-12-06 14:29:57,447] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
+[2025-12-06 14:29:57,447] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.37 GB, percent = 3.6%
 Parameter Offload: Total persistent parameters: 266240 in 65 params
-[2025-12-06 13:27:13,102] [INFO] [utils.py:781:see_memory_usage] DeepSpeedZeRoOffload initialize [end]
-[2025-12-06 13:27:13,103] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
-[2025-12-06 13:27:13,103] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.19 GB, percent = 3.7%
-[2025-12-06 13:27:13,296] [INFO] [utils.py:781:see_memory_usage] Before creating fp16 partitions
-[2025-12-06 13:27:13,297] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
-[2025-12-06 13:27:13,297] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.19 GB, percent = 3.7%
-[2025-12-06 13:27:14,524] [INFO] [utils.py:781:see_memory_usage] After creating fp16 partitions: 2
-[2025-12-06 13:27:14,525] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 1.87 GB         Max_CA 3 GB 
-[2025-12-06 13:27:14,525] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
-[2025-12-06 13:27:14,730] [INFO] [utils.py:781:see_memory_usage] Before creating fp32 partitions
-[2025-12-06 13:27:14,731] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 1.87 GB         Max_CA 2 GB 
-[2025-12-06 13:27:14,731] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
-[2025-12-06 13:27:14,924] [INFO] [utils.py:781:see_memory_usage] After creating fp32 partitions
-[2025-12-06 13:27:14,924] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 7.48 GB         CA 7.48 GB         Max_CA 7 GB 
-[2025-12-06 13:27:14,924] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
-[2025-12-06 13:27:15,103] [INFO] [utils.py:781:see_memory_usage] Before initializing optimizer states
-[2025-12-06 13:27:15,104] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 5.61 GB         CA 7.48 GB         Max_CA 7 GB 
-[2025-12-06 13:27:15,104] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
-[2025-12-06 13:27:15,292] [INFO] [utils.py:781:see_memory_usage] After initializing optimizer states
-[2025-12-06 13:27:15,292] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 9.35 GB         CA 11.22 GB         Max_CA 11 GB 
-[2025-12-06 13:27:15,292] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
-[2025-12-06 13:27:15,293] [INFO] [stage3.py:534:_setup_for_real_optimizer] optimizer state initialized
-[2025-12-06 13:27:15,584] [INFO] [utils.py:781:see_memory_usage] After initializing ZeRO optimizer
-[2025-12-06 13:27:15,584] [INFO] [utils.py:782:see_memory_usage] MA 8.41 GB         Max_MA 10.37 GB         CA 12.2 GB         Max_CA 12 GB 
-[2025-12-06 13:27:15,585] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.3 GB, percent = 3.7%
-[2025-12-06 13:27:15,585] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Final Optimizer = DeepSpeedZeroOptimizer_Stage3
-[2025-12-06 13:27:15,585] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed using configured LR scheduler = None
-[2025-12-06 13:27:15,585] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed LR Scheduler = None
-[2025-12-06 13:27:15,585] [INFO] [logging.py:107:log_dist] [Rank 0] step=0, skipped=0, lr=[0.0, 0.0], mom=[(0.9, 0.999), (0.9, 0.999)]
-[2025-12-06 13:27:15,586] [INFO] [config.py:1003:print] DeepSpeedEngine configuration:
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   activation_checkpointing_config  {
+[2025-12-06 14:29:57,677] [INFO] [utils.py:781:see_memory_usage] DeepSpeedZeRoOffload initialize [end]
+[2025-12-06 14:29:57,678] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
+[2025-12-06 14:29:57,678] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.38 GB, percent = 3.6%
+[2025-12-06 14:29:57,836] [INFO] [utils.py:781:see_memory_usage] Before creating fp16 partitions
+[2025-12-06 14:29:57,837] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
+[2025-12-06 14:29:57,837] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.38 GB, percent = 3.6%
+[2025-12-06 14:29:59,203] [INFO] [utils.py:781:see_memory_usage] After creating fp16 partitions: 2
+[2025-12-06 14:29:59,204] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 1.87 GB         Max_CA 3 GB 
+[2025-12-06 14:29:59,204] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.38 GB, percent = 3.6%
+[2025-12-06 14:29:59,362] [INFO] [utils.py:781:see_memory_usage] Before creating fp32 partitions
+[2025-12-06 14:29:59,362] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 1.87 GB         Max_CA 2 GB 
+[2025-12-06 14:29:59,363] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.38 GB, percent = 3.6%
+[2025-12-06 14:29:59,571] [INFO] [utils.py:781:see_memory_usage] After creating fp32 partitions
+[2025-12-06 14:29:59,571] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 7.48 GB         CA 7.48 GB         Max_CA 7 GB 
+[2025-12-06 14:29:59,572] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.38 GB, percent = 3.6%
+[2025-12-06 14:29:59,731] [INFO] [utils.py:781:see_memory_usage] Before initializing optimizer states
+[2025-12-06 14:29:59,731] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 5.61 GB         CA 7.48 GB         Max_CA 7 GB 
+[2025-12-06 14:29:59,731] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.38 GB, percent = 3.6%
+[2025-12-06 14:29:59,909] [INFO] [utils.py:781:see_memory_usage] After initializing optimizer states
+[2025-12-06 14:29:59,909] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 9.35 GB         CA 11.22 GB         Max_CA 11 GB 
+[2025-12-06 14:29:59,910] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.38 GB, percent = 3.6%
+[2025-12-06 14:29:59,910] [INFO] [stage3.py:534:_setup_for_real_optimizer] optimizer state initialized
+[2025-12-06 14:30:00,195] [INFO] [utils.py:781:see_memory_usage] After initializing ZeRO optimizer
+[2025-12-06 14:30:00,196] [INFO] [utils.py:782:see_memory_usage] MA 8.41 GB         Max_MA 10.37 GB         CA 12.2 GB         Max_CA 12 GB 
+[2025-12-06 14:30:00,196] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 69.47 GB, percent = 3.6%
+[2025-12-06 14:30:00,196] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Final Optimizer = DeepSpeedZeroOptimizer_Stage3
+[2025-12-06 14:30:00,196] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed using configured LR scheduler = None
+[2025-12-06 14:30:00,196] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed LR Scheduler = None
+[2025-12-06 14:30:00,196] [INFO] [logging.py:107:log_dist] [Rank 0] step=0, skipped=0, lr=[0.0, 0.0], mom=[(0.9, 0.999), (0.9, 0.999)]
+[2025-12-06 14:30:00,197] [INFO] [config.py:1003:print] DeepSpeedEngine configuration:
+[2025-12-06 14:30:00,197] [INFO] [config.py:1007:print]   activation_checkpointing_config  {
     "partition_activations": false, 
     "contiguous_memory_optimization": false, 
     "cpu_checkpointing": false, 
@@ -512,10 +512,10 @@ Parameter Offload: Total persistent parameters: 266240 in 65 params
     "synchronize_checkpoint_boundary": false, 
     "profile": false
 }
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   aio_config ................... {'block_size': 1048576, 'queue_depth': 8, 'intra_op_parallelism': 1, 'single_submit': False, 'overlap_events': True, 'use_gds': False}
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   amp_enabled .................. False
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   amp_params ................... False
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   autotuning_config ............ {
+[2025-12-06 14:30:00,197] [INFO] [config.py:1007:print]   aio_config ................... {'block_size': 1048576, 'queue_depth': 8, 'intra_op_parallelism': 1, 'single_submit': False, 'overlap_events': True, 'use_gds': False}
+[2025-12-06 14:30:00,197] [INFO] [config.py:1007:print]   amp_enabled .................. False
+[2025-12-06 14:30:00,197] [INFO] [config.py:1007:print]   amp_params ................... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   autotuning_config ............ {
     "enabled": false, 
     "start_step": null, 
     "end_step": null, 
@@ -540,33 +540,33 @@ Parameter Offload: Total persistent parameters: 266240 in 65 params
     "min_train_micro_batch_size_per_gpu": 1, 
     "num_tuning_micro_batch_sizes": 3
 }
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   bfloat16_enabled ............. True
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   bfloat16_immediate_grad_update  True
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   checkpoint_parallel_write_pipeline  False
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   checkpoint_tag_validation_enabled  True
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   checkpoint_tag_validation_fail  False
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   comms_config ................. <deepspeed.comm.config.DeepSpeedCommsConfig object at 0x7fc4884c6010>
-[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   communication_data_type ...... None
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   compile_config ............... deepcompile=False free_activation=False offload_activation=False offload_opt_states=False double_buffer=True symmetric_memory=False debug_log=False offload_parameters=False sync_before_reduce=False sync_after_reduce=False sync_before_allgather=False sync_after_allgather=False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   compression_config ........... {'weight_quantization': {'shared_parameters': {'enabled': False, 'quantizer_kernel': False, 'schedule_offset': 0, 'quantize_groups': 1, 'quantize_verbose': False, 'quantization_type': 'symmetric', 'quantize_weight_in_forward': False, 'rounding': 'nearest', 'fp16_mixed_quantize': False, 'quantize_change_ratio': 0.001}, 'different_groups': {}}, 'activation_quantization': {'shared_parameters': {'enabled': False, 'quantization_type': 'symmetric', 'range_calibration': 'dynamic', 'schedule_offset': 1000}, 'different_groups': {}}, 'sparse_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'row_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'head_pruning': {'shared_parameters': {'enabled': False, 'method': 'topk', 'schedule_offset': 1000}, 'different_groups': {}}, 'channel_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'layer_reduction': {'enabled': False}}
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   curriculum_enabled_legacy .... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   curriculum_params_legacy ..... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   data_efficiency_config ....... {'enabled': False, 'seed': 1234, 'data_sampling': {'enabled': False, 'num_epochs': 1000, 'num_workers': 0, 'pin_memory': False, 'curriculum_learning': {'enabled': False}, 'dynamic_batching': {'enabled': False, 'lr_scaling_method': 'linear', 'min_batch_size': 1, 'max_batch_size': None, 'sequence_picking_order': 'dataloader', 'verbose': False}}, 'data_routing': {'enabled': False, 'random_ltd': {'enabled': False, 'layer_token_lr_schedule': {'enabled': False}}}}
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   data_efficiency_enabled ...... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   dataloader_drop_last ......... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   disable_allgather ............ False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   dump_state ................... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   dynamic_loss_scale_args ...... None
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_enabled ........... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_gas_boundary_resolution  1
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_layer_name ........ bert.encoder.layer
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_layer_num ......... 0
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_max_iter .......... 100
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_stability ......... 1e-06
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_tol ............... 0.01
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_verbose ........... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   elasticity_enabled ........... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   flops_profiler_config ........ {
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   bfloat16_enabled ............. True
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   bfloat16_immediate_grad_update  True
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   checkpoint_parallel_write_pipeline  False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   checkpoint_tag_validation_enabled  True
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   checkpoint_tag_validation_fail  False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   comms_config ................. <deepspeed.comm.config.DeepSpeedCommsConfig object at 0x7f3c80b43210>
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   communication_data_type ...... None
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   compile_config ............... deepcompile=False free_activation=False offload_activation=False offload_opt_states=False double_buffer=True symmetric_memory=False debug_log=False offload_parameters=False sync_before_reduce=False sync_after_reduce=False sync_before_allgather=False sync_after_allgather=False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   compression_config ........... {'weight_quantization': {'shared_parameters': {'enabled': False, 'quantizer_kernel': False, 'schedule_offset': 0, 'quantize_groups': 1, 'quantize_verbose': False, 'quantization_type': 'symmetric', 'quantize_weight_in_forward': False, 'rounding': 'nearest', 'fp16_mixed_quantize': False, 'quantize_change_ratio': 0.001}, 'different_groups': {}}, 'activation_quantization': {'shared_parameters': {'enabled': False, 'quantization_type': 'symmetric', 'range_calibration': 'dynamic', 'schedule_offset': 1000}, 'different_groups': {}}, 'sparse_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'row_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'head_pruning': {'shared_parameters': {'enabled': False, 'method': 'topk', 'schedule_offset': 1000}, 'different_groups': {}}, 'channel_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'layer_reduction': {'enabled': False}}
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   curriculum_enabled_legacy .... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   curriculum_params_legacy ..... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   data_efficiency_config ....... {'enabled': False, 'seed': 1234, 'data_sampling': {'enabled': False, 'num_epochs': 1000, 'num_workers': 0, 'pin_memory': False, 'curriculum_learning': {'enabled': False}, 'dynamic_batching': {'enabled': False, 'lr_scaling_method': 'linear', 'min_batch_size': 1, 'max_batch_size': None, 'sequence_picking_order': 'dataloader', 'verbose': False}}, 'data_routing': {'enabled': False, 'random_ltd': {'enabled': False, 'layer_token_lr_schedule': {'enabled': False}}}}
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   data_efficiency_enabled ...... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   dataloader_drop_last ......... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   disable_allgather ............ False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   dump_state ................... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   dynamic_loss_scale_args ...... None
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   eigenvalue_enabled ........... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   eigenvalue_gas_boundary_resolution  1
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   eigenvalue_layer_name ........ bert.encoder.layer
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   eigenvalue_layer_num ......... 0
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   eigenvalue_max_iter .......... 100
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   eigenvalue_stability ......... 1e-06
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   eigenvalue_tol ............... 0.01
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   eigenvalue_verbose ........... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   elasticity_enabled ........... False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   flops_profiler_config ........ {
     "enabled": false, 
     "recompute_fwd_factor": 0.0, 
     "profile_step": 1, 
@@ -575,24 +575,24 @@ Parameter Offload: Total persistent parameters: 266240 in 65 params
     "detailed": true, 
     "output_file": null
 }
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   fp16_auto_cast ............... None
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   fp16_enabled ................. False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   fp16_master_weights_and_gradients  False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   global_rank .................. 0
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   grad_accum_dtype ............. None
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   gradient_accumulation_steps .. 1
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   gradient_clipping ............ 0.2
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   gradient_predivide_factor .... 1.0
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   graph_harvesting ............. False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   hybrid_engine ................ enabled=False max_out_tokens=512 inference_tp_size=1 release_inference_cache=False pin_parameters=True tp_gather_partition_size=8
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   initial_dynamic_scale ........ 1
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   load_universal_checkpoint .... False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   loss_scale ................... 1.0
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   memory_breakdown ............. False
-[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   mics_hierarchial_params_gather  False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   mics_shard_size .............. -1
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   monitor_config ............... tensorboard=TensorBoardConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') comet=CometConfig(enabled=False, samples_log_interval=100, project=None, workspace=None, api_key=None, experiment_name=None, experiment_key=None, online=None, mode=None) wandb=WandbConfig(enabled=False, group=None, team=None, project='deepspeed') csv_monitor=CSVConfig(enabled=False, output_path='', job_name='DeepSpeedJobName')
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   nebula_config ................ {
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   fp16_auto_cast ............... None
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   fp16_enabled ................. False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   fp16_master_weights_and_gradients  False
+[2025-12-06 14:30:00,198] [INFO] [config.py:1007:print]   global_rank .................. 0
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   grad_accum_dtype ............. None
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   gradient_accumulation_steps .. 1
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   gradient_clipping ............ 0.2
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   gradient_predivide_factor .... 1.0
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   graph_harvesting ............. False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   hybrid_engine ................ enabled=False max_out_tokens=512 inference_tp_size=1 release_inference_cache=False pin_parameters=True tp_gather_partition_size=8
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   initial_dynamic_scale ........ 1
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   load_universal_checkpoint .... False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   loss_scale ................... 1.0
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   memory_breakdown ............. False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   mics_hierarchial_params_gather  False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   mics_shard_size .............. -1
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   monitor_config ............... tensorboard=TensorBoardConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') comet=CometConfig(enabled=False, samples_log_interval=100, project=None, workspace=None, api_key=None, experiment_name=None, experiment_key=None, online=None, mode=None) wandb=WandbConfig(enabled=False, group=None, team=None, project='deepspeed') csv_monitor=CSVConfig(enabled=False, output_path='', job_name='DeepSpeedJobName')
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   nebula_config ................ {
     "enabled": false, 
     "persistent_storage_path": null, 
     "persistent_time_interval": 100, 
@@ -600,34 +600,34 @@ Parameter Offload: Total persistent parameters: 266240 in 65 params
     "enable_nebula_load": true, 
     "load_path": null
 }
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   optimizer_legacy_fusion ...... False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   optimizer_name ............... None
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   optimizer_params ............. None
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   pipeline ..................... {'stages': 'auto', 'partition': 'best', 'seed_layers': False, 'activation_checkpoint_interval': 0, 'pipe_partitioned': True, 'grad_partitioned': True}
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   pld_enabled .................. False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   pld_params ................... False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   prescale_gradients ........... False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   scheduler_name ............... None
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   scheduler_params ............. None
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   seq_parallel_communication_data_type  torch.float32
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   sparse_attention ............. None
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   sparse_gradients_enabled ..... False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   steps_per_print .............. inf
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   tensor_parallel_config ....... dtype=torch.float16 autotp_size=0 tp_overlap_comm=False tensor_parallel=TPConfig(tp_size=1, tp_grain_size=1, mpu=None, tp_group=None) injection_policy_tuple=None keep_module_on_host=False replace_with_kernel_inject=False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   timers_config ................ enabled=True synchronized=True
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   train_batch_size ............. 64
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   train_micro_batch_size_per_gpu  8
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   use_data_before_expert_parallel_  False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   use_node_local_storage ....... False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   wall_clock_breakdown ......... False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   weight_quantization_config ... None
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   world_size ................... 8
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_allow_untested_optimizer  True
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_config .................. stage=3 contiguous_gradients=True reduce_scatter=True reduce_bucket_size=500000000 use_multi_rank_bucket_allreduce=True allgather_partitions=True allgather_bucket_size=500000000 overlap_comm=True load_from_fp32_weights=True elastic_checkpoint=False offload_param=DeepSpeedZeroOffloadParamConfig(device='none', nvme_path=None, buffer_count=5, buffer_size=100000000, max_in_cpu=1000000000, pin_memory=False) offload_optimizer=DeepSpeedZeroOffloadOptimizerConfig(device='none', nvme_path=None, buffer_count=4, pin_memory=False, pipeline_read=False, pipeline_write=False, fast_init=False, ratio=1.0) sub_group_size=1000000000 cpu_offload_param=None cpu_offload_use_pin_memory=None cpu_offload=None prefetch_bucket_size=50000000 param_persistence_threshold=100000 model_persistence_threshold=9223372036854775807 max_live_parameters=1000000000 max_reuse_distance=1000000000 gather_16bit_weights_on_model_save=True module_granularity_threshold=0 use_all_reduce_for_fetch_params=False stage3_gather_fp16_weights_on_model_save=False ignore_unused_parameters=True legacy_stage1=False round_robin_gradients=False zero_hpz_partition_size=1 zero_quantized_weights=False zero_quantized_nontrainable_weights=False zero_quantized_gradients=False zeropp_loco_param=None mics_shard_size=-1 mics_hierarchical_params_gather=False memory_efficient_linear=True pipeline_loading_checkpoint=False override_module_apply=True log_trace_cache_warnings=False
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_enabled ................. True
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_force_ds_cpu_optimizer .. True
-[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_optimization_stage ...... 3
-[2025-12-06 13:27:15,588] [INFO] [config.py:993:print_user_config]   json = {
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   optimizer_legacy_fusion ...... False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   optimizer_name ............... None
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   optimizer_params ............. None
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   pipeline ..................... {'stages': 'auto', 'partition': 'best', 'seed_layers': False, 'activation_checkpoint_interval': 0, 'pipe_partitioned': True, 'grad_partitioned': True}
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   pld_enabled .................. False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   pld_params ................... False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   prescale_gradients ........... False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   scheduler_name ............... None
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   scheduler_params ............. None
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   seq_parallel_communication_data_type  torch.float32
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   sparse_attention ............. None
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   sparse_gradients_enabled ..... False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   steps_per_print .............. inf
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   tensor_parallel_config ....... dtype=torch.float16 autotp_size=0 tp_overlap_comm=False tensor_parallel=TPConfig(tp_size=1, tp_grain_size=1, mpu=None, tp_group=None) injection_policy_tuple=None keep_module_on_host=False replace_with_kernel_inject=False
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   timers_config ................ enabled=True synchronized=True
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   train_batch_size ............. 64
+[2025-12-06 14:30:00,199] [INFO] [config.py:1007:print]   train_micro_batch_size_per_gpu  8
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   use_data_before_expert_parallel_  False
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   use_node_local_storage ....... False
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   wall_clock_breakdown ......... False
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   weight_quantization_config ... None
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   world_size ................... 8
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   zero_allow_untested_optimizer  True
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   zero_config .................. stage=3 contiguous_gradients=True reduce_scatter=True reduce_bucket_size=500000000 use_multi_rank_bucket_allreduce=True allgather_partitions=True allgather_bucket_size=500000000 overlap_comm=True load_from_fp32_weights=True elastic_checkpoint=False offload_param=DeepSpeedZeroOffloadParamConfig(device='none', nvme_path=None, buffer_count=5, buffer_size=100000000, max_in_cpu=1000000000, pin_memory=False) offload_optimizer=DeepSpeedZeroOffloadOptimizerConfig(device='none', nvme_path=None, buffer_count=4, pin_memory=False, pipeline_read=False, pipeline_write=False, fast_init=False, ratio=1.0) sub_group_size=1000000000 cpu_offload_param=None cpu_offload_use_pin_memory=None cpu_offload=None prefetch_bucket_size=50000000 param_persistence_threshold=100000 model_persistence_threshold=9223372036854775807 max_live_parameters=1000000000 max_reuse_distance=1000000000 gather_16bit_weights_on_model_save=True module_granularity_threshold=0 use_all_reduce_for_fetch_params=False stage3_gather_fp16_weights_on_model_save=False ignore_unused_parameters=True legacy_stage1=False round_robin_gradients=False zero_hpz_partition_size=1 zero_quantized_weights=False zero_quantized_nontrainable_weights=False zero_quantized_gradients=False zeropp_loco_param=None mics_shard_size=-1 mics_hierarchical_params_gather=False memory_efficient_linear=True pipeline_loading_checkpoint=False override_module_apply=True log_trace_cache_warnings=False
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   zero_enabled ................. True
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   zero_force_ds_cpu_optimizer .. True
+[2025-12-06 14:30:00,200] [INFO] [config.py:1007:print]   zero_optimization_stage ...... 3
+[2025-12-06 14:30:00,200] [INFO] [config.py:993:print_user_config]   json = {
     "train_batch_size": 64, 
     "train_micro_batch_size_per_gpu": 8, 
     "gradient_accumulation_steps": 1, 
@@ -653,24 +653,213 @@ Parameter Offload: Total persistent parameters: 266240 in 65 params
     }, 
     "zero_allow_untested_optimizer": true
 }
-[INFO|trainer.py:2519] 2025-12-06 13:27:15,590 >> ***** Running training *****
-[INFO|trainer.py:2520] 2025-12-06 13:27:15,590 >>   Num examples = 28,125
-[INFO|trainer.py:2521] 2025-12-06 13:27:15,590 >>   Num Epochs = 3
-[INFO|trainer.py:2522] 2025-12-06 13:27:15,590 >>   Instantaneous batch size per device = 8
-[INFO|trainer.py:2525] 2025-12-06 13:27:15,590 >>   Total train batch size (w. parallel, distributed & accumulation) = 64
-[INFO|trainer.py:2526] 2025-12-06 13:27:15,590 >>   Gradient Accumulation steps = 1
-[INFO|trainer.py:2527] 2025-12-06 13:27:15,590 >>   Total optimization steps = 1,320
-[INFO|trainer.py:2528] 2025-12-06 13:27:15,591 >>   Number of trainable parameters = 8,030,261,248
-[INFO|integration_utils.py:867] 2025-12-06 13:27:15,591 >> Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+[INFO|trainer.py:2519] 2025-12-06 14:30:00,201 >> ***** Running training *****
+[INFO|trainer.py:2520] 2025-12-06 14:30:00,201 >>   Num examples = 28,125
+[INFO|trainer.py:2521] 2025-12-06 14:30:00,201 >>   Num Epochs = 3
+[INFO|trainer.py:2522] 2025-12-06 14:30:00,201 >>   Instantaneous batch size per device = 8
+[INFO|trainer.py:2525] 2025-12-06 14:30:00,201 >>   Total train batch size (w. parallel, distributed & accumulation) = 64
+[INFO|trainer.py:2526] 2025-12-06 14:30:00,201 >>   Gradient Accumulation steps = 1
+[INFO|trainer.py:2527] 2025-12-06 14:30:00,201 >>   Total optimization steps = 1,320
+[INFO|trainer.py:2528] 2025-12-06 14:30:00,202 >>   Number of trainable parameters = 8,030,261,248
+[INFO|integration_utils.py:867] 2025-12-06 14:30:00,203 >> Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
 wandb: Currently logged in as: nelectric to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: setting up run xnbh511n
+wandb: setting up run 2tzpqsvd
 wandb: Tracking run with wandb version 0.23.1
-wandb: Run data is saved locally in /data/neel/open-r1_safety/wandb/run-20251206_132716-xnbh511n
+wandb: Run data is saved locally in /data/neel/open-r1_safety/wandb/run-20251206_143000-2tzpqsvd
 wandb: Run `wandb offline` to turn off syncing.
 wandb: Syncing run Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.02
 wandb: ⭐️ View project at https://wandb.ai/neelectric/open-r1_code
-wandb: 🚀 View run at https://wandb.ai/neelectric/open-r1_code/runs/xnbh511n
-  0%|          | 0/1320 [00:00<?, ?it/s]  0%|          | 1/1320 [01:07<24:33:32, 67.03s/it]                                                   {'loss': 1.0777, 'grad_norm': 4.797640988024205, 'learning_rate': 0.0, 'num_tokens': 625227.0, 'mean_token_accuracy': 0.7003216743469238, 'epoch': 0.0}
-  0%|          | 1/1320 [01:07<24:33:32, 67.03s/it]  0%|          | 2/1320 [02:01<21:45:17, 59.42s/it]                                                   {'loss': 1.0693, 'grad_norm': 4.83939195876648, 'learning_rate': 7.575757575757576e-08, 'num_tokens': 1234652.0, 'mean_token_accuracy': 0.70292067527771, 'epoch': 0.0}
-  0%|          | 2/1320 [02:01<21:45:17, 59.42s/it]  0%|          | 3/1320 [02:56<21:05:37, 57.66s/it]                                                   {'loss': 1.1021, 'grad_norm': 5.305957732447043, 'learning_rate': 1.5151515151515152e-07, 'num_tokens': 1770464.0, 'mean_token_accuracy': 0.6958281993865967, 'epoch': 0.01}
-  0%|          | 3/1320 [02:56<21:05:37, 57.66s/it]
+wandb: 🚀 View run at https://wandb.ai/neelectric/open-r1_code/runs/2tzpqsvd
+  0%|          | 0/1320 [00:00<?, ?it/s]  0%|          | 1/1320 [01:07<24:34:02, 67.05s/it]                                                   {'loss': 1.0777, 'grad_norm': 4.797973042914673, 'learning_rate': 0.0, 'num_tokens': 625227.0, 'mean_token_accuracy': 0.7003216743469238, 'epoch': 0.0}
+  0%|          | 1/1320 [01:07<24:34:02, 67.05s/it]  0%|          | 2/1320 [02:01<21:44:12, 59.37s/it]                                                   {'loss': 1.0693, 'grad_norm': 4.839618026140146, 'learning_rate': 7.575757575757576e-08, 'num_tokens': 1234652.0, 'mean_token_accuracy': 0.70292067527771, 'epoch': 0.0}
+  0%|          | 2/1320 [02:01<21:44:12, 59.37s/it]  0%|          | 3/1320 [02:56<21:04:38, 57.61s/it]                                                   {'loss': 1.1022, 'grad_norm': 5.3053305840975025, 'learning_rate': 1.5151515151515152e-07, 'num_tokens': 1770464.0, 'mean_token_accuracy': 0.6955360174179077, 'epoch': 0.01}
+  0%|          | 3/1320 [02:56<21:04:38, 57.61s/it]  0%|          | 4/1320 [03:56<21:27:46, 58.71s/it]                                                   {'loss': 1.0725, 'grad_norm': 4.702330334205858, 'learning_rate': 2.2727272727272729e-07, 'num_tokens': 2410267.0, 'mean_token_accuracy': 0.7012888193130493, 'epoch': 0.01}
+  0%|          | 4/1320 [03:56<21:27:46, 58.71s/it]  0%|          | 5/1320 [04:47<20:20:25, 55.69s/it]                                                   {'loss': 1.0986, 'grad_norm': 5.325074884911669, 'learning_rate': 3.0303030303030305e-07, 'num_tokens': 2925550.0, 'mean_token_accuracy': 0.6974314451217651, 'epoch': 0.01}
+  0%|          | 5/1320 [04:47<20:20:25, 55.69s/it]  0%|          | 6/1320 [05:45<20:35:13, 56.40s/it]                                                   {'loss': 1.0773, 'grad_norm': 4.496274238986981, 'learning_rate': 3.787878787878788e-07, 'num_tokens': 3554185.0, 'mean_token_accuracy': 0.7009114027023315, 'epoch': 0.01}
+  0%|          | 6/1320 [05:45<20:35:13, 56.40s/it]  1%|          | 7/1320 [06:38<20:10:19, 55.31s/it]                                                   {'loss': 1.0857, 'grad_norm': 4.140130794184054, 'learning_rate': 4.5454545454545457e-07, 'num_tokens': 4160315.0, 'mean_token_accuracy': 0.6966900825500488, 'epoch': 0.02}
+  1%|          | 7/1320 [06:38<20:10:19, 55.31s/it]  1%|          | 8/1320 [07:28<19:36:07, 53.79s/it]                                                   {'loss': 1.0917, 'grad_norm': 4.062237827637122, 'learning_rate': 5.303030303030304e-07, 'num_tokens': 4764115.0, 'mean_token_accuracy': 0.6945012211799622, 'epoch': 0.02}
+  1%|          | 8/1320 [07:28<19:36:07, 53.79s/it]  1%|          | 9/1320 [08:19<19:12:33, 52.75s/it]                                                   {'loss': 1.0891, 'grad_norm': 3.8560047274777878, 'learning_rate': 6.060606060606061e-07, 'num_tokens': 5260324.0, 'mean_token_accuracy': 0.6988953948020935, 'epoch': 0.02}
+  1%|          | 9/1320 [08:19<19:12:33, 52.75s/it]  1%|          | 10/1320 [09:12<19:17:20, 53.01s/it]                                                    {'loss': 1.0744, 'grad_norm': 3.56036339809126, 'learning_rate': 6.818181818181818e-07, 'num_tokens': 5822325.0, 'mean_token_accuracy': 0.6994327902793884, 'epoch': 0.02}
+  1%|          | 10/1320 [09:12<19:17:20, 53.01s/it]  1%|          | 11/1320 [10:07<19:28:12, 53.55s/it]                                                    {'loss': 1.0636, 'grad_norm': 3.467591483865296, 'learning_rate': 7.575757575757576e-07, 'num_tokens': 6345966.0, 'mean_token_accuracy': 0.7018800973892212, 'epoch': 0.03}
+  1%|          | 11/1320 [10:07<19:28:12, 53.55s/it]  1%|          | 12/1320 [11:10<20:29:33, 56.40s/it]                                                    {'loss': 1.0321, 'grad_norm': 2.638118851715664, 'learning_rate': 8.333333333333333e-07, 'num_tokens': 6943861.0, 'mean_token_accuracy': 0.7081224918365479, 'epoch': 0.03}
+  1%|          | 12/1320 [11:10<20:29:33, 56.40s/it]  1%|          | 13/1320 [12:03<20:04:34, 55.30s/it]                                                    {'loss': 1.0229, 'grad_norm': 2.618587272719064, 'learning_rate': 9.090909090909091e-07, 'num_tokens': 7507791.0, 'mean_token_accuracy': 0.710556149482727, 'epoch': 0.03}
+  1%|          | 13/1320 [12:03<20:04:34, 55.30s/it]  1%|          | 14/1320 [12:55<19:42:24, 54.32s/it]                                                    {'loss': 1.0295, 'grad_norm': 2.260944403216236, 'learning_rate': 9.84848484848485e-07, 'num_tokens': 8099237.0, 'mean_token_accuracy': 0.7077946662902832, 'epoch': 0.03}
+  1%|          | 14/1320 [12:55<19:42:24, 54.32s/it]  1%|          | 15/1320 [13:48<19:32:14, 53.90s/it]                                                    {'loss': 1.0558, 'grad_norm': 2.3199850285619803, 'learning_rate': 1.0606060606060608e-06, 'num_tokens': 8616728.0, 'mean_token_accuracy': 0.7019542455673218, 'epoch': 0.03}
+  1%|          | 15/1320 [13:48<19:32:14, 53.90s/it]  1%|          | 16/1320 [14:51<20:33:46, 56.77s/it]                                                    {'loss': 0.9821, 'grad_norm': 1.8901396475545207, 'learning_rate': 1.1363636363636364e-06, 'num_tokens': 9212054.0, 'mean_token_accuracy': 0.7169835567474365, 'epoch': 0.04}
+  1%|          | 16/1320 [14:51<20:33:46, 56.77s/it]  1%|▏         | 17/1320 [15:47<20:27:01, 56.50s/it]                                                    {'loss': 1.001, 'grad_norm': 2.0937867151828295, 'learning_rate': 1.2121212121212122e-06, 'num_tokens': 9760801.0, 'mean_token_accuracy': 0.711188018321991, 'epoch': 0.04}
+  1%|▏         | 17/1320 [15:47<20:27:01, 56.50s/it]  1%|▏         | 18/1320 [16:36<19:35:25, 54.17s/it]                                                    {'loss': 0.9783, 'grad_norm': 2.3408885295735016, 'learning_rate': 1.287878787878788e-06, 'num_tokens': 10287690.0, 'mean_token_accuracy': 0.7167927026748657, 'epoch': 0.04}
+  1%|▏         | 18/1320 [16:36<19:35:25, 54.17s/it]  1%|▏         | 19/1320 [17:30<19:32:25, 54.07s/it]                                                    {'loss': 0.9821, 'grad_norm': 1.878439743943344, 'learning_rate': 1.3636363636363636e-06, 'num_tokens': 10849694.0, 'mean_token_accuracy': 0.7163562178611755, 'epoch': 0.04}
+  1%|▏         | 19/1320 [17:30<19:32:25, 54.07s/it]  2%|▏         | 20/1320 [18:28<19:56:52, 55.24s/it]                                                    {'loss': 0.9596, 'grad_norm': 1.7229944939415287, 'learning_rate': 1.4393939393939396e-06, 'num_tokens': 11442654.0, 'mean_token_accuracy': 0.7193900346755981, 'epoch': 0.05}
+  2%|▏         | 20/1320 [18:28<19:56:52, 55.24s/it]  2%|▏         | 21/1320 [19:25<20:10:57, 55.93s/it]                                                    {'loss': 0.9648, 'grad_norm': 1.6315346981373564, 'learning_rate': 1.5151515151515152e-06, 'num_tokens': 12021085.0, 'mean_token_accuracy': 0.7187923192977905, 'epoch': 0.05}
+  2%|▏         | 21/1320 [19:25<20:10:57, 55.93s/it]  2%|▏         | 22/1320 [20:17<19:47:00, 54.87s/it]                                                    {'loss': 0.9026, 'grad_norm': 2.8643240121820455, 'learning_rate': 1.590909090909091e-06, 'num_tokens': 12610901.0, 'mean_token_accuracy': 0.7326836585998535, 'epoch': 0.05}
+  2%|▏         | 22/1320 [20:17<19:47:00, 54.87s/it]  2%|▏         | 23/1320 [21:08<19:17:30, 53.55s/it]                                                    {'loss': 0.9072, 'grad_norm': 2.0424485433421475, 'learning_rate': 1.6666666666666667e-06, 'num_tokens': 13171112.0, 'mean_token_accuracy': 0.7304461002349854, 'epoch': 0.05}
+  2%|▏         | 23/1320 [21:08<19:17:30, 53.55s/it]  2%|▏         | 24/1320 [22:02<19:22:21, 53.81s/it]                                                    {'loss': 0.9063, 'grad_norm': 1.8058127619930808, 'learning_rate': 1.7424242424242427e-06, 'num_tokens': 13745951.0, 'mean_token_accuracy': 0.7294313907623291, 'epoch': 0.05}
+  2%|▏         | 24/1320 [22:02<19:22:21, 53.81s/it]  2%|▏         | 25/1320 [22:56<19:18:46, 53.69s/it]                                                    {'loss': 0.8808, 'grad_norm': 1.5466620315997446, 'learning_rate': 1.8181818181818183e-06, 'num_tokens': 14363667.0, 'mean_token_accuracy': 0.7348450422286987, 'epoch': 0.06}
+  2%|▏         | 25/1320 [22:56<19:18:46, 53.69s/it]  2%|▏         | 26/1320 [23:48<19:07:37, 53.21s/it]                                                    {'loss': 0.8905, 'grad_norm': 1.361381272308624, 'learning_rate': 1.8939393939393941e-06, 'num_tokens': 14939101.0, 'mean_token_accuracy': 0.733392596244812, 'epoch': 0.06}
+  2%|▏         | 26/1320 [23:48<19:07:37, 53.21s/it]  2%|▏         | 27/1320 [24:41<19:04:40, 53.12s/it]                                                    {'loss': 0.8515, 'grad_norm': 1.10956175751709, 'learning_rate': 1.96969696969697e-06, 'num_tokens': 15524654.0, 'mean_token_accuracy': 0.7440180778503418, 'epoch': 0.06}
+  2%|▏         | 27/1320 [24:41<19:04:40, 53.12s/it]  2%|▏         | 28/1320 [25:43<20:02:12, 55.83s/it]                                                    {'loss': 0.8597, 'grad_norm': 1.0198556547557687, 'learning_rate': 2.0454545454545457e-06, 'num_tokens': 16115304.0, 'mean_token_accuracy': 0.7404552698135376, 'epoch': 0.06}
+  2%|▏         | 28/1320 [25:43<20:02:12, 55.83s/it]  2%|▏         | 29/1320 [26:41<20:14:46, 56.46s/it]                                                    {'loss': 0.8447, 'grad_norm': 1.090309632048692, 'learning_rate': 2.1212121212121216e-06, 'num_tokens': 16756395.0, 'mean_token_accuracy': 0.7433754801750183, 'epoch': 0.07}
+  2%|▏         | 29/1320 [26:41<20:14:46, 56.46s/it]  2%|▏         | 30/1320 [27:46<21:12:54, 59.20s/it]                                                    {'loss': 0.8238, 'grad_norm': 1.0536426601425835, 'learning_rate': 2.196969696969697e-06, 'num_tokens': 17356261.0, 'mean_token_accuracy': 0.7501649856567383, 'epoch': 0.07}
+  2%|▏         | 30/1320 [27:46<21:12:54, 59.20s/it]  2%|▏         | 31/1320 [28:45<21:10:01, 59.12s/it]                                                    {'loss': 0.8467, 'grad_norm': 1.1083506527022087, 'learning_rate': 2.2727272727272728e-06, 'num_tokens': 17969017.0, 'mean_token_accuracy': 0.7427526712417603, 'epoch': 0.07}
+  2%|▏         | 31/1320 [28:45<21:10:01, 59.12s/it]  2%|▏         | 32/1320 [29:44<21:04:50, 58.92s/it]                                                    {'loss': 0.8121, 'grad_norm': 0.9459639483029321, 'learning_rate': 2.348484848484849e-06, 'num_tokens': 18539431.0, 'mean_token_accuracy': 0.7513452172279358, 'epoch': 0.07}
+  2%|▏         | 32/1320 [29:44<21:04:50, 58.92s/it]  2%|▎         | 33/1320 [30:44<21:10:38, 59.24s/it]                                                    {'loss': 0.8056, 'grad_norm': 0.8589940237239503, 'learning_rate': 2.4242424242424244e-06, 'num_tokens': 19133259.0, 'mean_token_accuracy': 0.7528586983680725, 'epoch': 0.07}
+  2%|▎         | 33/1320 [30:44<21:10:38, 59.24s/it]  3%|▎         | 34/1320 [31:42<21:00:05, 58.79s/it]                                                    {'loss': 0.7975, 'grad_norm': 0.8522935254125712, 'learning_rate': 2.5e-06, 'num_tokens': 19737078.0, 'mean_token_accuracy': 0.754284679889679, 'epoch': 0.08}
+  3%|▎         | 34/1320 [31:42<21:00:05, 58.79s/it]  3%|▎         | 35/1320 [32:26<19:26:48, 54.48s/it]                                                    {'loss': 0.8206, 'grad_norm': 0.8259511149333564, 'learning_rate': 2.575757575757576e-06, 'num_tokens': 20282881.0, 'mean_token_accuracy': 0.7469534873962402, 'epoch': 0.08}
+  3%|▎         | 35/1320 [32:26<19:26:48, 54.48s/it]  3%|▎         | 36/1320 [33:26<20:03:01, 56.22s/it]                                                    {'loss': 0.8075, 'grad_norm': 0.8403459224420899, 'learning_rate': 2.6515151515151514e-06, 'num_tokens': 20924329.0, 'mean_token_accuracy': 0.7499737739562988, 'epoch': 0.08}
+  3%|▎         | 36/1320 [33:26<20:03:01, 56.22s/it]  3%|▎         | 37/1320 [34:25<20:18:39, 56.99s/it]                                                    {'loss': 0.7973, 'grad_norm': 0.8127992535836708, 'learning_rate': 2.7272727272727272e-06, 'num_tokens': 21537527.0, 'mean_token_accuracy': 0.7527545690536499, 'epoch': 0.08}
+  3%|▎         | 37/1320 [34:25<20:18:39, 56.99s/it]  3%|▎         | 38/1320 [35:18<19:53:18, 55.85s/it]                                                    {'loss': 0.79, 'grad_norm': 0.7029583721815426, 'learning_rate': 2.803030303030303e-06, 'num_tokens': 22112658.0, 'mean_token_accuracy': 0.7544267177581787, 'epoch': 0.09}
+  3%|▎         | 38/1320 [35:18<19:53:18, 55.85s/it]  3%|▎         | 39/1320 [36:16<20:05:04, 56.44s/it]                                                    {'loss': 0.7743, 'grad_norm': 0.6902185036240617, 'learning_rate': 2.8787878787878793e-06, 'num_tokens': 22696869.0, 'mean_token_accuracy': 0.759367048740387, 'epoch': 0.09}
+  3%|▎         | 39/1320 [36:16<20:05:04, 56.44s/it]  3%|▎         | 40/1320 [37:23<21:11:20, 59.59s/it]                                                    {'loss': 0.7646, 'grad_norm': 0.706881209089641, 'learning_rate': 2.954545454545455e-06, 'num_tokens': 23283933.0, 'mean_token_accuracy': 0.7614531517028809, 'epoch': 0.09}
+  3%|▎         | 40/1320 [37:23<21:11:20, 59.59s/it]  3%|▎         | 41/1320 [38:18<20:40:26, 58.19s/it]                                                    {'loss': 0.7646, 'grad_norm': 0.6624608719190046, 'learning_rate': 3.0303030303030305e-06, 'num_tokens': 23880427.0, 'mean_token_accuracy': 0.7607331275939941, 'epoch': 0.09}
+  3%|▎         | 41/1320 [38:18<20:40:26, 58.19s/it]  3%|▎         | 42/1320 [39:19<20:55:03, 58.92s/it]                                                    {'loss': 0.7614, 'grad_norm': 0.6277478844589848, 'learning_rate': 3.1060606060606063e-06, 'num_tokens': 24481339.0, 'mean_token_accuracy': 0.7615160346031189, 'epoch': 0.1}
+  3%|▎         | 42/1320 [39:19<20:55:03, 58.92s/it]  3%|▎         | 43/1320 [40:16<20:45:11, 58.51s/it]                                                    {'loss': 0.7621, 'grad_norm': 0.6423468045550921, 'learning_rate': 3.181818181818182e-06, 'num_tokens': 25068486.0, 'mean_token_accuracy': 0.7613890171051025, 'epoch': 0.1}
+  3%|▎         | 43/1320 [40:16<20:45:11, 58.51s/it]  3%|▎         | 44/1320 [41:17<20:58:00, 59.15s/it]                                                    {'loss': 0.7588, 'grad_norm': 0.6409097612409608, 'learning_rate': 3.257575757575758e-06, 'num_tokens': 25677548.0, 'mean_token_accuracy': 0.7614268064498901, 'epoch': 0.1}
+  3%|▎         | 44/1320 [41:17<20:58:00, 59.15s/it]  3%|▎         | 45/1320 [42:07<19:59:06, 56.43s/it]                                                    {'loss': 0.7607, 'grad_norm': 0.621446056499605, 'learning_rate': 3.3333333333333333e-06, 'num_tokens': 26247267.0, 'mean_token_accuracy': 0.7616371512413025, 'epoch': 0.1}
+  3%|▎         | 45/1320 [42:07<19:59:06, 56.43s/it]  3%|▎         | 46/1320 [43:03<19:53:32, 56.21s/it]                                                    {'loss': 0.7415, 'grad_norm': 0.6391470512781408, 'learning_rate': 3.409090909090909e-06, 'num_tokens': 26820678.0, 'mean_token_accuracy': 0.7680435180664062, 'epoch': 0.1}
+  3%|▎         | 46/1320 [43:03<19:53:32, 56.21s/it]  4%|▎         | 47/1320 [43:50<18:54:07, 53.45s/it]                                                    {'loss': 0.748, 'grad_norm': 0.5601225987709256, 'learning_rate': 3.4848484848484854e-06, 'num_tokens': 27403790.0, 'mean_token_accuracy': 0.7641259431838989, 'epoch': 0.11}
+  4%|▎         | 47/1320 [43:50<18:54:07, 53.45s/it]  4%|▎         | 48/1320 [44:48<19:27:02, 55.05s/it]                                                    {'loss': 0.7709, 'grad_norm': 0.5895629747259421, 'learning_rate': 3.560606060606061e-06, 'num_tokens': 27967539.0, 'mean_token_accuracy': 0.7576537728309631, 'epoch': 0.11}
+  4%|▎         | 48/1320 [44:48<19:27:02, 55.05s/it]  4%|▎         | 49/1320 [45:37<18:46:35, 53.18s/it]                                                    {'loss': 0.7546, 'grad_norm': 0.636342949564182, 'learning_rate': 3.6363636363636366e-06, 'num_tokens': 28497157.0, 'mean_token_accuracy': 0.7616143822669983, 'epoch': 0.11}
+  4%|▎         | 49/1320 [45:37<18:46:35, 53.18s/it]  4%|▍         | 50/1320 [46:32<18:55:50, 53.66s/it]                                                    {'loss': 0.713, 'grad_norm': 0.6092538083666158, 'learning_rate': 3.7121212121212124e-06, 'num_tokens': 29044455.0, 'mean_token_accuracy': 0.7764021158218384, 'epoch': 0.11}
+  4%|▍         | 50/1320 [46:32<18:55:50, 53.66s/it]  4%|▍         | 51/1320 [47:27<19:05:19, 54.15s/it]                                                    {'loss': 0.7367, 'grad_norm': 0.6055553489956063, 'learning_rate': 3.7878787878787882e-06, 'num_tokens': 29672658.0, 'mean_token_accuracy': 0.766298234462738, 'epoch': 0.12}
+  4%|▍         | 51/1320 [47:27<19:05:19, 54.15s/it]  4%|▍         | 52/1320 [48:20<18:53:09, 53.62s/it]                                                    {'loss': 0.7395, 'grad_norm': 0.6587809652686578, 'learning_rate': 3.863636363636364e-06, 'num_tokens': 30220659.0, 'mean_token_accuracy': 0.7647894620895386, 'epoch': 0.12}
+  4%|▍         | 52/1320 [48:20<18:53:09, 53.62s/it]  4%|▍         | 53/1320 [49:11<18:41:14, 53.10s/it]                                                    {'loss': 0.7348, 'grad_norm': 0.5954389238075507, 'learning_rate': 3.93939393939394e-06, 'num_tokens': 30778024.0, 'mean_token_accuracy': 0.7664835453033447, 'epoch': 0.12}
+  4%|▍         | 53/1320 [49:11<18:41:14, 53.10s/it]  4%|▍         | 54/1320 [49:56<17:46:46, 50.56s/it]                                                    {'loss': 0.7349, 'grad_norm': 0.6257729393583208, 'learning_rate': 4.015151515151515e-06, 'num_tokens': 31328937.0, 'mean_token_accuracy': 0.7665245532989502, 'epoch': 0.12}
+  4%|▍         | 54/1320 [49:56<17:46:46, 50.56s/it]  4%|▍         | 55/1320 [50:48<17:55:58, 51.03s/it]                                                    {'loss': 0.7274, 'grad_norm': 0.6211686266521357, 'learning_rate': 4.0909090909090915e-06, 'num_tokens': 31868563.0, 'mean_token_accuracy': 0.7694861888885498, 'epoch': 0.12}
+  4%|▍         | 55/1320 [50:48<17:55:58, 51.03s/it]  4%|▍         | 56/1320 [51:51<19:08:57, 54.54s/it]                                                    {'loss': 0.7413, 'grad_norm': 0.6082161488437989, 'learning_rate': 4.166666666666667e-06, 'num_tokens': 32489808.0, 'mean_token_accuracy': 0.7639868259429932, 'epoch': 0.13}
+  4%|▍         | 56/1320 [51:51<19:08:57, 54.54s/it]  4%|▍         | 57/1320 [52:45<19:05:01, 54.40s/it]                                                    {'loss': 0.7349, 'grad_norm': 0.6088988926975499, 'learning_rate': 4.242424242424243e-06, 'num_tokens': 33120227.0, 'mean_token_accuracy': 0.7663684487342834, 'epoch': 0.13}
+  4%|▍         | 57/1320 [52:45<19:05:01, 54.40s/it]  4%|▍         | 58/1320 [53:39<19:01:08, 54.25s/it]                                                    {'loss': 0.7409, 'grad_norm': 0.6397927674456799, 'learning_rate': 4.3181818181818185e-06, 'num_tokens': 33675422.0, 'mean_token_accuracy': 0.7641403675079346, 'epoch': 0.13}
+  4%|▍         | 58/1320 [53:39<19:01:08, 54.25s/it]  4%|▍         | 59/1320 [54:40<19:40:38, 56.18s/it]                                                    {'loss': 0.7249, 'grad_norm': 0.5827967805651172, 'learning_rate': 4.393939393939394e-06, 'num_tokens': 34269723.0, 'mean_token_accuracy': 0.7683160305023193, 'epoch': 0.13}
+  4%|▍         | 59/1320 [54:40<19:40:38, 56.18s/it]  5%|▍         | 60/1320 [55:30<19:01:55, 54.38s/it]                                                    {'loss': 0.722, 'grad_norm': 0.6238893098770877, 'learning_rate': 4.46969696969697e-06, 'num_tokens': 34855898.0, 'mean_token_accuracy': 0.7693256735801697, 'epoch': 0.14}
+  5%|▍         | 60/1320 [55:30<19:01:55, 54.38s/it]  5%|▍         | 61/1320 [56:21<18:41:47, 53.46s/it]                                                    {'loss': 0.7211, 'grad_norm': 0.5925745589274084, 'learning_rate': 4.5454545454545455e-06, 'num_tokens': 35409773.0, 'mean_token_accuracy': 0.7690324783325195, 'epoch': 0.14}
+  5%|▍         | 61/1320 [56:21<18:41:47, 53.46s/it]  5%|▍         | 62/1320 [57:18<19:01:58, 54.47s/it]                                                    {'loss': 0.7117, 'grad_norm': 0.6616003506035373, 'learning_rate': 4.621212121212122e-06, 'num_tokens': 36024040.0, 'mean_token_accuracy': 0.7723807692527771, 'epoch': 0.14}
+  5%|▍         | 62/1320 [57:18<19:01:58, 54.47s/it]  5%|▍         | 63/1320 [58:17<19:27:48, 55.74s/it]                                                    {'loss': 0.7222, 'grad_norm': 0.5773371352871149, 'learning_rate': 4.696969696969698e-06, 'num_tokens': 36642133.0, 'mean_token_accuracy': 0.7682015299797058, 'epoch': 0.14}
+  5%|▍         | 63/1320 [58:17<19:27:48, 55.74s/it]  5%|▍         | 64/1320 [59:04<18:32:15, 53.13s/it]                                                    {'loss': 0.7147, 'grad_norm': 0.6498912407537523, 'learning_rate': 4.772727272727273e-06, 'num_tokens': 37181851.0, 'mean_token_accuracy': 0.7726698517799377, 'epoch': 0.15}
+  5%|▍         | 64/1320 [59:04<18:32:15, 53.13s/it]  5%|▍         | 65/1320 [59:56<18:27:46, 52.96s/it]                                                    {'loss': 0.7024, 'grad_norm': 0.6272242482462771, 'learning_rate': 4.848484848484849e-06, 'num_tokens': 37708500.0, 'mean_token_accuracy': 0.7763700485229492, 'epoch': 0.15}
+  5%|▍         | 65/1320 [59:56<18:27:46, 52.96s/it]  5%|▌         | 66/1320 [1:00:53<18:53:08, 54.22s/it]                                                      {'loss': 0.7153, 'grad_norm': 0.6456665543000817, 'learning_rate': 4.924242424242425e-06, 'num_tokens': 38289154.0, 'mean_token_accuracy': 0.7708683013916016, 'epoch': 0.15}
+  5%|▌         | 66/1320 [1:00:53<18:53:08, 54.22s/it]  5%|▌         | 67/1320 [1:01:46<18:41:46, 53.72s/it]                                                      {'loss': 0.7135, 'grad_norm': 0.6621291602698602, 'learning_rate': 5e-06, 'num_tokens': 38876783.0, 'mean_token_accuracy': 0.77134770154953, 'epoch': 0.15}
+  5%|▌         | 67/1320 [1:01:46<18:41:46, 53.72s/it]  5%|▌         | 68/1320 [1:02:41<18:51:00, 54.20s/it]                                                      {'loss': 0.6978, 'grad_norm': 0.7008125717793527, 'learning_rate': 5.075757575757576e-06, 'num_tokens': 39492478.0, 'mean_token_accuracy': 0.775335967540741, 'epoch': 0.15}
+  5%|▌         | 68/1320 [1:02:41<18:51:00, 54.20s/it]  5%|▌         | 69/1320 [1:03:36<18:53:21, 54.36s/it]                                                      {'loss': 0.6953, 'grad_norm': 0.6372672439336892, 'learning_rate': 5.151515151515152e-06, 'num_tokens': 40075436.0, 'mean_token_accuracy': 0.7775958776473999, 'epoch': 0.16}
+  5%|▌         | 69/1320 [1:03:36<18:53:21, 54.36s/it]  5%|▌         | 70/1320 [1:04:37<19:33:21, 56.32s/it]                                                      {'loss': 0.7039, 'grad_norm': 0.6959385775073925, 'learning_rate': 5.2272727272727274e-06, 'num_tokens': 40709118.0, 'mean_token_accuracy': 0.7736865282058716, 'epoch': 0.16}
+  5%|▌         | 70/1320 [1:04:37<19:33:21, 56.32s/it]  5%|▌         | 71/1320 [1:05:34<19:36:00, 56.49s/it]                                                      {'loss': 0.7105, 'grad_norm': 0.6067833218226417, 'learning_rate': 5.303030303030303e-06, 'num_tokens': 41276453.0, 'mean_token_accuracy': 0.7731006145477295, 'epoch': 0.16}
+  5%|▌         | 71/1320 [1:05:34<19:36:00, 56.49s/it]  5%|▌         | 72/1320 [1:06:22<18:45:40, 54.12s/it]                                                      {'loss': 0.6921, 'grad_norm': 0.6854628164929599, 'learning_rate': 5.378787878787879e-06, 'num_tokens': 41830647.0, 'mean_token_accuracy': 0.7771734595298767, 'epoch': 0.16}
+  5%|▌         | 72/1320 [1:06:22<18:45:40, 54.12s/it]  6%|▌         | 73/1320 [1:07:16<18:42:35, 54.01s/it]                                                      {'loss': 0.7043, 'grad_norm': 0.6326781908141844, 'learning_rate': 5.4545454545454545e-06, 'num_tokens': 42392719.0, 'mean_token_accuracy': 0.7743611335754395, 'epoch': 0.17}
+  6%|▌         | 73/1320 [1:07:16<18:42:35, 54.01s/it]  6%|▌         | 74/1320 [1:08:10<18:42:42, 54.06s/it]                                                      {'loss': 0.7099, 'grad_norm': 0.6898175095732884, 'learning_rate': 5.530303030303031e-06, 'num_tokens': 42946878.0, 'mean_token_accuracy': 0.7710206508636475, 'epoch': 0.17}
+  6%|▌         | 74/1320 [1:08:10<18:42:42, 54.06s/it]  6%|▌         | 75/1320 [1:09:06<18:53:46, 54.64s/it]                                                      {'loss': 0.6938, 'grad_norm': 0.6120650145333607, 'learning_rate': 5.606060606060606e-06, 'num_tokens': 43515657.0, 'mean_token_accuracy': 0.776949405670166, 'epoch': 0.17}
+  6%|▌         | 75/1320 [1:09:06<18:53:46, 54.64s/it]  6%|▌         | 76/1320 [1:09:59<18:40:44, 54.05s/it]                                                      {'loss': 0.7153, 'grad_norm': 0.6673666195676616, 'learning_rate': 5.681818181818183e-06, 'num_tokens': 44101113.0, 'mean_token_accuracy': 0.7698916792869568, 'epoch': 0.17}
+  6%|▌         | 76/1320 [1:09:59<18:40:44, 54.05s/it]  6%|▌         | 77/1320 [1:10:52<18:35:51, 53.86s/it]                                                      {'loss': 0.7105, 'grad_norm': 0.5692923426929999, 'learning_rate': 5.7575757575757586e-06, 'num_tokens': 44731853.0, 'mean_token_accuracy': 0.7705755233764648, 'epoch': 0.17}
+  6%|▌         | 77/1320 [1:10:52<18:35:51, 53.86s/it]  6%|▌         | 78/1320 [1:11:50<18:57:45, 54.96s/it]                                                      {'loss': 0.7035, 'grad_norm': 0.6826196032033011, 'learning_rate': 5.833333333333334e-06, 'num_tokens': 45310318.0, 'mean_token_accuracy': 0.7735790014266968, 'epoch': 0.18}
+  6%|▌         | 78/1320 [1:11:50<18:57:45, 54.96s/it]  6%|▌         | 79/1320 [1:12:42<18:40:38, 54.18s/it]                                                      {'loss': 0.6955, 'grad_norm': 0.5926984036996265, 'learning_rate': 5.90909090909091e-06, 'num_tokens': 45855461.0, 'mean_token_accuracy': 0.7739475965499878, 'epoch': 0.18}
+  6%|▌         | 79/1320 [1:12:42<18:40:38, 54.18s/it]  6%|▌         | 80/1320 [1:13:39<18:55:34, 54.95s/it]                                                      {'loss': 0.6988, 'grad_norm': 0.6115441713334235, 'learning_rate': 5.984848484848486e-06, 'num_tokens': 46406735.0, 'mean_token_accuracy': 0.7753267288208008, 'epoch': 0.18}
+  6%|▌         | 80/1320 [1:13:39<18:55:34, 54.95s/it]  6%|▌         | 81/1320 [1:14:32<18:43:09, 54.39s/it]                                                      {'loss': 0.6995, 'grad_norm': 0.5898920388156597, 'learning_rate': 6.060606060606061e-06, 'num_tokens': 46988669.0, 'mean_token_accuracy': 0.7750563621520996, 'epoch': 0.18}
+  6%|▌         | 81/1320 [1:14:32<18:43:09, 54.39s/it]  6%|▌         | 82/1320 [1:15:30<19:03:11, 55.40s/it]                                                      {'loss': 0.7109, 'grad_norm': 0.5971666754195359, 'learning_rate': 6.136363636363637e-06, 'num_tokens': 47596123.0, 'mean_token_accuracy': 0.7694135904312134, 'epoch': 0.19}
+  6%|▌         | 82/1320 [1:15:30<19:03:11, 55.40s/it]  6%|▋         | 83/1320 [1:16:29<19:22:51, 56.40s/it]                                                      {'loss': 0.6806, 'grad_norm': 0.6761510559967212, 'learning_rate': 6.212121212121213e-06, 'num_tokens': 48154538.0, 'mean_token_accuracy': 0.7805494070053101, 'epoch': 0.19}
+  6%|▋         | 83/1320 [1:16:29<19:22:51, 56.40s/it]  6%|▋         | 84/1320 [1:17:25<19:20:24, 56.33s/it]                                                      {'loss': 0.6894, 'grad_norm': 0.6219772165804011, 'learning_rate': 6.287878787878788e-06, 'num_tokens': 48753255.0, 'mean_token_accuracy': 0.7776081562042236, 'epoch': 0.19}
+  6%|▋         | 84/1320 [1:17:25<19:20:24, 56.33s/it]  6%|▋         | 85/1320 [1:18:14<18:34:21, 54.14s/it]                                                      {'loss': 0.6978, 'grad_norm': 0.7591344942057673, 'learning_rate': 6.363636363636364e-06, 'num_tokens': 49326028.0, 'mean_token_accuracy': 0.7741624712944031, 'epoch': 0.19}
+  6%|▋         | 85/1320 [1:18:14<18:34:21, 54.14s/it]  7%|▋         | 86/1320 [1:19:06<18:21:30, 53.56s/it]                                                      {'loss': 0.6833, 'grad_norm': 0.6445641298428729, 'learning_rate': 6.43939393939394e-06, 'num_tokens': 49902610.0, 'mean_token_accuracy': 0.7783693075180054, 'epoch': 0.2}
+  7%|▋         | 86/1320 [1:19:06<18:21:30, 53.56s/it]  7%|▋         | 87/1320 [1:19:59<18:14:01, 53.24s/it]                                                      {'loss': 0.6762, 'grad_norm': 0.6271170669865721, 'learning_rate': 6.515151515151516e-06, 'num_tokens': 50462252.0, 'mean_token_accuracy': 0.781613826751709, 'epoch': 0.2}
+  7%|▋         | 87/1320 [1:19:59<18:14:01, 53.24s/it]  7%|▋         | 88/1320 [1:20:56<18:41:50, 54.63s/it]                                                      {'loss': 0.6884, 'grad_norm': 0.7310077352375729, 'learning_rate': 6.590909090909091e-06, 'num_tokens': 51052147.0, 'mean_token_accuracy': 0.7772167921066284, 'epoch': 0.2}
+  7%|▋         | 88/1320 [1:20:56<18:41:50, 54.63s/it]  7%|▋         | 89/1320 [1:22:01<19:42:18, 57.63s/it]                                                      {'loss': 0.6965, 'grad_norm': 0.6434403494394579, 'learning_rate': 6.666666666666667e-06, 'num_tokens': 51587569.0, 'mean_token_accuracy': 0.7747638821601868, 'epoch': 0.2}
+  7%|▋         | 89/1320 [1:22:01<19:42:18, 57.63s/it]  7%|▋         | 90/1320 [1:22:55<19:16:14, 56.40s/it]                                                      {'loss': 0.6986, 'grad_norm': 0.6357980797625723, 'learning_rate': 6.742424242424243e-06, 'num_tokens': 52235946.0, 'mean_token_accuracy': 0.7723417282104492, 'epoch': 0.2}
+  7%|▋         | 90/1320 [1:22:55<19:16:14, 56.40s/it]  7%|▋         | 91/1320 [1:23:46<18:47:19, 55.04s/it]                                                      {'loss': 0.6969, 'grad_norm': 0.8360284580530024, 'learning_rate': 6.818181818181818e-06, 'num_tokens': 52814921.0, 'mean_token_accuracy': 0.774010419845581, 'epoch': 0.21}
+  7%|▋         | 91/1320 [1:23:46<18:47:19, 55.04s/it]  7%|▋         | 92/1320 [1:24:43<18:54:25, 55.43s/it]                                                      {'loss': 0.6952, 'grad_norm': 0.6659165957952528, 'learning_rate': 6.893939393939395e-06, 'num_tokens': 53430415.0, 'mean_token_accuracy': 0.775352954864502, 'epoch': 0.21}
+  7%|▋         | 92/1320 [1:24:43<18:54:25, 55.43s/it]  7%|▋         | 93/1320 [1:25:42<19:18:45, 56.66s/it]                                                      {'loss': 0.6637, 'grad_norm': 0.6800604453243575, 'learning_rate': 6.969696969696971e-06, 'num_tokens': 54001381.0, 'mean_token_accuracy': 0.783636212348938, 'epoch': 0.21}
+  7%|▋         | 93/1320 [1:25:42<19:18:45, 56.66s/it]  7%|▋         | 94/1320 [1:26:43<19:40:49, 57.79s/it]                                                      {'loss': 0.6976, 'grad_norm': 0.6815780040408149, 'learning_rate': 7.045454545454546e-06, 'num_tokens': 54616982.0, 'mean_token_accuracy': 0.7732769250869751, 'epoch': 0.21}
+  7%|▋         | 94/1320 [1:26:43<19:40:49, 57.79s/it]  7%|▋         | 95/1320 [1:27:42<19:47:09, 58.15s/it]                                                      {'loss': 0.6751, 'grad_norm': 0.6411427878663557, 'learning_rate': 7.121212121212122e-06, 'num_tokens': 55256515.0, 'mean_token_accuracy': 0.7806272506713867, 'epoch': 0.22}
+  7%|▋         | 95/1320 [1:27:42<19:47:09, 58.15s/it]  7%|▋         | 96/1320 [1:28:43<20:05:38, 59.10s/it]                                                      {'loss': 0.674, 'grad_norm': 0.585676254516685, 'learning_rate': 7.196969696969698e-06, 'num_tokens': 55861558.0, 'mean_token_accuracy': 0.7805073261260986, 'epoch': 0.22}
+  7%|▋         | 96/1320 [1:28:43<20:05:38, 59.10s/it]  7%|▋         | 97/1320 [1:29:51<20:57:29, 61.69s/it]                                                      {'loss': 0.6868, 'grad_norm': 0.6570818391061921, 'learning_rate': 7.272727272727273e-06, 'num_tokens': 56442664.0, 'mean_token_accuracy': 0.7781397104263306, 'epoch': 0.22}
+  7%|▋         | 97/1320 [1:29:51<20:57:29, 61.69s/it]  7%|▋         | 98/1320 [1:30:44<20:04:13, 59.13s/it]                                                      {'loss': 0.6921, 'grad_norm': 0.5937065105125482, 'learning_rate': 7.348484848484849e-06, 'num_tokens': 56995028.0, 'mean_token_accuracy': 0.7754557132720947, 'epoch': 0.22}
+  7%|▋         | 98/1320 [1:30:44<20:04:13, 59.13s/it]  8%|▊         | 99/1320 [1:31:45<20:13:01, 59.61s/it]                                                      {'loss': 0.6981, 'grad_norm': 0.7224740559877139, 'learning_rate': 7.424242424242425e-06, 'num_tokens': 57592065.0, 'mean_token_accuracy': 0.7735441327095032, 'epoch': 0.23}
+  8%|▊         | 99/1320 [1:31:45<20:13:01, 59.61s/it]  8%|▊         | 100/1320 [1:32:44<20:12:07, 59.61s/it]                                                       {'loss': 0.6814, 'grad_norm': 0.664850014538259, 'learning_rate': 7.500000000000001e-06, 'num_tokens': 58252908.0, 'mean_token_accuracy': 0.7779398560523987, 'epoch': 0.23}
+  8%|▊         | 100/1320 [1:32:44<20:12:07, 59.61s/it]  8%|▊         | 101/1320 [1:33:46<20:24:20, 60.26s/it]                                                       {'loss': 0.7018, 'grad_norm': 0.769790481786228, 'learning_rate': 7.5757575757575764e-06, 'num_tokens': 58886712.0, 'mean_token_accuracy': 0.7710603475570679, 'epoch': 0.23}
+  8%|▊         | 101/1320 [1:33:46<20:24:20, 60.26s/it]  8%|▊         | 102/1320 [1:34:46<20:20:11, 60.11s/it]                                                       {'loss': 0.683, 'grad_norm': 0.6978586856262177, 'learning_rate': 7.651515151515152e-06, 'num_tokens': 59489096.0, 'mean_token_accuracy': 0.7789163589477539, 'epoch': 0.23}
+  8%|▊         | 102/1320 [1:34:46<20:20:11, 60.11s/it]  8%|▊         | 103/1320 [1:35:44<20:10:11, 59.66s/it]                                                       {'loss': 0.6877, 'grad_norm': 0.734049224355313, 'learning_rate': 7.727272727272727e-06, 'num_tokens': 60122442.0, 'mean_token_accuracy': 0.7763672471046448, 'epoch': 0.23}
+  8%|▊         | 103/1320 [1:35:44<20:10:11, 59.66s/it]  8%|▊         | 104/1320 [1:36:40<19:43:28, 58.40s/it]                                                       {'loss': 0.6797, 'grad_norm': 0.780330180814972, 'learning_rate': 7.803030303030303e-06, 'num_tokens': 60704789.0, 'mean_token_accuracy': 0.7778312563896179, 'epoch': 0.24}
+  8%|▊         | 104/1320 [1:36:40<19:43:28, 58.40s/it]  8%|▊         | 105/1320 [1:37:37<19:33:31, 57.95s/it]                                                       {'loss': 0.6745, 'grad_norm': 0.6246247160786079, 'learning_rate': 7.87878787878788e-06, 'num_tokens': 61363760.0, 'mean_token_accuracy': 0.7804950475692749, 'epoch': 0.24}
+  8%|▊         | 105/1320 [1:37:37<19:33:31, 57.95s/it]  8%|▊         | 106/1320 [1:38:41<20:11:43, 59.89s/it]                                                       {'loss': 0.6734, 'grad_norm': 0.8335408319457359, 'learning_rate': 7.954545454545455e-06, 'num_tokens': 61950042.0, 'mean_token_accuracy': 0.7803612351417542, 'epoch': 0.24}
+  8%|▊         | 106/1320 [1:38:41<20:11:43, 59.89s/it]  8%|▊         | 107/1320 [1:39:42<20:17:24, 60.22s/it]                                                       {'loss': 0.6676, 'grad_norm': 0.7152191096345689, 'learning_rate': 8.03030303030303e-06, 'num_tokens': 62509839.0, 'mean_token_accuracy': 0.7816821336746216, 'epoch': 0.24}
+  8%|▊         | 107/1320 [1:39:42<20:17:24, 60.22s/it]  8%|▊         | 108/1320 [1:40:33<19:19:35, 57.41s/it]                                                       {'loss': 0.6932, 'grad_norm': 0.7354946950811656, 'learning_rate': 8.106060606060606e-06, 'num_tokens': 63070103.0, 'mean_token_accuracy': 0.7744635343551636, 'epoch': 0.25}
+  8%|▊         | 108/1320 [1:40:33<19:19:35, 57.41s/it]  8%|▊         | 109/1320 [1:41:22<18:26:15, 54.81s/it]                                                       {'loss': 0.6834, 'grad_norm': 0.777612630522076, 'learning_rate': 8.181818181818183e-06, 'num_tokens': 63659489.0, 'mean_token_accuracy': 0.7765432596206665, 'epoch': 0.25}
+  8%|▊         | 109/1320 [1:41:22<18:26:15, 54.81s/it]  8%|▊         | 110/1320 [1:42:19<18:41:44, 55.62s/it]                                                       {'loss': 0.6728, 'grad_norm': 0.666831503791995, 'learning_rate': 8.257575757575758e-06, 'num_tokens': 64239003.0, 'mean_token_accuracy': 0.7817660570144653, 'epoch': 0.25}
+  8%|▊         | 110/1320 [1:42:19<18:41:44, 55.62s/it]  8%|▊         | 111/1320 [1:43:20<19:09:15, 57.03s/it]                                                       {'loss': 0.6862, 'grad_norm': 0.9055454507662217, 'learning_rate': 8.333333333333334e-06, 'num_tokens': 64782999.0, 'mean_token_accuracy': 0.7758470177650452, 'epoch': 0.25}
+  8%|▊         | 111/1320 [1:43:20<19:09:15, 57.03s/it]  8%|▊         | 112/1320 [1:44:11<18:31:43, 55.22s/it]                                                       {'loss': 0.6756, 'grad_norm': 0.705807434572404, 'learning_rate': 8.40909090909091e-06, 'num_tokens': 65368383.0, 'mean_token_accuracy': 0.7798935174942017, 'epoch': 0.25}
+  8%|▊         | 112/1320 [1:44:11<18:31:43, 55.22s/it]  9%|▊         | 113/1320 [1:45:09<18:50:55, 56.22s/it]                                                       {'loss': 0.6734, 'grad_norm': 0.8036224356540309, 'learning_rate': 8.484848484848486e-06, 'num_tokens': 65999093.0, 'mean_token_accuracy': 0.780418872833252, 'epoch': 0.26}
+  9%|▊         | 113/1320 [1:45:09<18:50:55, 56.22s/it]  9%|▊         | 114/1320 [1:46:02<18:32:33, 55.35s/it]                                                       {'loss': 0.6733, 'grad_norm': 0.6688875730349967, 'learning_rate': 8.560606060606062e-06, 'num_tokens': 66553872.0, 'mean_token_accuracy': 0.7805032730102539, 'epoch': 0.26}
+  9%|▊         | 114/1320 [1:46:02<18:32:33, 55.35s/it]  9%|▊         | 115/1320 [1:47:00<18:44:49, 56.01s/it]                                                       {'loss': 0.6709, 'grad_norm': 0.7855145388729526, 'learning_rate': 8.636363636363637e-06, 'num_tokens': 67180811.0, 'mean_token_accuracy': 0.780961811542511, 'epoch': 0.26}
+  9%|▊         | 115/1320 [1:47:00<18:44:49, 56.01s/it]  9%|▉         | 116/1320 [1:47:56<18:45:15, 56.08s/it]                                                       {'loss': 0.6656, 'grad_norm': 0.7099092392142358, 'learning_rate': 8.712121212121212e-06, 'num_tokens': 67769482.0, 'mean_token_accuracy': 0.7821476459503174, 'epoch': 0.26}
+  9%|▉         | 116/1320 [1:47:56<18:45:15, 56.08s/it]  9%|▉         | 117/1320 [1:48:46<18:07:49, 54.26s/it]                                                       {'loss': 0.6808, 'grad_norm': 0.6624402160900497, 'learning_rate': 8.787878787878788e-06, 'num_tokens': 68361225.0, 'mean_token_accuracy': 0.7773544192314148, 'epoch': 0.27}
+  9%|▉         | 117/1320 [1:48:46<18:07:49, 54.26s/it]  9%|▉         | 118/1320 [1:49:45<18:34:00, 55.61s/it]                                                       {'loss': 0.6841, 'grad_norm': 0.7521654569476107, 'learning_rate': 8.863636363636365e-06, 'num_tokens': 68983692.0, 'mean_token_accuracy': 0.7756434679031372, 'epoch': 0.27}
+  9%|▉         | 118/1320 [1:49:45<18:34:00, 55.61s/it]  9%|▉         | 119/1320 [1:50:33<17:49:46, 53.44s/it]                                                       {'loss': 0.6654, 'grad_norm': 0.7488665531303356, 'learning_rate': 8.93939393939394e-06, 'num_tokens': 69527418.0, 'mean_token_accuracy': 0.7819744348526001, 'epoch': 0.27}
+  9%|▉         | 119/1320 [1:50:33<17:49:46, 53.44s/it]  9%|▉         | 120/1320 [1:51:23<17:23:55, 52.20s/it]                                                       {'loss': 0.6602, 'grad_norm': 0.7226599204883823, 'learning_rate': 9.015151515151516e-06, 'num_tokens': 70120147.0, 'mean_token_accuracy': 0.7823662757873535, 'epoch': 0.27}
+  9%|▉         | 120/1320 [1:51:23<17:23:55, 52.20s/it]  9%|▉         | 121/1320 [1:52:19<17:49:05, 53.50s/it]                                                       {'loss': 0.6702, 'grad_norm': 0.8023163835719296, 'learning_rate': 9.090909090909091e-06, 'num_tokens': 70687040.0, 'mean_token_accuracy': 0.7814135551452637, 'epoch': 0.28}
+  9%|▉         | 121/1320 [1:52:19<17:49:05, 53.50s/it]  9%|▉         | 122/1320 [1:53:25<18:59:48, 57.09s/it]                                                       {'loss': 0.6669, 'grad_norm': 0.6603602270058611, 'learning_rate': 9.166666666666666e-06, 'num_tokens': 71334296.0, 'mean_token_accuracy': 0.7808312177658081, 'epoch': 0.28}
+  9%|▉         | 122/1320 [1:53:25<18:59:48, 57.09s/it]  9%|▉         | 123/1320 [1:54:14<18:12:09, 54.74s/it]                                                       {'loss': 0.6733, 'grad_norm': 0.6886975300441656, 'learning_rate': 9.242424242424244e-06, 'num_tokens': 71893371.0, 'mean_token_accuracy': 0.7800508737564087, 'epoch': 0.28}
+  9%|▉         | 123/1320 [1:54:14<18:12:09, 54.74s/it]  9%|▉         | 124/1320 [1:55:11<18:22:30, 55.31s/it]                                                       {'loss': 0.672, 'grad_norm': 0.7380674146580893, 'learning_rate': 9.318181818181819e-06, 'num_tokens': 72486679.0, 'mean_token_accuracy': 0.7806232571601868, 'epoch': 0.28}
+  9%|▉         | 124/1320 [1:55:11<18:22:30, 55.31s/it]  9%|▉         | 125/1320 [1:56:01<17:54:34, 53.95s/it]                                                       {'loss': 0.6679, 'grad_norm': 0.7511713948747862, 'learning_rate': 9.393939393939396e-06, 'num_tokens': 73042677.0, 'mean_token_accuracy': 0.7809525728225708, 'epoch': 0.28}
+  9%|▉         | 125/1320 [1:56:01<17:54:34, 53.95s/it] 10%|▉         | 126/1320 [1:57:02<18:34:17, 55.99s/it]                                                       {'loss': 0.6663, 'grad_norm': 0.7840581338276544, 'learning_rate': 9.469696969696971e-06, 'num_tokens': 73642989.0, 'mean_token_accuracy': 0.7829849720001221, 'epoch': 0.29}
+ 10%|▉         | 126/1320 [1:57:02<18:34:17, 55.99s/it] 10%|▉         | 127/1320 [1:57:59<18:37:54, 56.22s/it]                                                       {'loss': 0.6603, 'grad_norm': 0.6567686454588108, 'learning_rate': 9.545454545454547e-06, 'num_tokens': 74274035.0, 'mean_token_accuracy': 0.783957302570343, 'epoch': 0.29}
+ 10%|▉         | 127/1320 [1:57:59<18:37:54, 56.22s/it] 10%|▉         | 128/1320 [1:58:53<18:22:44, 55.51s/it]                                                       {'loss': 0.6787, 'grad_norm': 0.9991940643685322, 'learning_rate': 9.621212121212122e-06, 'num_tokens': 74830194.0, 'mean_token_accuracy': 0.7781243324279785, 'epoch': 0.29}
+ 10%|▉         | 128/1320 [1:58:53<18:22:44, 55.51s/it] 10%|▉         | 129/1320 [1:59:49<18:24:50, 55.66s/it]                                                       {'loss': 0.6716, 'grad_norm': 0.8440164028445925, 'learning_rate': 9.696969696969698e-06, 'num_tokens': 75409865.0, 'mean_token_accuracy': 0.779386043548584, 'epoch': 0.29}
+ 10%|▉         | 129/1320 [1:59:49<18:24:50, 55.66s/it] 10%|▉         | 130/1320 [2:00:41<18:00:55, 54.50s/it]                                                       {'loss': 0.6525, 'grad_norm': 0.7012074567761664, 'learning_rate': 9.772727272727273e-06, 'num_tokens': 75916031.0, 'mean_token_accuracy': 0.7862669825553894, 'epoch': 0.3}
+ 10%|▉         | 130/1320 [2:00:41<18:00:55, 54.50s/it] 10%|▉         | 131/1320 [2:01:35<17:57:59, 54.40s/it]                                                       {'loss': 0.6632, 'grad_norm': 0.9227793554646424, 'learning_rate': 9.84848484848485e-06, 'num_tokens': 76514936.0, 'mean_token_accuracy': 0.7830473184585571, 'epoch': 0.3}
+ 10%|▉         | 131/1320 [2:01:35<17:57:59, 54.40s/it] 10%|█         | 132/1320 [2:02:32<18:12:57, 55.20s/it]                                                       {'loss': 0.6733, 'grad_norm': 0.7088844537905532, 'learning_rate': 9.924242424242425e-06, 'num_tokens': 77137499.0, 'mean_token_accuracy': 0.7794057130813599, 'epoch': 0.3}
+ 10%|█         | 132/1320 [2:02:32<18:12:57, 55.20s/it] 10%|█         | 133/1320 [2:03:32<18:42:38, 56.75s/it]                                                       {'loss': 0.6718, 'grad_norm': 0.6674958858591155, 'learning_rate': 1e-05, 'num_tokens': 77773633.0, 'mean_token_accuracy': 0.7801200747489929, 'epoch': 0.3}
+ 10%|█         | 133/1320 [2:03:32<18:42:38, 56.75s/it] 10%|█         | 134/1320 [2:04:34<19:13:40, 58.36s/it]                                                       {'loss': 0.6738, 'grad_norm': 0.8715214691971409, 'learning_rate': 1e-05, 'num_tokens': 78356324.0, 'mean_token_accuracy': 0.7788365483283997, 'epoch': 0.3}
+ 10%|█         | 134/1320 [2:04:34<19:13:40, 58.36s/it] 10%|█         | 135/1320 [2:05:25<18:29:39, 56.19s/it]                                                       {'loss': 0.6588, 'grad_norm': 0.7024776561775022, 'learning_rate': 1e-05, 'num_tokens': 78935680.0, 'mean_token_accuracy': 0.7842128276824951, 'epoch': 0.31}
+ 10%|█         | 135/1320 [2:05:25<18:29:39, 56.19s/it] 10%|█         | 136/1320 [2:06:22<18:29:47, 56.24s/it]                                                       {'loss': 0.6547, 'grad_norm': 0.8643915077655127, 'learning_rate': 1e-05, 'num_tokens': 79550173.0, 'mean_token_accuracy': 0.784822404384613, 'epoch': 0.31}
+ 10%|█         | 136/1320 [2:06:22<18:29:47, 56.24s/it] 10%|█         | 137/1320 [2:07:25<19:13:09, 58.49s/it]                                                       {'loss': 0.6609, 'grad_norm': 0.6816396145374825, 'learning_rate': 1e-05, 'num_tokens': 80098948.0, 'mean_token_accuracy': 0.7846945524215698, 'epoch': 0.31}
+ 10%|█         | 137/1320 [2:07:25<19:13:09, 58.49s/it] 10%|█         | 138/1320 [2:08:18<18:36:14, 56.66s/it]                                                       {'loss': 0.6756, 'grad_norm': 0.7894478273319252, 'learning_rate': 1e-05, 'num_tokens': 80704525.0, 'mean_token_accuracy': 0.7781093120574951, 'epoch': 0.31}
+ 10%|█         | 138/1320 [2:08:18<18:36:14, 56.66s/it] 11%|█         | 139/1320 [2:09:15<18:40:05, 56.91s/it]                                                       {'loss': 0.6658, 'grad_norm': 0.8030717314694801, 'learning_rate': 1e-05, 'num_tokens': 81327647.0, 'mean_token_accuracy': 0.7809829115867615, 'epoch': 0.32}
+ 11%|█         | 139/1320 [2:09:15<18:40:05, 56.91s/it] 11%|█         | 140/1320 [2:10:14<18:49:40, 57.44s/it]                                                       {'loss': 0.6727, 'grad_norm': 0.6601620525937124, 'learning_rate': 1e-05, 'num_tokens': 81960174.0, 'mean_token_accuracy': 0.7803182601928711, 'epoch': 0.32}
+ 11%|█         | 140/1320 [2:10:14<18:49:40, 57.44s/it] 11%|█         | 141/1320 [2:11:12<18:54:28, 57.73s/it]                                                       {'loss': 0.6622, 'grad_norm': 0.7549811716408806, 'learning_rate': 1e-05, 'num_tokens': 82605768.0, 'mean_token_accuracy': 0.7821975946426392, 'epoch': 0.32}
+ 11%|█         | 141/1320 [2:11:12<18:54:28, 57.73s/it] 11%|█         | 142/1320 [2:12:09<18:49:03, 57.51s/it]                                                       {'loss': 0.6623, 'grad_norm': 0.6851917517375103, 'learning_rate': 1e-05, 'num_tokens': 83217263.0, 'mean_token_accuracy': 0.7825134992599487, 'epoch': 0.32}
+ 11%|█         | 142/1320 [2:12:09<18:49:03, 57.51s/it] 11%|█         | 143/1320 [2:13:04<18:31:34, 56.66s/it]                                                       {'loss': 0.6768, 'grad_norm': 0.6714614399558345, 'learning_rate': 1e-05, 'num_tokens': 83836107.0, 'mean_token_accuracy': 0.7778261303901672, 'epoch': 0.33}
+ 11%|█         | 143/1320 [2:13:04<18:31:34, 56.66s/it] 11%|█         | 144/1320 [2:14:08<19:15:08, 58.94s/it]                                                       {'loss': 0.6669, 'grad_norm': 0.7212721615111501, 'learning_rate': 1e-05, 'num_tokens': 84453035.0, 'mean_token_accuracy': 0.7809993624687195, 'epoch': 0.33}
+ 11%|█         | 144/1320 [2:14:08<19:15:08, 58.94s/it] 11%|█         | 145/1320 [2:15:07<19:10:56, 58.77s/it]                                                       {'loss': 0.6423, 'grad_norm': 0.6874339072654813, 'learning_rate': 1e-05, 'num_tokens': 85043298.0, 'mean_token_accuracy': 0.7877475023269653, 'epoch': 0.33}
+ 11%|█         | 145/1320 [2:15:07<19:10:56, 58.77s/it] 11%|█         | 146/1320 [2:16:04<18:59:44, 58.25s/it]                                                       {'loss': 0.6584, 'grad_norm': 0.6922192149912887, 'learning_rate': 1e-05, 'num_tokens': 85624687.0, 'mean_token_accuracy': 0.7830474376678467, 'epoch': 0.33}
+ 11%|█         | 146/1320 [2:16:04<18:59:44, 58.25s/it] 11%|█         | 147/1320 [2:17:04<19:11:41, 58.91s/it]                                                       {'loss': 0.6485, 'grad_norm': 0.7490096446507845, 'learning_rate': 1e-05, 'num_tokens': 86150445.0, 'mean_token_accuracy': 0.7878842353820801, 'epoch': 0.33}
+ 11%|█         | 147/1320 [2:17:04<19:11:41, 58.91s/it] 11%|█         | 148/1320 [2:17:51<18:01:30, 55.37s/it]                                                       {'loss': 0.6525, 'grad_norm': 0.6971259349852537, 'learning_rate': 1e-05, 'num_tokens': 86679493.0, 'mean_token_accuracy': 0.7838937640190125, 'epoch': 0.34}
+ 11%|█         | 148/1320 [2:17:51<18:01:30, 55.37s/it] 11%|█▏        | 149/1320 [2:18:42<17:31:57, 53.90s/it]                                                       {'loss': 0.6483, 'grad_norm': 0.662540165932451, 'learning_rate': 1e-05, 'num_tokens': 87212067.0, 'mean_token_accuracy': 0.7858357429504395, 'epoch': 0.34}
+ 11%|█▏        | 149/1320 [2:18:42<17:31:57, 53.90s/it] 11%|█▏        | 150/1320 [2:19:33<17:16:58, 53.18s/it]                                                       {'loss': 0.6542, 'grad_norm': 0.6731206527928587, 'learning_rate': 1e-05, 'num_tokens': 87769864.0, 'mean_token_accuracy': 0.7847368717193604, 'epoch': 0.34}
+ 11%|█▏        | 150/1320 [2:19:33<17:16:58, 53.18s/it] 11%|█▏        | 151/1320 [2:20:31<17:43:18, 54.57s/it]                                                       {'loss': 0.6623, 'grad_norm': 0.667034399392241, 'learning_rate': 1e-05, 'num_tokens': 88340604.0, 'mean_token_accuracy': 0.7835354804992676, 'epoch': 0.34}
+ 11%|█▏        | 151/1320 [2:20:31<17:43:18, 54.57s/it] 12%|█▏        | 152/1320 [2:21:33<18:26:44, 56.85s/it]                                                       {'loss': 0.648, 'grad_norm': 0.6722252025545212, 'learning_rate': 1e-05, 'num_tokens': 88879920.0, 'mean_token_accuracy': 0.7881560325622559, 'epoch': 0.35}
+ 12%|█▏        | 152/1320 [2:21:33<18:26:44, 56.85s/it] 12%|█▏        | 153/1320 [2:22:23<17:46:34, 54.84s/it]                                                       {'loss': 0.6614, 'grad_norm': 0.7875280033420703, 'learning_rate': 1e-05, 'num_tokens': 89452777.0, 'mean_token_accuracy': 0.7817949056625366, 'epoch': 0.35}
+ 12%|█▏        | 153/1320 [2:22:23<17:46:34, 54.84s/it] 12%|█▏        | 154/1320 [2:23:21<18:01:53, 55.67s/it]                                                       {'loss': 0.6707, 'grad_norm': 0.6673787825037947, 'learning_rate': 1e-05, 'num_tokens': 90005439.0, 'mean_token_accuracy': 0.7802914381027222, 'epoch': 0.35}
+ 12%|█▏        | 154/1320 [2:23:21<18:01:53, 55.67s/it] 12%|█▏        | 155/1320 [2:24:14<17:47:31, 54.98s/it]                                                       {'loss': 0.6517, 'grad_norm': 0.7439418679015352, 'learning_rate': 1e-05, 'num_tokens': 90551297.0, 'mean_token_accuracy': 0.7846830487251282, 'epoch': 0.35}
+ 12%|█▏        | 155/1320 [2:24:14<17:47:31, 54.98s/it] 12%|█▏        | 156/1320 [2:25:06<17:28:05, 54.03s/it]                                                       {'loss': 0.6609, 'grad_norm': 0.6354417144390953, 'learning_rate': 1e-05, 'num_tokens': 91188615.0, 'mean_token_accuracy': 0.7828555107116699, 'epoch': 0.35}
+ 12%|█▏        | 156/1320 [2:25:06<17:28:05, 54.03s/it] 12%|█▏        | 157/1320 [2:26:04<17:47:39, 55.08s/it]                                                       {'loss': 0.6682, 'grad_norm': 0.7263705427357666, 'learning_rate': 1e-05, 'num_tokens': 91773434.0, 'mean_token_accuracy': 0.7799010276794434, 'epoch': 0.36}
+ 12%|█▏        | 157/1320 [2:26:04<17:47:39, 55.08s/it] 12%|█▏        | 158/1320 [2:27:01<18:01:15, 55.83s/it]                                                       {'loss': 0.6581, 'grad_norm': 0.7414444832520407, 'learning_rate': 1e-05, 'num_tokens': 92336228.0, 'mean_token_accuracy': 0.783494770526886, 'epoch': 0.36}
+ 12%|█▏        | 158/1320 [2:27:01<18:01:15, 55.83s/it] 12%|█▏        | 159/1320 [2:27:55<17:49:44, 55.28s/it]                                                       {'loss': 0.6517, 'grad_norm': 0.685600270832364, 'learning_rate': 1e-05, 'num_tokens': 92951065.0, 'mean_token_accuracy': 0.7849160432815552, 'epoch': 0.36}
+ 12%|█▏        | 159/1320 [2:27:55<17:49:44, 55.28s/it] 12%|█▏        | 160/1320 [2:28:53<18:04:25, 56.09s/it]                                                       {'loss': 0.6469, 'grad_norm': 0.7308987936693971, 'learning_rate': 1e-05, 'num_tokens': 93578863.0, 'mean_token_accuracy': 0.7856930494308472, 'epoch': 0.36}
+ 12%|█▏        | 160/1320 [2:28:53<18:04:25, 56.09s/it] 12%|█▏        | 161/1320 [2:29:58<18:50:46, 58.54s/it]                                                       {'loss': 0.6607, 'grad_norm': 0.7883669084301625, 'learning_rate': 1e-05, 'num_tokens': 94202848.0, 'mean_token_accuracy': 0.7829537987709045, 'epoch': 0.37}
+ 12%|█▏        | 161/1320 [2:29:58<18:50:46, 58.54s/it] 12%|█▏        | 162/1320 [2:30:53<18:34:35, 57.75s/it]                                                       {'loss': 0.663, 'grad_norm': 0.684648178754747, 'learning_rate': 1e-05, 'num_tokens': 94746995.0, 'mean_token_accuracy': 0.7816001176834106, 'epoch': 0.37}
+ 12%|█▏        | 162/1320 [2:30:53<18:34:35, 57.75s/it] 12%|█▏        | 163/1320 [2:31:50<18:25:25, 57.33s/it]                                                       {'loss': 0.646, 'grad_norm': 0.6676519177681464, 'learning_rate': 1e-05, 'num_tokens': 95322475.0, 'mean_token_accuracy': 0.7871581315994263, 'epoch': 0.37}
+ 12%|█▏        | 163/1320 [2:31:50<18:25:25, 57.33s/it] 12%|█▏        | 164/1320 [2:32:48<18:31:13, 57.68s/it]                                                       {'loss': 0.6728, 'grad_norm': 0.7838786349215214, 'learning_rate': 1e-05, 'num_tokens': 95930432.0, 'mean_token_accuracy': 0.7797049283981323, 'epoch': 0.37}
+ 12%|█▏        | 164/1320 [2:32:48<18:31:13, 57.68s/it] 12%|█▎        | 165/1320 [2:33:37<17:39:06, 55.02s/it]                                                       {'loss': 0.6458, 'grad_norm': 0.6281745535723686, 'learning_rate': 1e-05, 'num_tokens': 96460833.0, 'mean_token_accuracy': 0.7871036529541016, 'epoch': 0.38}
+ 12%|█▎        | 165/1320 [2:33:37<17:39:06, 55.02s/it] 13%|█▎        | 166/1320 [2:34:34<17:46:09, 55.43s/it]                                                       {'loss': 0.6619, 'grad_norm': 0.8895114853282476, 'learning_rate': 1e-05, 'num_tokens': 97077828.0, 'mean_token_accuracy': 0.782447099685669, 'epoch': 0.38}
+ 13%|█▎        | 166/1320 [2:34:34<17:46:09, 55.43s/it] 13%|█▎        | 167/1320 [2:35:38<18:39:47, 58.27s/it]                                                       {'loss': 0.6396, 'grad_norm': 0.5856787321524196, 'learning_rate': 1e-05, 'num_tokens': 97721288.0, 'mean_token_accuracy': 0.790402889251709, 'epoch': 0.38}
+ 13%|█▎        | 167/1320 [2:35:38<18:39:47, 58.27s/it] 13%|█▎        | 168/1320 [2:36:21<17:09:48, 53.64s/it]                                                       {'loss': 0.6318, 'grad_norm': 0.7953923056832872, 'learning_rate': 1e-05, 'num_tokens': 98213409.0, 'mean_token_accuracy': 0.7919749617576599, 'epoch': 0.38}
+ 13%|█▎        | 168/1320 [2:36:21<17:09:48, 53.64s/it] 13%|█▎        | 169/1320 [2:37:29<18:28:27, 57.78s/it]                                                       {'loss': 0.6609, 'grad_norm': 0.7065496068364648, 'learning_rate': 1e-05, 'num_tokens': 98840651.0, 'mean_token_accuracy': 0.7824562788009644, 'epoch': 0.38}
+ 13%|█▎        | 169/1320 [2:37:29<18:28:27, 57.78s/it] 13%|█▎        | 170/1320 [2:38:25<18:16:21, 57.20s/it]                                                       {'loss': 0.6467, 'grad_norm': 0.6215994097324654, 'learning_rate': 1e-05, 'num_tokens': 99447268.0, 'mean_token_accuracy': 0.7869738936424255, 'epoch': 0.39}
+ 13%|█▎        | 170/1320 [2:38:25<18:16:21, 57.20s/it] 13%|█▎        | 171/1320 [2:39:26<18:37:21, 58.35s/it]                                                       {'loss': 0.6509, 'grad_norm': 0.7792234286175729, 'learning_rate': 1e-05, 'num_tokens': 100072240.0, 'mean_token_accuracy': 0.7852398157119751, 'epoch': 0.39}
+ 13%|█▎        | 171/1320 [2:39:26<18:37:21, 58.35s/it] 13%|█▎        | 172/1320 [2:40:20<18:11:49, 57.06s/it]                                                       {'loss': 0.6555, 'grad_norm': 0.6325514839812614, 'learning_rate': 1e-05, 'num_tokens': 100654302.0, 'mean_token_accuracy': 0.785000205039978, 'epoch': 0.39}
+ 13%|█▎        | 172/1320 [2:40:20<18:11:49, 57.06s/it] 13%|█▎        | 173/1320 [2:41:17<18:11:18, 57.09s/it]                                                       {'loss': 0.6665, 'grad_norm': 0.7532160284674657, 'learning_rate': 1e-05, 'num_tokens': 101221266.0, 'mean_token_accuracy': 0.7813443541526794, 'epoch': 0.39}
+ 13%|█▎        | 173/1320 [2:41:17<18:11:18, 57.09s/it] 13%|█▎        | 174/1320 [2:42:09<17:43:29, 55.68s/it]                                                       {'loss': 0.6497, 'grad_norm': 0.7572817306485838, 'learning_rate': 1e-05, 'num_tokens': 101772567.0, 'mean_token_accuracy': 0.7855849266052246, 'epoch': 0.4}
+ 13%|█▎        | 174/1320 [2:42:09<17:43:29, 55.68s/it] 13%|█▎        | 175/1320 [2:43:07<17:52:33, 56.20s/it]                                                       {'loss': 0.6518, 'grad_norm': 0.58720061840245, 'learning_rate': 1e-05, 'num_tokens': 102342568.0, 'mean_token_accuracy': 0.7845978140830994, 'epoch': 0.4}
+ 13%|█▎        | 175/1320 [2:43:07<17:52:33, 56.20s/it] 13%|█▎        | 176/1320 [2:44:01<17:43:56, 55.80s/it]                                                       {'loss': 0.6561, 'grad_norm': 0.7146669601191916, 'learning_rate': 1e-05, 'num_tokens': 102934565.0, 'mean_token_accuracy': 0.7825958728790283, 'epoch': 0.4}
+ 13%|█▎        | 176/1320 [2:44:01<17:43:56, 55.80s/it] 13%|█▎        | 177/1320 [2:45:00<17:57:56, 56.59s/it]                                                       {'loss': 0.6378, 'grad_norm': 0.6833829736091179, 'learning_rate': 1e-05, 'num_tokens': 103497365.0, 'mean_token_accuracy': 0.7895386219024658, 'epoch': 0.4}
+ 13%|█▎        | 177/1320 [2:45:00<17:57:56, 56.59s/it] 13%|█▎        | 178/1320 [2:46:06<18:51:58, 59.47s/it]                                                       {'loss': 0.6431, 'grad_norm': 0.664941792803886, 'learning_rate': 1e-05, 'num_tokens': 104026403.0, 'mean_token_accuracy': 0.7887652516365051, 'epoch': 0.4}
+ 13%|█▎        | 178/1320 [2:46:06<18:51:58, 59.47s/it] 14%|█▎        | 179/1320 [2:46:58<18:09:07, 57.27s/it]                                                       {'loss': 0.6442, 'grad_norm': 0.7495827510089091, 'learning_rate': 1e-05, 'num_tokens': 104584617.0, 'mean_token_accuracy': 0.7871133685112, 'epoch': 0.41}
+ 14%|█▎        | 179/1320 [2:46:58<18:09:07, 57.27s/it] 14%|█▎        | 180/1320 [2:48:02<18:46:29, 59.29s/it]                                                       {'loss': 0.6304, 'grad_norm': 0.6155430222452584, 'learning_rate': 1e-05, 'num_tokens': 105147003.0, 'mean_token_accuracy': 0.7911571860313416, 'epoch': 0.41}
+ 14%|█▎        | 180/1320 [2:48:02<18:46:29, 59.29s/it] 14%|█▎        | 181/1320 [2:48:56<18:13:28, 57.60s/it]                                                       {'loss': 0.6443, 'grad_norm': 0.7088629413344988, 'learning_rate': 1e-05, 'num_tokens': 105719164.0, 'mean_token_accuracy': 0.7875224351882935, 'epoch': 0.41}
+ 14%|█▎        | 181/1320 [2:48:56<18:13:28, 57.60s/it] 14%|█▍        | 182/1320 [2:49:44<17:15:57, 54.62s/it]                                                       {'loss': 0.6265, 'grad_norm': 0.8065597687382117, 'learning_rate': 1e-05, 'num_tokens': 106248318.0, 'mean_token_accuracy': 0.7933746576309204, 'epoch': 0.41}
+ 14%|█▍        | 182/1320 [2:49:44<17:15:57, 54.62s/it] 14%|█▍        | 183/1320 [2:50:35<16:58:52, 53.77s/it]                                                       {'loss': 0.6448, 'grad_norm': 0.5836307127795848, 'learning_rate': 1e-05, 'num_tokens': 106821494.0, 'mean_token_accuracy': 0.7887399196624756, 'epoch': 0.42}
+ 14%|█▍        | 183/1320 [2:50:35<16:58:52, 53.77s/it] 14%|█▍        | 184/1320 [2:51:24<16:28:28, 52.21s/it]                                                       {'loss': 0.6493, 'grad_norm': 0.7133282611189724, 'learning_rate': 1e-05, 'num_tokens': 107370370.0, 'mean_token_accuracy': 0.7858558893203735, 'epoch': 0.42}
+ 14%|█▍        | 184/1320 [2:51:24<16:28:28, 52.21s/it] 14%|█▍        | 185/1320 [2:52:25<17:19:20, 54.94s/it]                                                       {'loss': 0.6583, 'grad_norm': 0.7646938161994733, 'learning_rate': 1e-05, 'num_tokens': 107971343.0, 'mean_token_accuracy': 0.7820645570755005, 'epoch': 0.42}
+ 14%|█▍        | 185/1320 [2:52:25<17:19:20, 54.94s/it] 14%|█▍        | 186/1320 [2:53:23<17:35:02, 55.82s/it]                                                       {'loss': 0.6348, 'grad_norm': 0.6492812432185608, 'learning_rate': 1e-05, 'num_tokens': 108500821.0, 'mean_token_accuracy': 0.7915980815887451, 'epoch': 0.42}
+ 14%|█▍        | 186/1320 [2:53:23<17:35:02, 55.82s/it] 14%|█▍        | 187/1320 [2:54:26<18:14:48, 57.98s/it]                                                       {'loss': 0.6462, 'grad_norm': 0.6922250868179738, 'learning_rate': 1e-05, 'num_tokens': 109094901.0, 'mean_token_accuracy': 0.785955548286438, 'epoch': 0.42}
+ 14%|█▍        | 187/1320 [2:54:26<18:14:48, 57.98s/it] 14%|█▍        | 188/1320 [2:55:16<17:29:10, 55.61s/it]                                                       {'loss': 0.648, 'grad_norm': 0.7944888691543581, 'learning_rate': 1e-05, 'num_tokens': 109695372.0, 'mean_token_accuracy': 0.7857065200805664, 'epoch': 0.43}
+ 14%|█▍        | 188/1320 [2:55:16<17:29:10, 55.61s/it] 14%|█▍        | 189/1320 [2:56:16<17:52:47, 56.91s/it]                                                       {'loss': 0.6656, 'grad_norm': 0.5930268305817236, 'learning_rate': 1e-05, 'num_tokens': 110343821.0, 'mean_token_accuracy': 0.7818909883499146, 'epoch': 0.43}
+ 14%|█▍        | 189/1320 [2:56:16<17:52:47, 56.91s/it] 14%|█▍        | 190/1320 [2:57:24<18:52:08, 60.11s/it]                                                       {'loss': 0.6357, 'grad_norm': 0.9579386595521265, 'learning_rate': 1e-05, 'num_tokens': 110988220.0, 'mean_token_accuracy': 0.7890347242355347, 'epoch': 0.43}
+ 14%|█▍        | 190/1320 [2:57:24<18:52:08, 60.11s/it] 14%|█▍        | 191/1320 [2:58:12<17:41:31, 56.41s/it]                                                       {'loss': 0.6456, 'grad_norm': 0.6645745557433433, 'learning_rate': 1e-05, 'num_tokens': 111572847.0, 'mean_token_accuracy': 0.7868690490722656, 'epoch': 0.43}
+ 14%|█▍        | 191/1320 [2:58:12<17:41:31, 56.41s/it] 15%|█▍        | 192/1320 [2:59:10<17:49:40, 56.90s/it]                                                       {'loss': 0.6467, 'grad_norm': 0.8404564128715754, 'learning_rate': 1e-05, 'num_tokens': 112140749.0, 'mean_token_accuracy': 0.7874003648757935, 'epoch': 0.44}
+ 15%|█▍        | 192/1320 [2:59:10<17:49:40, 56.90s/it]
