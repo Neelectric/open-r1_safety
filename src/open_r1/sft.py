@@ -46,7 +46,7 @@ from open_r1.configs import ScriptArguments, SFTConfig
 from open_r1.utils import get_dataset, get_model, get_tokenizer
 from open_r1.utils.callbacks import get_callbacks
 from open_r1.utils.wandb_logging import init_wandb_training
-from trl import ModelConfig, SFTTrainer, TrlParser, get_peft_config, setup_chat_format
+from trl import ModelConfig, SFTTrainer, TrlParser, get_peft_config
 
 # custom optim work
 from torch.optim.lr_scheduler import LambdaLR
@@ -129,9 +129,11 @@ def main(script_args, training_args, model_args):
     tokenizer = get_tokenizer(model_args, training_args)
     model = get_model(model_args, training_args)
 
+    # if tokenizer.chat_template is None:
+    #     logger.info("No chat template provided, defaulting to ChatML.")
+    #     model, tokenizer = setup_chat_format(model, tokenizer, format="chatml")
     if tokenizer.chat_template is None:
-        logger.info("No chat template provided, defaulting to ChatML.")
-        model, tokenizer = setup_chat_format(model, tokenizer, format="chatml")
+        print("NO LONGER SUPPORTING setup_chat_format(model, tokenizer, format='chatml')")
 
     ############################
     # Initialize the SFT Trainer

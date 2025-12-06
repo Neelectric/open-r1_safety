@@ -1,0 +1,676 @@
+[2025-12-06 13:26:50,723] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+W1206 13:26:52.266000 965174 torch/distributed/run.py:774] 
+W1206 13:26:52.266000 965174 torch/distributed/run.py:774] *****************************************
+W1206 13:26:52.266000 965174 torch/distributed/run.py:774] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1206 13:26:52.266000 965174 torch/distributed/run.py:774] *****************************************
+[2025-12-06 13:26:57,467] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 13:26:57,468] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 13:26:58,300] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 13:26:58,304] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 13:26:58,309] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 13:26:58,311] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 13:26:58,321] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 13:26:58,326] [INFO] [real_accelerator.py:239:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-12-06 13:26:58,685] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 13:26:58,686] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 13:26:59,566] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 13:26:59,609] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 13:26:59,659] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 13:26:59,660] [INFO] [comm.py:700:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+[2025-12-06 13:26:59,689] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 13:26:59,717] [INFO] [comm.py:669:init_distributed] cdb=None
+[2025-12-06 13:26:59,725] [INFO] [comm.py:669:init_distributed] cdb=None
+2025-12-06 13:27:00 - INFO - __main__ - Model parameters ModelConfig(model_name_or_path='meta-llama/Llama-3.1-8B-Instruct', model_revision='main', dtype='bfloat16', trust_remote_code=False, attn_implementation='flash_attention_2', use_peft=False, lora_r=16, lora_alpha=32, lora_dropout=0.05, lora_target_modules=None, lora_target_parameters=None, lora_modules_to_save=None, lora_task_type='CAUSAL_LM', use_rslora=False, use_dora=False, load_in_8bit=False, load_in_4bit=False, bnb_4bit_quant_type='nf4', use_bnb_nested_quant=False, bnb_4bit_quant_storage=None, torch_dtype=None)
+2025-12-06 13:27:00 - INFO - __main__ - Script parameters ScriptArguments(dataset_name='Neelectric/codeforces-cots_solutions_Llama3_16384toks', dataset_config='default', dataset_train_split='train', dataset_test_split='test', dataset_streaming=False, gradient_checkpointing_use_reentrant=False, ignore_bias_buffers=False, dataset_mixture=None, custom_optim=None, preconditioner_power=0.5)
+2025-12-06 13:27:00 - INFO - __main__ - Training parameters SFTConfig(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+activation_offloading=False,
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+assistant_only_loss=False,
+auto_find_batch_size=False,
+average_tokens_across_devices=True,
+batch_eval_metrics=False,
+benchmarks=[],
+bf16=True,
+bf16_full_eval=False,
+callbacks=['push_to_hub_revision'],
+chat_template={{- bos_token }}
+{%- if custom_tools is defined %}
+    {%- set tools = custom_tools %}
+{%- endif %}
+{%- if not tools_in_user_message is defined %}
+    {%- set tools_in_user_message = true %}
+{%- endif %}
+{%- if not date_string is defined %}
+    {%- set date_string = "26 Jul 2024" %}
+{%- endif %}
+{%- if not tools is defined %}
+    {%- set tools = none %}
+{%- endif %}
+
+{#- This block extracts the system message, so we can slot it into the right place. #}
+{%- if messages[0]['role'] == 'system' %}
+    {%- set system_message = messages[0]['content']|trim %}
+    {%- set messages = messages[1:] %}
+{%- else %}
+    {%- set system_message = "You are a helpful AI Assistant that provides well-reasoned and detailed responses. You first think about the reasoning process as an internal monologue and then provide the user with the answer. Respond in the following format: <think>
+...
+</think>
+<answer>
+...
+</answer>" %}
+{%- endif %}
+
+{#- System message + builtin tools #}
+{{- "<|start_header_id|>system<|end_header_id|>\n\n" }}
+{%- if builtin_tools is defined or tools is not none %}
+    {{- "Environment: ipython\n" }}
+{%- endif %}
+{%- if builtin_tools is defined %}
+    {{- "Tools: " + builtin_tools | reject('equalto', 'code_interpreter') | join(", ") + "\n\n"}}
+{%- endif %}
+{{- "Cutting Knowledge Date: December 2023\n" }}
+{{- "Today Date: " + date_string + "\n\n" }}
+{%- if tools is not none and not tools_in_user_message %}
+    {{- "You have access to the following functions. To call a function, please respond with JSON for a function call." }}
+    {{- 'Respond in the format {"name": function name, "parameters": dictionary of argument name and its value}.' }}
+    {{- "Do not use variables.\n\n" }}
+    {%- for t in tools %}
+        {{- t | tojson(indent=4) }}
+        {{- "\n\n" }}
+    {%- endfor %}
+{%- endif %}
+{{- system_message }}
+{{- "<|eot_id|>" }}
+
+{#- Custom tools are passed in a user message with some extra guidance #}
+{%- if tools_in_user_message and not tools is none %}
+    {#- Extract the first user message so we can plug it in here #}
+    {%- if messages | length != 0 %}
+        {%- set first_user_message = messages[0]['content']|trim %}
+        {%- set messages = messages[1:] %}
+    {%- else %}
+        {{- raise_exception("Cannot put tools in the first user message when there's no first user message!") }}
+{%- endif %}
+    {{- '<|start_header_id|>user<|end_header_id|>\n\n' -}}
+    {{- "Given the following functions, please respond with a JSON for a function call " }}
+    {{- "with its proper arguments that best answers the given prompt.\n\n" }}
+    {{- 'Respond in the format {"name": function name, "parameters": dictionary of argument name and its value}.' }}
+    {{- "Do not use variables.\n\n" }}
+    {%- for t in tools %}
+        {{- t | tojson(indent=4) }}
+        {{- "\n\n" }}
+    {%- endfor %}
+    {{- first_user_message + "<|eot_id|>"}}
+{%- endif %}
+
+{%- for message in messages %}
+    {%- if not (message.role == 'ipython' or message.role == 'tool' or 'tool_calls' in message) %}
+        {{- '<|start_header_id|>' + message['role'] + '<|end_header_id|>\n\n'+ message['content'] | trim + '<|eot_id|>' }}
+    {%- elif 'tool_calls' in message %}
+        {%- if not message.tool_calls|length == 1 %}
+            {{- raise_exception("This model only supports single tool-calls at once!") }}
+        {%- endif %}
+        {%- set tool_call = message.tool_calls[0].function %}
+        {%- if builtin_tools is defined and tool_call.name in builtin_tools %}
+            {{- '<|start_header_id|>assistant<|end_header_id|>\n\n' -}}
+            {{- "<|python_tag|>" + tool_call.name + ".call(" }}
+            {%- for arg_name, arg_val in tool_call.arguments | items %}
+                {{- arg_name + '="' + arg_val + '"' }}
+                {%- if not loop.last %}
+                    {{- ", " }}
+                {%- endif %}
+                {%- endfor %}
+            {{- ")" }}
+        {%- else  %}
+            {{- '<|start_header_id|>assistant<|end_header_id|>\n\n' -}}
+            {{- '{"name": "' + tool_call.name + '", ' }}
+            {{- '"parameters": ' }}
+            {{- tool_call.arguments | tojson }}
+            {{- "}" }}
+        {%- endif %}
+        {%- if builtin_tools is defined %}
+            {#- This means we're in ipython mode #}
+            {{- "<|eom_id|>" }}
+        {%- else %}
+            {{- "<|eot_id|>" }}
+        {%- endif %}
+    {%- elif message.role == "tool" or message.role == "ipython" %}
+        {{- "<|start_header_id|>ipython<|end_header_id|>\n\n" }}
+        {%- if message.content is mapping or message.content is iterable %}
+            {{- message.content | tojson }}
+        {%- else %}
+            {{- message.content }}
+        {%- endif %}
+        {{- "<|eot_id|>" }}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|start_header_id|>assistant<|end_header_id|>\n\n' }}
+{%- endif %}
+,
+chat_template_path=None,
+completion_only_loss=None,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+dataset_kwargs=None,
+dataset_num_proc=12,
+dataset_text_field=text,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=None,
+disable_tqdm=False,
+do_eval=False,
+do_predict=False,
+do_train=False,
+eos_token=<EOS_TOKEN>,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_packing=None,
+eval_steps=None,
+eval_strategy=IntervalStrategy.NO,
+eval_use_gather_object=False,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+gradient_accumulation_steps=1,
+gradient_checkpointing=True,
+gradient_checkpointing_kwargs={'use_reentrant': False},
+greater_is_better=None,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.02,
+hub_model_revision=v00.01,
+hub_private_repo=None,
+hub_revision=None,
+hub_strategy=HubStrategy.EVERY_SAVE,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=no,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=1e-05,
+length_column_name=length,
+liger_kernel_config=None,
+load_best_model_at_end=False,
+local_rank=0,
+log_level=info,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=data/Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.02/runs/Dec06_13-26-58_d49310782408,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=1,
+logging_strategy=IntervalStrategy.STEPS,
+loss_type=nll,
+lr_scheduler_kwargs=None,
+lr_scheduler_type=SchedulerType.CONSTANT_WITH_WARMUP,
+max_grad_norm=0.2,
+max_length=16384,
+max_steps=-1,
+metric_for_best_model=None,
+model_init_kwargs=None,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=3,
+optim=OptimizerNames.ADAMW_TORCH,
+optim_args=None,
+optim_target_modules=None,
+output_dir=data/Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.02,
+overwrite_hub_revision=False,
+overwrite_output_dir=True,
+packing=False,
+packing_strategy=bfd,
+pad_to_multiple_of=None,
+pad_token=<PAD_TOKEN>,
+padding_free=True,
+parallelism_config=None,
+past_index=-1,
+per_device_eval_batch_size=1,
+per_device_train_batch_size=8,
+prediction_loss_only=False,
+project=huggingface,
+push_to_hub=True,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_revision=False,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=['wandb'],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+run_name=Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.02,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=0.2,
+save_strategy=SaveStrategy.STEPS,
+save_total_limit=2,
+seed=42,
+shuffle_dataset=False,
+skip_memory_metrics=True,
+system_prompt=None,
+tf32=None,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+trackio_space_id=trackio,
+use_cpu=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=True,
+use_mps_device=False,
+wandb_entity=Neelectric,
+wandb_project=open-r1_code,
+wandb_run_group=None,
+warmup_ratio=0.1,
+warmup_steps=0,
+weight_decay=0.0,
+)
+Found cached dataset codeforces-cots_solutions_llama3_16384toks (/home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed)
+2025-12-06 13:27:02 - INFO - datasets.builder - Found cached dataset codeforces-cots_solutions_llama3_16384toks (/home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed)
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,522 >> loading file tokenizer.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/tokenizer.json
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,522 >> loading file tokenizer.model from cache at None
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,522 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,523 >> loading file special_tokens_map.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,523 >> loading file tokenizer_config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2111] 2025-12-06 13:27:03,523 >> loading file chat_template.jinja from cache at None
+[2025-12-06 13:27:03,632] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 13:27:03,640 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 13:27:03,644 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 13:27:03,691] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 13:27:03,702 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 13:27:03,709 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[INFO|tokenization_utils_base.py:2380] 2025-12-06 13:27:03,814 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[2025-12-06 13:27:04,231] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 13:27:04,241 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 13:27:04,245 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 13:27:04,363] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 13:27:04,373 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 13:27:04,376 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 13:27:04,397] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[2025-12-06 13:27:04,402] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 13:27:04,407 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[INFO|configuration_utils.py:765] 2025-12-06 13:27:04,410 >> loading configuration file config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/config.json
+[WARNING|logging.py:328] 2025-12-06 13:27:04,411 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 13:27:04,413 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[INFO|configuration_utils.py:839] 2025-12-06 13:27:04,413 >> Model config LlamaConfig {
+  "architectures": [
+    "LlamaForCausalLM"
+  ],
+  "attention_bias": false,
+  "attention_dropout": 0.0,
+  "bos_token_id": 128000,
+  "dtype": "bfloat16",
+  "eos_token_id": [
+    128001,
+    128008,
+    128009
+  ],
+  "head_dim": 128,
+  "hidden_act": "silu",
+  "hidden_size": 4096,
+  "initializer_range": 0.02,
+  "intermediate_size": 14336,
+  "max_position_embeddings": 131072,
+  "mlp_bias": false,
+  "model_type": "llama",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 32,
+  "num_key_value_heads": 8,
+  "pretraining_tp": 1,
+  "rms_norm_eps": 1e-05,
+  "rope_scaling": {
+    "factor": 8.0,
+    "high_freq_factor": 4.0,
+    "low_freq_factor": 1.0,
+    "original_max_position_embeddings": 8192,
+    "rope_type": "llama3"
+  },
+  "rope_theta": 500000.0,
+  "tie_word_embeddings": false,
+  "transformers_version": "4.57.3",
+  "use_cache": false,
+  "vocab_size": 128256
+}
+
+[WARNING|logging.py:328] 2025-12-06 13:27:04,417 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[INFO|modeling_utils.py:1172] 2025-12-06 13:27:04,418 >> loading weights file model.safetensors from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/model.safetensors.index.json
+[INFO|modeling_utils.py:4373] 2025-12-06 13:27:04,418 >> Detected DeepSpeed ZeRO-3: activating zero.init() for this model
+[2025-12-06 13:27:04,418] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 13:27:04,429 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[INFO|configuration_utils.py:986] 2025-12-06 13:27:04,431 >> Generate config GenerationConfig {
+  "bos_token_id": 128000,
+  "eos_token_id": [
+    128001,
+    128008,
+    128009
+  ],
+  "use_cache": false
+}
+
+[WARNING|logging.py:328] 2025-12-06 13:27:04,433 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 13:27:04,463] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[WARNING|logging.py:328] 2025-12-06 13:27:04,472 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[WARNING|logging.py:328] 2025-12-06 13:27:04,476 >> Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in LlamaModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[2025-12-06 13:27:07,588] [INFO] [partition_parameters.py:348:__exit__] finished initializing model - num_params = 291, num_elems = 8.03B
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.00it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.81it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.83it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.02it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.40it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.41it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
+
+Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
+Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
+Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
+
+Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.90it/s]
+RNG state hash before optimizer: -8796664525527803880
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+RNG state hash before optimizer: -1091779950582786948
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+RNG state hash before optimizer: 3171218187502958531
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+RNG state hash before optimizer: 49816195807050828
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+RNG state hash before optimizer: -5091604841730194999
+RNG state hash before optimizer: 9047386031293732252
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+RNG state hash before optimizer: 1075158632588383056
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.03it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.47it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.27it/s]
+[INFO|configuration_utils.py:941] 2025-12-06 13:27:11,010 >> loading configuration file generation_config.json from cache at /home/user/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/generation_config.json
+[INFO|configuration_utils.py:986] 2025-12-06 13:27:11,010 >> Generate config GenerationConfig {
+  "bos_token_id": 128000,
+  "do_sample": true,
+  "eos_token_id": [
+    128001,
+    128008,
+    128009
+  ],
+  "temperature": 0.6,
+  "top_p": 0.9
+}
+
+[INFO|dynamic_module_utils.py:423] 2025-12-06 13:27:11,243 >> Could not locate the custom_generate/generate.py inside meta-llama/Llama-3.1-8B-Instruct.
+RNG state hash before optimizer: 1054809861673010529
+Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-c69e5fffbc4ca07b_*_of_00012.arrow
+2025-12-06 13:27:11 - INFO - datasets.arrow_dataset - Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-c69e5fffbc4ca07b_*_of_00012.arrow
+Concatenating 12 shards
+2025-12-06 13:27:11 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-b583a20f43f6ebb9_*_of_00012.arrow
+2025-12-06 13:27:11 - INFO - datasets.arrow_dataset - Loading cached processed dataset at /home/user/.cache/huggingface/datasets/Neelectric___codeforces-cots_solutions_llama3_16384toks/default/0.0.0/9a5b9229d19b435322274d33c31ed7e42c89b5ed/cache-b583a20f43f6ebb9_*_of_00012.arrow
+Concatenating 12 shards
+2025-12-06 13:27:11 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+/data/neel/open-r1_safety/openr1_v3/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py:4807: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+RNG state hash after optimizer: 49816195807050828
+[WARNING|trainer.py:982] 2025-12-06 13:27:11,760 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: -8796664525527803880
+[WARNING|trainer.py:982] 2025-12-06 13:27:11,761 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: 9047386031293732252
+[WARNING|trainer.py:982] 2025-12-06 13:27:11,775 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: -1091779950582786948
+RNG state hash after optimizer: 1075158632588383056
+RNG state hash after optimizer: -5091604841730194999[WARNING|trainer.py:982] 2025-12-06 13:27:11,778 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+
+[WARNING|trainer.py:982] 2025-12-06 13:27:11,779 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+[WARNING|trainer.py:982] 2025-12-06 13:27:11,779 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+RNG state hash after optimizer: 3171218187502958531
+[WARNING|trainer.py:982] 2025-12-06 13:27:11,780 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+[INFO|trainer.py:749] 2025-12-06 13:27:11,845 >> Using auto half precision backend
+RNG state hash after optimizer: 1054809861673010529
+2025-12-06 13:27:11 - INFO - __main__ - *** Train ***
+[WARNING|trainer.py:982] 2025-12-06 13:27:11,845 >> The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 128009}.
+[2025-12-06 13:27:12,397] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed info: version=0.16.8, git-hash=unknown, git-branch=unknown
+[2025-12-06 13:27:12,397] [INFO] [config.py:735:__init__] Config mesh_device None world_size = 8
+[2025-12-06 13:27:12,405] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Flops Profiler Enabled: False
+[2025-12-06 13:27:12,406] [INFO] [logging.py:107:log_dist] [Rank 0] Using client Optimizer as basic optimizer
+[2025-12-06 13:27:12,406] [INFO] [logging.py:107:log_dist] [Rank 0] Removing param_group that has no 'params' in the basic Optimizer
+[2025-12-06 13:27:12,412] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Basic Optimizer = AdamW
+[2025-12-06 13:27:12,412] [INFO] [utils.py:59:is_zero_supported_optimizer] Checking ZeRO support for optimizer=AdamW type=<class 'torch.optim.adamw.AdamW'>
+[2025-12-06 13:27:12,412] [INFO] [logging.py:107:log_dist] [Rank 0] Creating fp16 ZeRO stage 3 optimizer, MiCS is enabled False, Hierarchical params gather False
+[2025-12-06 13:27:12,412] [INFO] [logging.py:107:log_dist] [Rank 0] Creating torch.bfloat16 ZeRO stage 3 optimizer
+[2025-12-06 13:27:12,639] [INFO] [utils.py:781:see_memory_usage] Stage 3 initialize beginning
+[2025-12-06 13:27:12,640] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 4.68 GB         CA 3.0 GB         Max_CA 5 GB 
+[2025-12-06 13:27:12,640] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.17 GB, percent = 3.7%
+[2025-12-06 13:27:12,641] [INFO] [stage3.py:170:__init__] Reduce bucket size 500000000
+[2025-12-06 13:27:12,641] [INFO] [stage3.py:171:__init__] Prefetch bucket size 50000000
+[2025-12-06 13:27:12,838] [INFO] [utils.py:781:see_memory_usage] DeepSpeedZeRoOffload initialize [begin]
+[2025-12-06 13:27:12,839] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
+[2025-12-06 13:27:12,839] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.17 GB, percent = 3.7%
+Parameter Offload: Total persistent parameters: 266240 in 65 params
+[2025-12-06 13:27:13,102] [INFO] [utils.py:781:see_memory_usage] DeepSpeedZeRoOffload initialize [end]
+[2025-12-06 13:27:13,103] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
+[2025-12-06 13:27:13,103] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.19 GB, percent = 3.7%
+[2025-12-06 13:27:13,296] [INFO] [utils.py:781:see_memory_usage] Before creating fp16 partitions
+[2025-12-06 13:27:13,297] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB 
+[2025-12-06 13:27:13,297] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.19 GB, percent = 3.7%
+[2025-12-06 13:27:14,524] [INFO] [utils.py:781:see_memory_usage] After creating fp16 partitions: 2
+[2025-12-06 13:27:14,525] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 1.87 GB         Max_CA 3 GB 
+[2025-12-06 13:27:14,525] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
+[2025-12-06 13:27:14,730] [INFO] [utils.py:781:see_memory_usage] Before creating fp32 partitions
+[2025-12-06 13:27:14,731] [INFO] [utils.py:782:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 1.87 GB         Max_CA 2 GB 
+[2025-12-06 13:27:14,731] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
+[2025-12-06 13:27:14,924] [INFO] [utils.py:781:see_memory_usage] After creating fp32 partitions
+[2025-12-06 13:27:14,924] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 7.48 GB         CA 7.48 GB         Max_CA 7 GB 
+[2025-12-06 13:27:14,924] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
+[2025-12-06 13:27:15,103] [INFO] [utils.py:781:see_memory_usage] Before initializing optimizer states
+[2025-12-06 13:27:15,104] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 5.61 GB         CA 7.48 GB         Max_CA 7 GB 
+[2025-12-06 13:27:15,104] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
+[2025-12-06 13:27:15,292] [INFO] [utils.py:781:see_memory_usage] After initializing optimizer states
+[2025-12-06 13:27:15,292] [INFO] [utils.py:782:see_memory_usage] MA 5.61 GB         Max_MA 9.35 GB         CA 11.22 GB         Max_CA 11 GB 
+[2025-12-06 13:27:15,292] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.2 GB, percent = 3.7%
+[2025-12-06 13:27:15,293] [INFO] [stage3.py:534:_setup_for_real_optimizer] optimizer state initialized
+[2025-12-06 13:27:15,584] [INFO] [utils.py:781:see_memory_usage] After initializing ZeRO optimizer
+[2025-12-06 13:27:15,584] [INFO] [utils.py:782:see_memory_usage] MA 8.41 GB         Max_MA 10.37 GB         CA 12.2 GB         Max_CA 12 GB 
+[2025-12-06 13:27:15,585] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 72.3 GB, percent = 3.7%
+[2025-12-06 13:27:15,585] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Final Optimizer = DeepSpeedZeroOptimizer_Stage3
+[2025-12-06 13:27:15,585] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed using configured LR scheduler = None
+[2025-12-06 13:27:15,585] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed LR Scheduler = None
+[2025-12-06 13:27:15,585] [INFO] [logging.py:107:log_dist] [Rank 0] step=0, skipped=0, lr=[0.0, 0.0], mom=[(0.9, 0.999), (0.9, 0.999)]
+[2025-12-06 13:27:15,586] [INFO] [config.py:1003:print] DeepSpeedEngine configuration:
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   activation_checkpointing_config  {
+    "partition_activations": false, 
+    "contiguous_memory_optimization": false, 
+    "cpu_checkpointing": false, 
+    "number_checkpoints": null, 
+    "synchronize_checkpoint_boundary": false, 
+    "profile": false
+}
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   aio_config ................... {'block_size': 1048576, 'queue_depth': 8, 'intra_op_parallelism': 1, 'single_submit': False, 'overlap_events': True, 'use_gds': False}
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   amp_enabled .................. False
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   amp_params ................... False
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   autotuning_config ............ {
+    "enabled": false, 
+    "start_step": null, 
+    "end_step": null, 
+    "metric_path": null, 
+    "arg_mappings": null, 
+    "metric": "throughput", 
+    "model_info": null, 
+    "results_dir": "autotuning_results", 
+    "exps_dir": "autotuning_exps", 
+    "overwrite": true, 
+    "fast": true, 
+    "start_profile_step": 3, 
+    "end_profile_step": 5, 
+    "tuner_type": "gridsearch", 
+    "tuner_early_stopping": 5, 
+    "tuner_num_trials": 50, 
+    "model_info_path": null, 
+    "mp_size": 1, 
+    "max_train_batch_size": null, 
+    "min_train_batch_size": 1, 
+    "max_train_micro_batch_size_per_gpu": 1.024000e+03, 
+    "min_train_micro_batch_size_per_gpu": 1, 
+    "num_tuning_micro_batch_sizes": 3
+}
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   bfloat16_enabled ............. True
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   bfloat16_immediate_grad_update  True
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   checkpoint_parallel_write_pipeline  False
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   checkpoint_tag_validation_enabled  True
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   checkpoint_tag_validation_fail  False
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   comms_config ................. <deepspeed.comm.config.DeepSpeedCommsConfig object at 0x7fc4884c6010>
+[2025-12-06 13:27:15,586] [INFO] [config.py:1007:print]   communication_data_type ...... None
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   compile_config ............... deepcompile=False free_activation=False offload_activation=False offload_opt_states=False double_buffer=True symmetric_memory=False debug_log=False offload_parameters=False sync_before_reduce=False sync_after_reduce=False sync_before_allgather=False sync_after_allgather=False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   compression_config ........... {'weight_quantization': {'shared_parameters': {'enabled': False, 'quantizer_kernel': False, 'schedule_offset': 0, 'quantize_groups': 1, 'quantize_verbose': False, 'quantization_type': 'symmetric', 'quantize_weight_in_forward': False, 'rounding': 'nearest', 'fp16_mixed_quantize': False, 'quantize_change_ratio': 0.001}, 'different_groups': {}}, 'activation_quantization': {'shared_parameters': {'enabled': False, 'quantization_type': 'symmetric', 'range_calibration': 'dynamic', 'schedule_offset': 1000}, 'different_groups': {}}, 'sparse_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'row_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'head_pruning': {'shared_parameters': {'enabled': False, 'method': 'topk', 'schedule_offset': 1000}, 'different_groups': {}}, 'channel_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'layer_reduction': {'enabled': False}}
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   curriculum_enabled_legacy .... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   curriculum_params_legacy ..... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   data_efficiency_config ....... {'enabled': False, 'seed': 1234, 'data_sampling': {'enabled': False, 'num_epochs': 1000, 'num_workers': 0, 'pin_memory': False, 'curriculum_learning': {'enabled': False}, 'dynamic_batching': {'enabled': False, 'lr_scaling_method': 'linear', 'min_batch_size': 1, 'max_batch_size': None, 'sequence_picking_order': 'dataloader', 'verbose': False}}, 'data_routing': {'enabled': False, 'random_ltd': {'enabled': False, 'layer_token_lr_schedule': {'enabled': False}}}}
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   data_efficiency_enabled ...... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   dataloader_drop_last ......... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   disable_allgather ............ False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   dump_state ................... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   dynamic_loss_scale_args ...... None
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_enabled ........... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_gas_boundary_resolution  1
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_layer_name ........ bert.encoder.layer
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_layer_num ......... 0
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_max_iter .......... 100
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_stability ......... 1e-06
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_tol ............... 0.01
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   eigenvalue_verbose ........... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   elasticity_enabled ........... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   flops_profiler_config ........ {
+    "enabled": false, 
+    "recompute_fwd_factor": 0.0, 
+    "profile_step": 1, 
+    "module_depth": -1, 
+    "top_modules": 1, 
+    "detailed": true, 
+    "output_file": null
+}
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   fp16_auto_cast ............... None
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   fp16_enabled ................. False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   fp16_master_weights_and_gradients  False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   global_rank .................. 0
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   grad_accum_dtype ............. None
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   gradient_accumulation_steps .. 1
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   gradient_clipping ............ 0.2
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   gradient_predivide_factor .... 1.0
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   graph_harvesting ............. False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   hybrid_engine ................ enabled=False max_out_tokens=512 inference_tp_size=1 release_inference_cache=False pin_parameters=True tp_gather_partition_size=8
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   initial_dynamic_scale ........ 1
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   load_universal_checkpoint .... False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   loss_scale ................... 1.0
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   memory_breakdown ............. False
+[2025-12-06 13:27:15,587] [INFO] [config.py:1007:print]   mics_hierarchial_params_gather  False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   mics_shard_size .............. -1
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   monitor_config ............... tensorboard=TensorBoardConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') comet=CometConfig(enabled=False, samples_log_interval=100, project=None, workspace=None, api_key=None, experiment_name=None, experiment_key=None, online=None, mode=None) wandb=WandbConfig(enabled=False, group=None, team=None, project='deepspeed') csv_monitor=CSVConfig(enabled=False, output_path='', job_name='DeepSpeedJobName')
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   nebula_config ................ {
+    "enabled": false, 
+    "persistent_storage_path": null, 
+    "persistent_time_interval": 100, 
+    "num_of_version_in_retention": 2, 
+    "enable_nebula_load": true, 
+    "load_path": null
+}
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   optimizer_legacy_fusion ...... False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   optimizer_name ............... None
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   optimizer_params ............. None
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   pipeline ..................... {'stages': 'auto', 'partition': 'best', 'seed_layers': False, 'activation_checkpoint_interval': 0, 'pipe_partitioned': True, 'grad_partitioned': True}
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   pld_enabled .................. False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   pld_params ................... False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   prescale_gradients ........... False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   scheduler_name ............... None
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   scheduler_params ............. None
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   seq_parallel_communication_data_type  torch.float32
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   sparse_attention ............. None
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   sparse_gradients_enabled ..... False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   steps_per_print .............. inf
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   tensor_parallel_config ....... dtype=torch.float16 autotp_size=0 tp_overlap_comm=False tensor_parallel=TPConfig(tp_size=1, tp_grain_size=1, mpu=None, tp_group=None) injection_policy_tuple=None keep_module_on_host=False replace_with_kernel_inject=False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   timers_config ................ enabled=True synchronized=True
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   train_batch_size ............. 64
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   train_micro_batch_size_per_gpu  8
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   use_data_before_expert_parallel_  False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   use_node_local_storage ....... False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   wall_clock_breakdown ......... False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   weight_quantization_config ... None
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   world_size ................... 8
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_allow_untested_optimizer  True
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_config .................. stage=3 contiguous_gradients=True reduce_scatter=True reduce_bucket_size=500000000 use_multi_rank_bucket_allreduce=True allgather_partitions=True allgather_bucket_size=500000000 overlap_comm=True load_from_fp32_weights=True elastic_checkpoint=False offload_param=DeepSpeedZeroOffloadParamConfig(device='none', nvme_path=None, buffer_count=5, buffer_size=100000000, max_in_cpu=1000000000, pin_memory=False) offload_optimizer=DeepSpeedZeroOffloadOptimizerConfig(device='none', nvme_path=None, buffer_count=4, pin_memory=False, pipeline_read=False, pipeline_write=False, fast_init=False, ratio=1.0) sub_group_size=1000000000 cpu_offload_param=None cpu_offload_use_pin_memory=None cpu_offload=None prefetch_bucket_size=50000000 param_persistence_threshold=100000 model_persistence_threshold=9223372036854775807 max_live_parameters=1000000000 max_reuse_distance=1000000000 gather_16bit_weights_on_model_save=True module_granularity_threshold=0 use_all_reduce_for_fetch_params=False stage3_gather_fp16_weights_on_model_save=False ignore_unused_parameters=True legacy_stage1=False round_robin_gradients=False zero_hpz_partition_size=1 zero_quantized_weights=False zero_quantized_nontrainable_weights=False zero_quantized_gradients=False zeropp_loco_param=None mics_shard_size=-1 mics_hierarchical_params_gather=False memory_efficient_linear=True pipeline_loading_checkpoint=False override_module_apply=True log_trace_cache_warnings=False
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_enabled ................. True
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_force_ds_cpu_optimizer .. True
+[2025-12-06 13:27:15,588] [INFO] [config.py:1007:print]   zero_optimization_stage ...... 3
+[2025-12-06 13:27:15,588] [INFO] [config.py:993:print_user_config]   json = {
+    "train_batch_size": 64, 
+    "train_micro_batch_size_per_gpu": 8, 
+    "gradient_accumulation_steps": 1, 
+    "zero_optimization": {
+        "stage": 3, 
+        "offload_optimizer": {
+            "device": "none", 
+            "nvme_path": null
+        }, 
+        "offload_param": {
+            "device": "none", 
+            "nvme_path": null
+        }, 
+        "stage3_gather_16bit_weights_on_model_save": true
+    }, 
+    "gradient_clipping": 0.2, 
+    "steps_per_print": inf, 
+    "bf16": {
+        "enabled": true
+    }, 
+    "fp16": {
+        "enabled": false
+    }, 
+    "zero_allow_untested_optimizer": true
+}
+[INFO|trainer.py:2519] 2025-12-06 13:27:15,590 >> ***** Running training *****
+[INFO|trainer.py:2520] 2025-12-06 13:27:15,590 >>   Num examples = 28,125
+[INFO|trainer.py:2521] 2025-12-06 13:27:15,590 >>   Num Epochs = 3
+[INFO|trainer.py:2522] 2025-12-06 13:27:15,590 >>   Instantaneous batch size per device = 8
+[INFO|trainer.py:2525] 2025-12-06 13:27:15,590 >>   Total train batch size (w. parallel, distributed & accumulation) = 64
+[INFO|trainer.py:2526] 2025-12-06 13:27:15,590 >>   Gradient Accumulation steps = 1
+[INFO|trainer.py:2527] 2025-12-06 13:27:15,590 >>   Total optimization steps = 1,320
+[INFO|trainer.py:2528] 2025-12-06 13:27:15,591 >>   Number of trainable parameters = 8,030,261,248
+[INFO|integration_utils.py:867] 2025-12-06 13:27:15,591 >> Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+wandb: Currently logged in as: nelectric to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run xnbh511n
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /data/neel/open-r1_safety/wandb/run-20251206_132716-xnbh511n
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.02
+wandb: ⭐️ View project at https://wandb.ai/neelectric/open-r1_code
+wandb: 🚀 View run at https://wandb.ai/neelectric/open-r1_code/runs/xnbh511n
+  0%|          | 0/1320 [00:00<?, ?it/s]  0%|          | 1/1320 [01:07<24:33:32, 67.03s/it]                                                   {'loss': 1.0777, 'grad_norm': 4.797640988024205, 'learning_rate': 0.0, 'num_tokens': 625227.0, 'mean_token_accuracy': 0.7003216743469238, 'epoch': 0.0}
+  0%|          | 1/1320 [01:07<24:33:32, 67.03s/it]  0%|          | 2/1320 [02:01<21:45:17, 59.42s/it]                                                   {'loss': 1.0693, 'grad_norm': 4.83939195876648, 'learning_rate': 7.575757575757576e-08, 'num_tokens': 1234652.0, 'mean_token_accuracy': 0.70292067527771, 'epoch': 0.0}
+  0%|          | 2/1320 [02:01<21:45:17, 59.42s/it]  0%|          | 3/1320 [02:56<21:05:37, 57.66s/it]                                                   {'loss': 1.1021, 'grad_norm': 5.305957732447043, 'learning_rate': 1.5151515151515152e-07, 'num_tokens': 1770464.0, 'mean_token_accuracy': 0.6958281993865967, 'epoch': 0.01}
+  0%|          | 3/1320 [02:56<21:05:37, 57.66s/it]
