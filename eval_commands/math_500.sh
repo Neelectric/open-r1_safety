@@ -1,5 +1,6 @@
 uv pip install vllm==0.8.5
 uv pip install more_itertools
+uv pip install datasets>=2.21.0
 
 NUM_GPUS=4
 NUM_TOKS=4096
