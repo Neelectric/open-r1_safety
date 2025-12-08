@@ -31,7 +31,13 @@ def main(
     
 
     n_replay = int(len(ft) * replay_pct)
+    if n_replay > len(replay):
+        n_replay = len(replay)
+        print(f"overrride n_replay to {n_replay}")
     n_ft = len(ft) - n_replay
+    replay_pct = round(n_replay/len(ft), 2)
+    print(f"n_ft {n_ft}, n_replay {n_replay}, replay_pct {replay_pct}")
+
 
     combined = concatenate_datasets([ft.select(range(n_ft)), replay.select(range(n_replay))])
     combined = combined.shuffle(seed=42)
