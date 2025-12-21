@@ -87,7 +87,7 @@ shuffle_dataset: true
 seed: 42
 temperature: 0.7
 torch_compile: false
-use_liger_kernel: true #NotImplementedError: Liger Kernels currently only support token-level importance sampling. Please set`importance_sampling_level` to 'token'.
+use_liger_kernel: false #NotImplementedError: Liger Kernels currently only support token-level importance sampling. Please set`importance_sampling_level` to 'token'.
 wandb_entity: Neelectric
 wandb_project: open-r1_safety
 wandb_log_unique_prompts: True
