@@ -15,7 +15,7 @@ system_prompt: "You are a helpful AI Assistant that provides well-reasoned and d
 # vllm_dtype: bfloat16
 use_vllm: true
 vllm_mode: colocate
-vllm_gpu_memory_utilization: 0.35
+vllm_gpu_memory_utilization: 0.4
 vllm_tensor_parallel_size: 1
 vllm_importance_sampling_correction: true
 # vllm_model_impl: "transformers"
@@ -58,7 +58,7 @@ lr_scheduler_kwargs:
 mask_truncated_completions: true
 max_completion_length: 4096
 max_grad_norm: 0.2
-max_prompt_length: 4096
+max_prompt_length: 2048
 max_steps: -1
 num_completions_to_print: 4
 num_generations: 16
