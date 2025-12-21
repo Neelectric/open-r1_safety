@@ -15,7 +15,7 @@ system_prompt: "You are a helpful AI Assistant that provides well-reasoned and d
 # vllm_dtype: bfloat16
 use_vllm: true
 vllm_mode: colocate
-vllm_gpu_memory_utilization: 0.5
+vllm_gpu_memory_utilization: 0.4
 vllm_tensor_parallel_size: 1
 vllm_importance_sampling_correction: true
 # vllm_model_impl: "transformers"
@@ -37,7 +37,7 @@ epsilon: 0.2
 epsilon_high: 5.0
 disable_dropout: true
 do_eval: false
-gradient_accumulation_steps: 1
+gradient_accumulation_steps: 4
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
@@ -67,7 +67,7 @@ num_train_epochs: 1
 output_dir: data/Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 overwrite_output_dir: true
 per_device_eval_batch_size: 1
-per_device_train_batch_size: 8
+per_device_train_batch_size: 4
 report_to:
 - wandb
 reward_funcs:
