@@ -88,7 +88,7 @@ scale_rewards: "batch"
 shuffle_dataset: true
 seed: 42
 temperature: 0.8
-torch_compile: true
+torch_compile: false #claude says "My recommendation: Turn off torch_compile for now. The combination of ZeRO-3 + flash attention + vLLM colocate mode is already quite optimized. The graph breaks from .item() calls and the constant ZeRO-3 parameter reshuffling mean you're likely losing more than you're gaining."
 use_liger_kernel: false #NotImplementedError: Liger Kernels currently only support token-level importance sampling. Please set`importance_sampling_level` to 'token'.
 use_bias_correction_kl: true
 wandb_entity: Neelectric
