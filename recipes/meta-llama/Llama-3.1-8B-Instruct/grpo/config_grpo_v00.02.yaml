@@ -37,7 +37,7 @@ epsilon: 0.2
 epsilon_high: 5.0
 disable_dropout: true
 do_eval: false
-gradient_accumulation_steps: 4
+gradient_accumulation_steps: 8
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
@@ -56,11 +56,11 @@ lr_scheduler_type: constant_with_warmup
 lr_scheduler_kwargs:
   min_lr_rate: 0.1
 mask_truncated_completions: true
-max_completion_length: 512
+max_completion_length: 1024
 max_grad_norm: 0.2
 max_prompt_length: 512
 max_steps: -1
-num_completions_to_print: 4
+num_completions_to_print: 1
 num_generations: 8
 num_iterations: 1
 num_train_epochs: 1
@@ -80,7 +80,7 @@ reward_weights:
 # - 0.05
 run_name: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 save_strategy: "steps"
-save_steps: 0.05
+save_steps: 0.1
 save_total_limit: 1
 scale_rewards: "batch"
 shuffle_dataset: true
