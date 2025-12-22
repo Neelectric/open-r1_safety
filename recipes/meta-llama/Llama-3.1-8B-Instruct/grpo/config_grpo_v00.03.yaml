@@ -23,7 +23,8 @@ vllm_max_model_length: 6144 # Set it to at least the maximum prompt length in th
 # vllm_model_impl: "transformers"
 
 # GRPO trainer config
-cast_lm_head_to_fp32: true #this can cause the following
+cast_lm_head_to_fp32: false # as of 22.12.25 with trl==0.27.0.dev0 still broken with DS Z-3 and KL ref model?
+#this can cause the following
 # [rank1]:   File "/home/user/repos/open-r1_safety/openr1_clone/lib/python3.11/site-packages/transformers/models/olmo2/modeling_olmo2.py", line 455, in forward              [40/3403]
 # [rank1]:     logits = self.lm_head(hidden_states[:, slice_indices,
 # [rank1]:   File "/home/user/repos/open-r1_safety/openr1_clone/lib/python3.11/site-packages/torch/nn/modules/linear.py", line 125, in forward  
