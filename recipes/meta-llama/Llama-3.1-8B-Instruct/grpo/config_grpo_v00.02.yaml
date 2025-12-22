@@ -56,7 +56,7 @@ lr_scheduler_type: constant_with_warmup
 lr_scheduler_kwargs:
   min_lr_rate: 0.1
 mask_truncated_completions: true
-max_completion_length: 1024
+max_completion_length: 4096
 max_grad_norm: 0.2
 max_prompt_length: 512
 max_steps: -1
