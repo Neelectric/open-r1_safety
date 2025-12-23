@@ -9,7 +9,7 @@ NUM_TOKS=4096
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoT_mathv00.04
 #REVISION=v00.10-step-000016155
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.13
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.16
 REVISION=main
 
 
