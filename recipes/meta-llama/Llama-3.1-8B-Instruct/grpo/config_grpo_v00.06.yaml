@@ -39,7 +39,7 @@ epsilon: 0.2
 epsilon_high: 5.0 # When used with loss_type='cispo', this corresponds to the ε_max param specified in the ScaleRL paper and the recommended value is 5.0.
 disable_dropout: true # This is useful for training with a reference model, as it prevents the model from generating different logprobs for the same input
 do_eval: false
-gradient_accumulation_steps: 32
+gradient_accumulation_steps: 64
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
@@ -69,7 +69,7 @@ num_train_epochs: 1
 output_dir: data/Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 overwrite_output_dir: true
 per_device_eval_batch_size: 1
-per_device_train_batch_size: 4
+per_device_train_batch_size: 2
 report_to:
 - wandb
 reward_funcs:
@@ -82,7 +82,7 @@ reward_weights:
 # - 0.05
 run_name: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 save_strategy: "steps"
-save_steps: 0.03
+save_steps: 0.01
 save_total_limit: 2
 scale_rewards: "batch"
 shuffle_dataset: true
