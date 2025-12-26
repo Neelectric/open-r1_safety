@@ -39,7 +39,7 @@ epsilon: 0.2
 epsilon_high: 5.0 # When used with loss_type='cispo', this corresponds to the ε_max param specified in the ScaleRL paper and the recommended value is 5.0.
 disable_dropout: true # This is useful for training with a reference model, as it prevents the model from generating different logprobs for the same input
 do_eval: false
-gradient_accumulation_steps: 172
+gradient_accumulation_steps: 256
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
