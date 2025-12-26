@@ -45,6 +45,7 @@ gradient_checkpointing_kwargs:
   use_reentrant: false
 hub_model_id: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 # hub_model_revision: ${VERSION}
+hub_private_repo: false # otherwise runs stop syncing because i hit the 100g max
 hub_strategy: every_save
 importance_sampling_level: "sequence"
 learning_rate: 1.0e-06
@@ -70,7 +71,6 @@ output_dir: data/Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 overwrite_output_dir: true
 per_device_eval_batch_size: 1
 per_device_train_batch_size: 2
-private_repo: false # otherwise runs stop syncing because i hit the 100g max
 report_to:
 - wandb
 reward_funcs:
