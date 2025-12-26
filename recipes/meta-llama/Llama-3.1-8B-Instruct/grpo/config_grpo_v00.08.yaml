@@ -61,7 +61,7 @@ lr_scheduler_kwargs:
 mask_truncated_completions: true #according to DAPO paper important for training stability
 max_completion_length: 4096
 max_grad_norm: 0.2
-max_prompt_length: 512
+# max_prompt_length: 512
 max_steps: -1
 num_completions_to_print: 1
 num_generations: 16
