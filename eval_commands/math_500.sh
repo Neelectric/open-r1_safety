@@ -6,8 +6,8 @@ uv pip install datasets==2.21.0
 NUM_GPUS=2
 NUM_TOKS=4096
 
-MODEL=/home/user/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.05/snapshots/b518a2683b6efc37ee136630c6b3d81c832a277a
-REVISION=v00.05-step-000000486
+MODEL=/home/user/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.06/snapshots/86d8dfa90282309eba1e533431b98737b24440c3
+REVISION=v00.06-step-000000405
 
 
 # 324
@@ -25,3 +25,4 @@ lighteval vllm $MODEL_ARGS "lighteval|$TASK|0|0" \
 
 
 uv pip install vllm==0.11.0
+uv pip install datasets==4.4.2
