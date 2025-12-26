@@ -13,15 +13,12 @@ system_prompt: "You are a helpful AI Assistant that provides well-reasoned and d
 
 # VLLM settings
 # vllm_dtype: bfloat16
-use_vllm: false
-# vllm_mode: colocate
-# vllm_gpu_memory_utilization: 0.25
-# vllm_tensor_parallel_size: 1
-# vllm_importance_sampling_correction: true
-# vllm_max_model_length: 6144 # Set it to at least the maximum prompt length in the dataset plus max_completion_length;
-
-
-
+use_vllm: true
+vllm_mode: colocate
+vllm_gpu_memory_utilization: 0.3
+vllm_tensor_parallel_size: 1
+vllm_importance_sampling_correction: true
+vllm_max_model_length: 6144 # Set it to at least the maximum prompt length in the dataset plus max_completion_length;
 # vllm_model_impl: "transformers"
 
 # GRPO trainer config
@@ -42,13 +39,12 @@ epsilon: 0.2
 epsilon_high: 5.0 # When used with loss_type='cispo', this corresponds to the ε_max param specified in the ScaleRL paper and the recommended value is 5.0.
 disable_dropout: true # This is useful for training with a reference model, as it prevents the model from generating different logprobs for the same input
 do_eval: false
-gradient_accumulation_steps: 256
+gradient_accumulation_steps: 128
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
 hub_model_id: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
-# hub_model_revision: ${VERSION}
-hub_private_repo: false # otherwise runs stop syncing because i hit the 100g max
+hub_model_revision: ${VERSION}
 hub_strategy: every_save
 importance_sampling_level: "sequence"
 learning_rate: 1.0e-06
@@ -62,9 +58,9 @@ lr_scheduler_type: constant_with_warmup
 lr_scheduler_kwargs:
   min_lr_rate: 0.1
 mask_truncated_completions: true #according to DAPO paper important for training stability
-max_completion_length: 2048
+max_completion_length: 4096
 max_grad_norm: 0.2
-# max_prompt_length: 512
+max_prompt_length: 512
 max_steps: -1
 num_completions_to_print: 1
 num_generations: 16
@@ -82,7 +78,7 @@ reward_funcs:
 # - tag_count
 reward_weights:
 - 1.0
-- 0.15
+- 0.25
 # - 0.05
 run_name: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 save_strategy: "steps"
@@ -91,7 +87,7 @@ save_total_limit: 2
 scale_rewards: "batch"
 shuffle_dataset: true
 seed: 42
-temperature: 0.9
+temperature: 0.8
 torch_compile: false #claude says "My recommendation: Turn off torch_compile for now. The combination of ZeRO-3 + flash attention + vLLM colocate mode is already quite optimized. The graph breaks from .item() calls and the constant ZeRO-3 parameter reshuffling mean you're likely losing more than you're gaining."
 use_liger_kernel: false #NotImplementedError: Liger Kernels currently only support token-level importance sampling. Please set`importance_sampling_level` to 'token'.
 use_bias_correction_kl: true
