@@ -12,11 +12,20 @@ VERSION=v00.11 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_di
 
 
 ## doing bf16 grpo
+VERSION=v00.09 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/grpo/config_grpo_v00.09.yaml > temp_config.yaml && \
+accelerate launch --config_file recipes/accelerate_configs/zero3.yaml --num_processes=5 src/open_r1/grpo.py --config temp_config.yaml
+
+
+
+# weird variants claude suggested to try and fix errors before torch==2.9.0 vllm==0.11.2 bump
 VLLM_ATTENTION_BACKEND=TORCH_SDPA VERSION=v00.09 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/grpo/config_grpo_v00.09.yaml > temp_config.yaml && \
 accelerate launch --config_file recipes/accelerate_configs/zero3.yaml --num_processes=5 src/open_r1/grpo.py --config temp_config.yaml
 
-VLLM_ATTENTION_BACKEND=TORCH_SDPA VLLM_USE_CUDAGRAPH=0 VERSION=v00.09 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/grpo/config_grpo_v00.09.yaml > temp_config.yaml && \
-accelerate launch --config_file recipes/accelerate_configs/zero3.yaml --num_processes=5 src/open_r1/grpo.py --config temp_config.yaml
+VLLM_ATTENTION_BACKEND=TORCH_SDPA VLLM_USE_CUDAGRAPH=0 
+
+
+
+
 
 
 
