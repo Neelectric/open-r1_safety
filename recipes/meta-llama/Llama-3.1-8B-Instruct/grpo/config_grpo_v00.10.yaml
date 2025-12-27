@@ -39,12 +39,12 @@ epsilon: 0.2
 epsilon_high: 5.0 # When used with loss_type='cispo', this corresponds to the ε_max param specified in the ScaleRL paper and the recommended value is 5.0.
 disable_dropout: true # This is useful for training with a reference model, as it prevents the model from generating different logprobs for the same input
 do_eval: false
-gradient_accumulation_steps: 192
+gradient_accumulation_steps: 160
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
 hub_model_id: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
-hub_model_revision: ${VERSION}
+# hub_model_revision: ${VERSION}
 hub_private_repo: false # otherwise runs stop syncing because i hit the 100g max
 hub_strategy: every_save
 importance_sampling_level: "sequence"
@@ -83,7 +83,7 @@ reward_weights:
 # - 0.05
 run_name: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 save_strategy: "steps"
-save_steps: 0.01
+save_steps: 25
 save_total_limit: 2
 scale_rewards: "batch"
 shuffle_dataset: true
