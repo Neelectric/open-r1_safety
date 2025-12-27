@@ -13,12 +13,16 @@ system_prompt: "You are a helpful AI Assistant that provides well-reasoned and d
 
 # VLLM settings
 # vllm_dtype: bfloat16
-use_vllm: true
-vllm_mode: colocate
-vllm_gpu_memory_utilization: 0.3
-vllm_tensor_parallel_size: 1
-vllm_importance_sampling_correction: true
-vllm_max_model_length: 6144 # Set it to at least the maximum prompt length in the dataset plus max_completion_length;
+use_vllm: false
+# vllm_mode: colocate
+# vllm_gpu_memory_utilization: 0.3
+# vllm_tensor_parallel_size: 1
+# vllm_importance_sampling_correction: true
+# vllm_max_model_length: 6144 # Set it to at least the maximum prompt length in the dataset plus max_completion_length;
+
+
+
+
 # vllm_model_impl: "transformers"
 
 # GRPO trainer config
@@ -58,7 +62,7 @@ lr_scheduler_type: constant_with_warmup
 lr_scheduler_kwargs:
   min_lr_rate: 0.1
 mask_truncated_completions: true #according to DAPO paper important for training stability
-max_completion_length: 3072
+max_completion_length: 4096
 max_grad_norm: 0.2
 max_prompt_length: 512
 max_steps: -1
