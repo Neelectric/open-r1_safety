@@ -2,7 +2,7 @@
 model_name_or_path: meta-llama/Llama-3.1-8B-Instruct
 model_revision: main
 dtype: bfloat16
-attn_implementation: flash_attention_2
+attn_implementation: eager
 
 # Data training arguments
 # We edit the DeepSeek chat template to ensure (a) the reasoning block within <think> and </think> is included in the completion and (b) the <think> tag is not part of the prefill so that the format reward works
