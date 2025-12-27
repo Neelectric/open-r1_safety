@@ -39,7 +39,7 @@ epsilon: 0.2
 epsilon_high: 5.0 # When used with loss_type='cispo', this corresponds to the ε_max param specified in the ScaleRL paper and the recommended value is 5.0.
 disable_dropout: true # This is useful for training with a reference model, as it prevents the model from generating different logprobs for the same input
 do_eval: false
-gradient_accumulation_steps: 256
+gradient_accumulation_steps: 192
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
@@ -87,7 +87,7 @@ save_total_limit: 2
 scale_rewards: "batch"
 shuffle_dataset: true
 seed: 42
-temperature: 1.0
+temperature: 0.8
 torch_compile: false #claude says "My recommendation: Turn off torch_compile for now. The combination of ZeRO-3 + flash attention + vLLM colocate mode is already quite optimized. The graph breaks from .item() calls and the constant ZeRO-3 parameter reshuffling mean you're likely losing more than you're gaining."
 use_liger_kernel: false #NotImplementedError: Liger Kernels currently only support token-level importance sampling. Please set`importance_sampling_level` to 'token'.
 use_bias_correction_kl: true
