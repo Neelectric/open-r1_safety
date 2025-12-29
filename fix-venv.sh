@@ -1,48 +1,91 @@
 #!/bin/bash
-# fix-venv.sh - Fix venv for Kubernetes pod
+# fix_venv.sh - Repair uv/standard venv symlinks for current pod
 
-set -e  # Exit on any error
+set -e
 
-VENV_PATH="/workspace/writeable/repos/open-r1_safety/openr1"
-REQUIRED_PYTHON="python3.11"
+VENV_PATH="${1:-.venv}"
 
-echo "=== Setting up Python venv for batch job ==="
-
-# Step 1: Install Python 3.11 if not present
-if ! command -v $REQUIRED_PYTHON &> /dev/null; then
-    echo "Python 3.11 not found. Installing..."
-    apt-get update -qq
-    apt-get install -y -qq python3.11 python3.11-dev python3.11-venv > /dev/null
-    echo "Python 3.11 installed successfully"
-else
-    echo "Python 3.11 already available"
-fi
-
-# Step 2: Verify venv exists
-if [ ! -d "$VENV_PATH" ]; then
-    echo "ERROR: Virtual environment not found at $VENV_PATH"
+if [[ ! -d "$VENV_PATH" ]]; then
+    echo "Error: '$VENV_PATH' is not a directory"
     exit 1
 fi
 
-# Step 3: Fix symlinks
-echo "Fixing venv symlinks..."
-cd "$VENV_PATH/bin"
-rm -f python python3 python3.11
-ln -s $(which $REQUIRED_PYTHON) python3.11
-ln -s python3.11 python3
-ln -s python3.11 python
-
-# Step 4: Verify it works
-source "$VENV_PATH/bin/activate"
-ACTUAL_VERSION=$(python --version 2>&1)
-echo "Activated venv - $ACTUAL_VERSION"
-
-# Step 5: Verify flash-attn is accessible
-if python -c "import flash_attn" 2>/dev/null; then
-    echo "✓ flash-attn found and importable"
-else
-    echo "ERROR: flash-attn not found in venv"
+if [[ ! -f "$VENV_PATH/pyvenv.cfg" ]]; then
+    echo "Error: '$VENV_PATH' does not appear to be a venv (no pyvenv.cfg)"
     exit 1
 fi
 
-echo "=== Venv setup complete ==="
+# Extract Python version - handle both standard (version) and uv (version_info) formats
+VENV_VERSION=$(grep -E "^version(_info)?\s*=" "$VENV_PATH/pyvenv.cfg" | head -1 | sed 's/.*=\s*//' | cut -d. -f1,2)
+
+if [[ -z "$VENV_VERSION" ]]; then
+    echo "Warning: Could not detect version from pyvenv.cfg, trying to infer from lib/"
+    VENV_VERSION=$(ls "$VENV_PATH/lib/" | grep -oP 'python\K[0-9]+\.[0-9]+' | head -1)
+fi
+
+echo "Detected venv Python version: $VENV_VERSION"
+
+if [[ -z "$VENV_VERSION" ]]; then
+    echo "Error: Could not determine Python version"
+    exit 1
+fi
+
+# Find a matching Python on this system
+PYTHON_BIN=""
+for candidate in "python$VENV_VERSION" "python3" "python"; do
+    if command -v "$candidate" &>/dev/null; then
+        CANDIDATE_VERSION=$("$candidate" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+        if [[ "$CANDIDATE_VERSION" == "$VENV_VERSION" ]]; then
+            PYTHON_BIN=$(command -v "$candidate")
+            break
+        fi
+    fi
+done
+
+# Also check uv-managed pythons
+if [[ -z "$PYTHON_BIN" ]]; then
+    UV_PYTHON="$HOME/.local/share/uv/python/cpython-${VENV_VERSION}."*"-linux-x86_64-gnu/bin/python3"
+    for p in $UV_PYTHON; do
+        if [[ -x "$p" ]]; then
+            PYTHON_BIN="$p"
+            break
+        fi
+    done
+fi
+
+if [[ -z "$PYTHON_BIN" ]]; then
+    echo "Error: Could not find Python $VENV_VERSION on this system"
+    echo "Try: uv python install $VENV_VERSION"
+    exit 1
+fi
+
+PYTHON_HOME=$(dirname "$PYTHON_BIN")
+PYTHON_REAL=$(readlink -f "$PYTHON_BIN")
+
+echo "Using Python: $PYTHON_BIN (resolves to $PYTHON_REAL)"
+echo "Python home: $PYTHON_HOME"
+
+# Update pyvenv.cfg (atomic write via temp file + mv)
+CFG="$VENV_PATH/pyvenv.cfg"
+TMP_CFG=$(mktemp)
+sed "s|^home\s*=.*|home = $PYTHON_HOME|" "$CFG" > "$TMP_CFG"
+mv "$TMP_CFG" "$CFG"
+echo "Updated pyvenv.cfg"
+
+# Fix symlinks in bin/ - ln -sf is atomic, won't break running processes
+BIN_DIR="$VENV_PATH/bin"
+
+# Remove broken python symlinks and recreate
+for link in python python3 "python$VENV_VERSION"; do
+    target="$BIN_DIR/$link"
+    if [[ -L "$target" ]] || [[ ! -e "$target" ]]; then
+        ln -sf "$PYTHON_REAL" "$target"
+        echo "Fixed symlink: $link -> $PYTHON_REAL"
+    fi
+done
+
+echo ""
+echo "Done! Test with:"
+echo "  source $VENV_PATH/bin/activate"
+echo "  which python"
+echo "  python --version"
