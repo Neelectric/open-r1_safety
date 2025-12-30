@@ -17,8 +17,9 @@ install:
 	uv pip install git+https://github.com/huggingface/trl.git && \
 	uv pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl --no-build-isolation --no-deps && \
 	uv pip install vllm==0.11.2 && \
-	uv pip install git+https://github.com/Neelectric/lighteval && \
 	uv pip install gpustat 
+
+# uv pip install git+https://github.com/Neelectric/lighteval && \
 	
 # lighteval==0.13.0 requires "vllm>=0.10.0,<0.10.2", but vllm==0.10.1 requires torch==2.7.1 which is incompatible with trl and FA2 versions. forked own lighteval branch with vllm req lifted
 

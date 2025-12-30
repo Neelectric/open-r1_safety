@@ -1,8 +1,8 @@
-uv pip install lighteval==0.13.0
-uv pip install vllm==0.10.1
+# uv pip install lighteval==0.13.0
+# uv pip install vllm==0.10.1
 uv pip install more_itertools
 uv pip install syllapy
-# uv pip install spacy[ja,ko,th]>=3.8.0
+uv pip install spacy[ja,ko,th]>=3.8.0
 uv pip install emoji
 
 NUM_GPUS=4
