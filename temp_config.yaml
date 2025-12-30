@@ -34,12 +34,18 @@ fp16: false
 
 callbacks:
 - push_to_hub_revision
+- benchmark_callback
+benchmarks:
+- aime24
+- math_500
+# - ifeval
+# - ifbench_test
 beta: 0.001 # DeepSeek-R1 incentivizes reasoning in LLMs through reinforcement learning use a value of 0.001.
 epsilon: 0.2
 epsilon_high: 5.0 # When used with loss_type='cispo', this corresponds to the ε_max param specified in the ScaleRL paper and the recommended value is 5.0.
 disable_dropout: true # This is useful for training with a reference model, as it prevents the model from generating different logprobs for the same input
 do_eval: false
-gradient_accumulation_steps: 40
+gradient_accumulation_steps: 60
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
@@ -73,7 +79,7 @@ num_train_epochs: 1
 output_dir: data/Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.11
 overwrite_output_dir: true
 per_device_eval_batch_size: 1
-per_device_train_batch_size: 8
+per_device_train_batch_size: 6
 report_to:
 - wandb
 reward_funcs:
@@ -86,7 +92,7 @@ reward_weights:
 # - 0.05
 run_name: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.11
 save_strategy: "steps"
-save_steps: 25
+save_steps: 2
 save_total_limit: 2
 scale_rewards: "batch"
 shuffle_dataset: true
