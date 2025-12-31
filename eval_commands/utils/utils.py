@@ -12,7 +12,7 @@ def list_revisions(model_id: str) -> list[str]:
   api = HfApi()
   refs = api.list_repo_refs(model_id)
   branch_names = [branch.name for branch in refs.branches]
-  revisions = branch_names[1:] 
+  revisions = branch_names[:-1] 
   revisions = sorted(revisions)
   return revisions
 
