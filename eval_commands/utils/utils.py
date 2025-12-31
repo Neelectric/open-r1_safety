@@ -11,7 +11,7 @@ def list_revisions(model_id: str) -> list[str]:
   api = HfApi()
   refs = api.list_repo_refs(model_id)
   branch_names = [branch.name for branch in refs.branches]
-  revisions = branch_names[:0:-1] 
+  revisions = branch_names[:-1] 
   revisions = sorted(revisions)
   return revisions
 
@@ -36,6 +36,7 @@ def download_all_revisions_fast():
     command[-1] = revision
     subprocess.run(" ".join(command), shell=True, check=True)
     
-if __name__ == '__main__':
+# if __name__ == '__main__':
 #   download_all_revisions_fast()
-    list_revisions(model_id="Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10")
+revisions = list_revisions(model_id="Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10")
+print(revisions)
