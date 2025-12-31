@@ -1,5 +1,5 @@
-uv pip install lighteval==0.13.0
-uv pip install vllm==0.11.2
+# uv pip install lighteval==0.13.0
+# uv pip install vllm==0.11.2
 # uv pip install -U datasets
 # uv pip install more_itertools
 
