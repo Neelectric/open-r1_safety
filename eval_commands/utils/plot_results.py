@@ -62,7 +62,31 @@ def collect_results(results_dir="data/auto_evals/results/data"):
 
     return sorted(results, key=lambda x: x['step'])
 
-def plot_results(results, output_path="data/auto_evals/math500_progress.png"):
+def save_results_overview(results, output_path="eval_commands/math500_results.txt"):
+    """Save a text overview of all results."""
+    if not results:
+        print("No results to save!")
+        return
+
+    steps = [r['step'] for r in results]
+    scores = [r['score'] for r in results]
+
+    with open(output_path, 'w') as f:
+        f.write("Math-500 Evaluation Results Overview\n")
+        f.write("=" * 80 + "\n\n")
+        f.write(f"Total evaluations: {len(results)}\n")
+        f.write(f"Step range: {min(steps)} - {max(steps)}\n")
+        f.write(f"Score range: {min(scores):.3f} - {max(scores):.3f}\n\n")
+        f.write("Detailed Results:\n")
+        f.write("-" * 80 + "\n")
+        f.write(f"{'Step':>10} | {'Score':>8} | {'Stderr':>10} | {'Revision'}\n")
+        f.write("-" * 80 + "\n")
+        for r in results:
+            f.write(f"{r['step']:10d} | {r['score']:8.3f} | {r['stderr']:10.4f} | {r['revision']}\n")
+
+    print(f"Results overview saved to {output_path}")
+
+def plot_results(results, output_path="eval_commands/math500_progress.png"):
     """Create a plot of steps vs math_500 performance with error bars."""
     if not results:
         print("No results to plot!")
@@ -101,5 +125,6 @@ def plot_results(results, output_path="data/auto_evals/math500_progress.png"):
 
 if __name__ == '__main__':
     results = collect_results()
+    save_results_overview(results)
     plot_results(results)
     plt.show()
