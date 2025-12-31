@@ -1,7 +1,7 @@
 uv pip install lighteval==0.13.0
-uv pip install vllm==0.10.1
+uv pip install vllm==0.11.2
+uv pip install -U datasets
 uv pip install more_itertools
-uv pip install datasets==2.21.0
 
 NUM_GPUS=4
 NUM_TOKS=4096
@@ -18,7 +18,6 @@ OUTPUT_DIR=data/evals/
 
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
 lighteval vllm $MODEL_ARGS "lighteval|$TASK|0|0" \
-    --use-chat-template \
     --output-dir $OUTPUT_DIR
 
 
