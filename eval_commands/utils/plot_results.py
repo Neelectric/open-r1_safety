@@ -19,10 +19,10 @@ def collect_results(results_dir="data/auto_evals/results/data"):
     """Collect all math_500 results from the directory structure."""
     results = []
 
-    # Walk through all subdirectories to find results.json files
+    # Walk through all subdirectories to find results_*.json files
     for root, dirs, files in os.walk(results_dir):
         for file in files:
-            if file == "results.json":
+            if file.startswith("results_") and file.endswith(".json"):
                 filepath = os.path.join(root, file)
                 try:
                     with open(filepath, 'r') as f:
