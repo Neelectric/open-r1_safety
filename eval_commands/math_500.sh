@@ -3,7 +3,7 @@ uv pip install vllm==0.10.1
 # uv pip install -U datasets
 # uv pip install more_itertools
 
-NUM_GPUS=4
+NUM_GPUS=5
 NUM_TOKS=4096
 
 MODEL=/root/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10/snapshots/e2583dfaba3d8acc831710720ff608b0fac3c4a9

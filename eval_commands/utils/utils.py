@@ -50,8 +50,7 @@ def run_evals_on_revisions(revision_paths: dict[str, str],
                            benchmark: str = "math_500",
                            num_gpus: int = 1,
                            num_toks: int = 4096,
-                           output_dir: str = "data/evals/",
-                           gpu_id: str = "0"):
+                           output_dir: str = "data/auto_evals/"):
   """Runs lighteval benchmark on each revision with its downloaded path."""
 
   for revision, model_path in tqdm(revision_paths.items(), desc="Running evals"):
@@ -68,19 +67,16 @@ def run_evals_on_revisions(revision_paths: dict[str, str],
         f"generation_parameters={{max_new_tokens:{num_toks},temperature:0.6,top_p:0.95}}"
     )
 
-    # Construct the lighteval command
+    # Construct the lighteval command (updated for lighteval 0.13.0)
     env_vars = {
-        "VLLM_WORKER_MULTIPROC_METHOD": "spawn",
-        "CUDA_VISIBLE_DEVICES": gpu_id,
-        "TORCHINDUCTOR_CACHE_DIR": f"./.cache/{gpu_id}/"
+        "VLLM_WORKER_MULTIPROC_METHOD": "spawn"
     }
 
     command = [
         "lighteval",
         "vllm",
         model_args,
-        f"lighteval|{benchmark}|0|0",
-        "--use-chat-template",
+        benchmark,
         "--output-dir",
         output_dir
     ]
@@ -99,5 +95,5 @@ def run_evals_on_revisions(revision_paths: dict[str, str],
 
 if __name__ == '__main__':
 #   download_all_revisions_fast()
-  revisions = list_revisions(model_id="Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10")
-  print(revisions)
+  revision_paths = list_revisions(model_id="Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10")
+  run_evals_on_revisions(revision_paths=revision_paths, num_gpus=5)
