@@ -17,7 +17,7 @@ TASK=math_500
 OUTPUT_DIR=data/evals/
 
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
-lighteval vllm $MODEL_ARGS "lighteval|$TASK|0|0" \
+lighteval vllm $MODEL_ARGS "lighteval|$TASK" \
     --output-dir $OUTPUT_DIR
 
 
