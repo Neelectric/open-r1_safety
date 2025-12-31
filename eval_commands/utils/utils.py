@@ -95,5 +95,7 @@ def run_evals_on_revisions(revision_paths: dict[str, str],
 
 if __name__ == '__main__':
 #   download_all_revisions_fast()
-  revision_paths = download_all_revisions_fast(model_id="Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10")
+  revision_paths = download_all_revisions_fast(
+    #   model_id="Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10"
+      )
   run_evals_on_revisions(revision_paths=revision_paths, num_gpus=5)
