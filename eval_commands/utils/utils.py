@@ -12,21 +12,18 @@ def list_revisions(model_id: str) -> list[str]:
   api = HfApi()
   refs = api.list_repo_refs(model_id)
   branch_names = [branch.name for branch in refs.branches]
-  revisions = branch_names[:-1] 
+  revisions = branch_names[1:] 
   revisions = sorted(revisions)
   return revisions
 
-def download_all_revisions_fast():
-  # ft_model_id = "Neelectric/Qwen2.5-7B-Instruct_SFTv00.13"
-  ft_model_id = "Neelectric/OLMo-2-1124-7B-Instruct_GRPOv01.14"
-  # ft_model_id = "Neelectric/OLMo-2-1124-7B-Instruct_SFTv02.08"
-  revisions = list_revisions(ft_model_id)
+def download_all_revisions_fast(model_id):
+  revisions = list_revisions(model_id)
   print(revisions)
   command = [
       "HF_HUB_ENABLE_HF_TRANSFER=1",
       "huggingface-cli",
       "download",
-      ft_model_id,
+      model_id,
       "--cache-dir",
       "data/",
       "--max-workers",
@@ -94,8 +91,10 @@ def run_evals_on_revisions(revision_paths: dict[str, str],
       print(f"stderr: {e.stderr}")
 
 if __name__ == '__main__':
-#   download_all_revisions_fast()
-  revision_paths = download_all_revisions_fast(
-    #   model_id="Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10"
-      )
-  run_evals_on_revisions(revision_paths=revision_paths, num_gpus=5)
+    model_id = "Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10"
+    revisions = list_revisions(model_id)
+    print(revisions)
+    revision_paths = download_all_revisions_fast(
+        model_id=model_id
+        )
+    run_evals_on_revisions(revision_paths=revision_paths, num_gpus=5)
