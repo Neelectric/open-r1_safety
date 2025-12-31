@@ -1,7 +1,7 @@
 uv pip install lighteval==0.13.0
 uv pip install vllm==0.11.2
-uv pip install -U datasets
-uv pip install more_itertools
+# uv pip install -U datasets
+# uv pip install more_itertools
 
 NUM_GPUS=4
 NUM_TOKS=4096
