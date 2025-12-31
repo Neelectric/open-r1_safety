@@ -62,7 +62,7 @@ def collect_results(results_dir="data/auto_evals/results/data"):
 
     return sorted(results, key=lambda x: x['step'])
 
-def save_results_overview(results, output_path="eval_commands/math500_results.txt"):
+def save_results_overview(results, output_path="../math500_results.txt"):
     """Save a text overview of all results."""
     if not results:
         print("No results to save!")
@@ -86,7 +86,7 @@ def save_results_overview(results, output_path="eval_commands/math500_results.tx
 
     print(f"Results overview saved to {output_path}")
 
-def plot_results(results, output_path="eval_commands/math500_progress.png"):
+def plot_results(results, output_path="../math500_progress.png"):
     """Create a plot of steps vs math_500 performance with error bars."""
     if not results:
         print("No results to plot!")
