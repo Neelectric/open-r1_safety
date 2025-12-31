@@ -15,7 +15,7 @@ def extract_step_number(revision_str):
         return int(match.group(1))
     return None
 
-def collect_results(results_dir="data/auto_evals/results"):
+def collect_results(results_dir="data/auto_evals/results/data"):
     """Collect all math_500 results from the directory structure."""
     results = []
 
