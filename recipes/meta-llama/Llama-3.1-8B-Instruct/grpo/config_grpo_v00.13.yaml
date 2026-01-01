@@ -17,7 +17,7 @@ use_vllm: true
 vllm_mode: colocate
 vllm_gpu_memory_utilization: 0.3
 vllm_tensor_parallel_size: 1
-vllm_importance_sampling_correction: true
+vllm_importance_sampling_correction: true # comes from  https://fengyao.notion.site/off-policy-rl i think? we multiply loss by truncated importance sampling ratio to adjust for inference/training engine log prob diffs
 vllm_max_model_length: 6144 # Set it to at least the maximum prompt length in the dataset plus max_completion_length;
 # vllm_model_impl: "transformers"
 
@@ -34,12 +34,18 @@ fp16: false
 
 callbacks:
 - push_to_hub_revision
+# - benchmark_callback
+# benchmarks:
+# - aime24
+# - math_500
+# - ifeval
+# - ifbench_test
 beta: 0.001 # DeepSeek-R1 incentivizes reasoning in LLMs through reinforcement learning use a value of 0.001.
 epsilon: 0.2
 epsilon_high: 5.0 # When used with loss_type='cispo', this corresponds to the ε_max param specified in the ScaleRL paper and the recommended value is 5.0.
 disable_dropout: true # This is useful for training with a reference model, as it prevents the model from generating different logprobs for the same input
 do_eval: false
-gradient_accumulation_steps: 160
+gradient_accumulation_steps: 120
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
@@ -58,7 +64,10 @@ logging_strategy: steps
 lr_scheduler_type: constant_with_warmup
 lr_scheduler_kwargs:
   min_lr_rate: 0.1
-mask_truncated_completions: true #according to DAPO paper important for training stability
+mask_truncated_completions: true #according to DAPO paper important for training stability, OLMo paper seems to call it into question for v3.1? full excerpt here, page 105 2512.13961
+
+# 2. not masking truncated sequences, one of the components of DAPO (Yu et al., 2025). Despite initial results suggesting this masking improved the speed of the trainer (by having fewer completions to train on), we ultimately found that variations in batch size caused by some examples masked out to reduce stability. And without training on overlong negative sequences, completion lengths were higher, on average. We therefore found that any efficiency gains in training speed from masking were outweighed by slowdowns from generating longer sequence lengths.
+
 max_completion_length: 4096
 max_grad_norm: 0.2
 # max_prompt_length: 512
@@ -70,7 +79,7 @@ num_train_epochs: 1
 output_dir: data/Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220k${VERSION}
 overwrite_output_dir: true
 per_device_eval_batch_size: 1
-per_device_train_batch_size: 2
+per_device_train_batch_size: 6
 report_to:
 - wandb
 reward_funcs:
@@ -91,7 +100,7 @@ seed: 42
 temperature: 0.8
 torch_compile: false #claude says "My recommendation: Turn off torch_compile for now. The combination of ZeRO-3 + flash attention + vLLM colocate mode is already quite optimized. The graph breaks from .item() calls and the constant ZeRO-3 parameter reshuffling mean you're likely losing more than you're gaining."
 use_liger_kernel: false #NotImplementedError: Liger Kernels currently only support token-level importance sampling. Please set`importance_sampling_level` to 'token'.
-use_bias_correction_kl: true
+use_bias_correction_kl: true # corrects the KL divergence estimate by multiplying it with the importance sampling ratio
 wandb_entity: Neelectric
 wandb_project: open-r1_safety
 wandb_log_unique_prompts: True
