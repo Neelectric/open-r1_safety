@@ -1,4 +1,4 @@
-uv pip install lighteval==0.13.0
+# uv pip install lighteval==0.13.0
 uv pip install vllm==0.10.1
 # uv pip install -U datasets
 uv pip install more_itertools
@@ -25,5 +25,5 @@ lighteval vllm $MODEL_ARGS $TASK \
 
 
 
-# uv pip install vllm==0.11.2
+uv pip install vllm==0.11.2
 # uv pip install datasets==4.4.2
