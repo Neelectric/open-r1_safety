@@ -19,10 +19,10 @@ max_length: 4096 #6144 #8192 #16384 # 65536
 optim: adamw_torch
 lr_scheduler_type: constant_with_warmup
 warmup_ratio: 0.1
-learning_rate: 1.0e-06
+learning_rate: 2.0e-05 # recommended in https://arxiv.org/pdf/2508.05629 for llama3.1
 gradient_accumulation_steps: 1
 per_device_eval_batch_size: 1
-per_device_train_batch_size: 4
+per_device_train_batch_size: 64
 max_grad_norm: 0.2
 padding_free: true # following https://github.com/huggingface/trl/pull/3076
 
@@ -35,15 +35,15 @@ eval_strategy: 'no'
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.17
-hub_model_revision: v00.17
+hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.20
+hub_model_revision: v00.20
 hub_strategy: every_save
 log_level: info
 logging_steps: 1
 logging_strategy: steps
 loss_type: dft #added to change from v00.10
 packing: false
-output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.17
+output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.20
 overwrite_output_dir: true
 push_to_hub: true
 report_to:
@@ -52,10 +52,10 @@ save_strategy: "steps"
 save_steps: 0.5
 save_total_limit: 2
 seed: 42
-torch_compile: true
-use_liger_kernel: false
+torch_compile: false
+use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_safety
-run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.17
+run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.20
 callbacks:
 - push_to_hub_revision
