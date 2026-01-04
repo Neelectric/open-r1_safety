@@ -1,5 +1,5 @@
 # uv pip install lighteval==0.13.0
-# uv pip install vllm==0.10.1
+uv pip install vllm==0.10.1
 uv pip install more_itertools
 uv pip install syllapy
 uv pip install spacy[ja,ko,th]>=3.8.0
@@ -10,8 +10,7 @@ NUM_TOKS=4096
 
 # MODEL=/root/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10/snapshots/afbdbaa07751effee4a6f40b2d5b77ea1a876435
 # REVISION=main-step-000000275
-# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10
-MODEL=meta-llama/Llama-3.1-8B-Instruct
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.19
 REVISION=main
 
 
@@ -20,8 +19,8 @@ MODEL_ARGS="model_name=$MODEL,revision=$REVISION,dtype=bfloat16,data_parallel_si
 OUTPUT_DIR=data/evals/
 
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
-lighteval vllm $MODEL_ARGS ifbench_test,ifeval \
+lighteval vllm $MODEL_ARGS ifeval \
     --output-dir $OUTPUT_DIR
 
 
-# uv pip install vllm==0.11.2
+uv pip install vllm==0.11.2
