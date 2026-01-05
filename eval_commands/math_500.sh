@@ -9,7 +9,7 @@ NUM_TOKS=4096
 # MODEL=/root/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10/snapshots/e2583dfaba3d8acc831710720ff608b0fac3c4a9
 # REVISION=main-step-000000025
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.20
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.15
 REVISION=main
 
 
@@ -19,7 +19,7 @@ TASK=math_500
 # TASK=aime24
 OUTPUT_DIR=data/evals/
 
-gpuselect --name A6000 -- \
+# gpuselect --name A6000 -- \
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
 lighteval vllm $MODEL_ARGS $TASK \
     --output-dir $OUTPUT_DIR
