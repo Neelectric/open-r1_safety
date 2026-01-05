@@ -19,7 +19,8 @@ install:
 	GIT_LFS_SKIP_SMUDGE=1 uv pip install git+https://github.com/Neelectric/lighteval && \
 	uv pip install vllm==0.11.2 && \
 	uv pip install gpustat && \
-	uv pip install more_itertools
+	uv pip install more_itertools && \
+	uv pip install gpuselect
 
 
 	

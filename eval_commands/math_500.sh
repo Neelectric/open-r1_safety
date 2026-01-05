@@ -19,7 +19,7 @@ TASK=math_500
 # TASK=aime24
 OUTPUT_DIR=data/evals/
 
-CUDA_VISIBLE_DEVICES=1 \
+gpuselect --name A6000 -- \
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
 lighteval vllm $MODEL_ARGS $TASK \
     --output-dir $OUTPUT_DIR
