@@ -22,6 +22,8 @@ from transformers import TrainerCallback
 from transformers.trainer_callback import TrainerControl, TrainerState
 from transformers.training_args import TrainingArguments
 
+import torch
+
 from .evaluation import run_benchmark_jobs
 from .hub import push_to_hub_revision
 
@@ -195,10 +197,64 @@ class BenchmarkCallback(TrainerCallback):
             import traceback
             traceback.print_exc()
 
+class EMACallback(TrainerCallback):
+    def __init__(self, eta=0.25):
+        self.eta = eta
+        self.ema_params = []
+        self.initialized = False
+
+    def on_step_end(self, args, state, control, model, **kwargs):
+        if not self.initialized:
+            # this should handle DDP wrapping
+            self.model_ref = model.module if hasattr(model, "module") else model
+            self.ema_params = [
+                p.clone().detach() 
+                for p in self.model_ref.parameters() 
+                if p.requires_grad
+            ]
+            self.initialized = True
+
+        # apply actual EMA: ema = eta * ema + (1-eta) * current
+        with torch.no_grad():
+            for ema_p, model_p in zip(self.ema_params, self.model_ref.parameters()):
+                if model_p.requires_grad:
+                    ema_p.mul_(self.eta).add_(model_p, alpha=(1 - self.eta))
+                
+                
+class ShardedEMACallback(TrainerCallback):
+    """
+    I was somewhat worried about DeepSpeed ZeRO Stage 2 or 3 messing this up - would like to be able to keep using if so. This should be mathematically equivalent to simple version
+    """
+    def __init__(self, eta=0.25):
+        self.eta = eta
+        self.ema_param_groups = []
+        self.initialized = False
+
+    def on_step_end(self, args, state, control, optimizer, **kwargs):
+        # Lazy initialization to grab sharded optimizer params
+        if not self.initialized:
+            # here we create shadow copy of local optimizer shard, should automatically respect ZeRO partitioning
+            for group in optimizer.param_groups:
+                self.ema_param_groups.append([
+                    p.clone().detach() 
+                    for p in group['params'] 
+                    if p.requires_grad
+                ])
+            self.initialized = True
+
+        # here we apply EMA only to local shards, which should still work the same as global sync but avoids communication btw GPUs which is often a training bottleneck
+        with torch.no_grad():
+            for ema_group, opt_group in zip(self.ema_param_groups, optimizer.param_groups):
+                for ema_p, opt_p in zip(ema_group, opt_group['params']):
+                    if opt_p.requires_grad:
+                        ema_p.mul_(self.eta).add_(opt_p, alpha=(1 - self.eta))
+        
 
 CALLBACKS = {
     "push_to_hub_revision": PushToHubRevisionCallback,
     "benchmark_callback": BenchmarkCallback,
+    "ema_callback": EMACallback,
+    "sharded_ema_callback": ShardedEMACallback,
 }
 
 
