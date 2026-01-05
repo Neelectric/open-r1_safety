@@ -2,7 +2,7 @@
 uv pip install vllm==0.10.1
 uv pip install more_itertools
 
-NUM_GPUS=4
+NUM_GPUS=1
 NUM_TOKS=4096
 
 # MODEL=/root/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10/snapshots/afbdbaa07751effee4a6f40b2d5b77ea1a876435
@@ -16,7 +16,7 @@ MODEL_ARGS="model_name=$MODEL,revision=$REVISION,dtype=bfloat16,data_parallel_si
 OUTPUT_DIR=data/evals/
 
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
-lighteval vllm $MODEL_ARGS eval_commands/ifeval_ifbench.sh \
+lighteval vllm $MODEL_ARGS mt_bench \
     --output-dir $OUTPUT_DIR
 
 
