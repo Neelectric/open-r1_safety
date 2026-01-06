@@ -3,14 +3,14 @@ uv pip install vllm==0.10.1
 # uv pip install -U datasets
 uv pip install more_itertools
 
-NUM_GPUS=2
+NUM_GPUS=4
 NUM_TOKS=4096
 
 # MODEL=/root/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10/snapshots/e2583dfaba3d8acc831710720ff608b0fac3c4a9
 # REVISION=main-step-000000025
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.14
-REVISION=main-step-000000225
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.21
+REVISION=main
 
 
 # 324
@@ -25,5 +25,5 @@ lighteval vllm $MODEL_ARGS $TASK \
 
 
 
-# uv pip install vllm==0.11.2
+uv pip install vllm==0.11.2
 # uv pip install datasets==4.4.2
