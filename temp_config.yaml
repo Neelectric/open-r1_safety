@@ -1,3 +1,4 @@
+# Config for 1 node of 4 x H100s (80GB)
 # Model arguments
 model_name_or_path: meta-llama/Llama-3.1-8B-Instruct
 model_revision: main
@@ -5,103 +6,57 @@ dtype: bfloat16
 attn_implementation: flash_attention_2
 
 # Data training arguments
-# We edit the DeepSeek chat template to ensure (a) the reasoning block within <think> and </think> is included in the completion and (b) the <think> tag is not part of the prefill so that the format reward works
+chat_template: "{{- bos_token }}\n{%- if custom_tools is defined %}\n    {%- set tools = custom_tools %}\n{%- endif %}\n{%- if not tools_in_user_message is defined %}\n    {%- set tools_in_user_message = true %}\n{%- endif %}\n{%- if not date_string is defined %}\n    {%- set date_string = \"26 Jul 2024\" %}\n{%- endif %}\n{%- if not tools is defined %}\n    {%- set tools = none %}\n{%- endif %}\n\n{#- This block extracts the system message, so we can slot it into the right place. #}\n{%- if messages[0]['role'] == 'system' %}\n    {%- set system_message = messages[0]['content']|trim %}\n    {%- set messages = messages[1:] %}\n{%- else %}\n    {%- set system_message = \"You are a helpful AI Assistant that provides well-reasoned and detailed responses. You first think about the reasoning process as an internal monologue and then provide the user with the answer. Respond in the following format: <think>\n...\n</think>\n<answer>\n...\n</answer>\" %}\n{%- endif %}\n\n{#- System message + builtin tools #}\n{{- \"<|start_header_id|>system<|end_header_id|>\\n\\n\" }}\n{%- if builtin_tools is defined or tools is not none %}\n    {{- \"Environment: ipython\\n\" }}\n{%- endif %}\n{%- if builtin_tools is defined %}\n    {{- \"Tools: \" + builtin_tools | reject('equalto', 'code_interpreter') | join(\", \") + \"\\n\\n\"}}\n{%- endif %}\n{{- \"Cutting Knowledge Date: December 2023\\n\" }}\n{{- \"Today Date: \" + date_string + \"\\n\\n\" }}\n{%- if tools is not none and not tools_in_user_message %}\n    {{- \"You have access to the following functions. To call a function, please respond with JSON for a function call.\" }}\n    {{- 'Respond in the format {\"name\": function name, \"parameters\": dictionary of argument name and its value}.' }}\n    {{- \"Do not use variables.\\n\\n\" }}\n    {%- for t in tools %}\n        {{- t | tojson(indent=4) }}\n        {{- \"\\n\\n\" }}\n    {%- endfor %}\n{%- endif %}\n{{- system_message }}\n{{- \"<|eot_id|>\" }}\n\n{#- Custom tools are passed in a user message with some extra guidance #}\n{%- if tools_in_user_message and not tools is none %}\n    {#- Extract the first user message so we can plug it in here #}\n    {%- if messages | length != 0 %}\n        {%- set first_user_message = messages[0]['content']|trim %}\n        {%- set messages = messages[1:] %}\n    {%- else %}\n        {{- raise_exception(\"Cannot put tools in the first user message when there's no first user message!\") }}\n{%- endif %}\n    {{- '<|start_header_id|>user<|end_header_id|>\\n\\n' -}}\n    {{- \"Given the following functions, please respond with a JSON for a function call \" }}\n    {{- \"with its proper arguments that best answers the given prompt.\\n\\n\" }}\n    {{- 'Respond in the format {\"name\": function name, \"parameters\": dictionary of argument name and its value}.' }}\n    {{- \"Do not use variables.\\n\\n\" }}\n    {%- for t in tools %}\n        {{- t | tojson(indent=4) }}\n        {{- \"\\n\\n\" }}\n    {%- endfor %}\n    {{- first_user_message + \"<|eot_id|>\"}}\n{%- endif %}\n\n{%- for message in messages %}\n    {%- if not (message.role == 'ipython' or message.role == 'tool' or 'tool_calls' in message) %}\n        {{- '<|start_header_id|>' + message['role'] + '<|end_header_id|>\\n\\n'+ message['content'] | trim + '<|eot_id|>' }}\n    {%- elif 'tool_calls' in message %}\n        {%- if not message.tool_calls|length == 1 %}\n            {{- raise_exception(\"This model only supports single tool-calls at once!\") }}\n        {%- endif %}\n        {%- set tool_call = message.tool_calls[0].function %}\n        {%- if builtin_tools is defined and tool_call.name in builtin_tools %}\n            {{- '<|start_header_id|>assistant<|end_header_id|>\\n\\n' -}}\n            {{- \"<|python_tag|>\" + tool_call.name + \".call(\" }}\n            {%- for arg_name, arg_val in tool_call.arguments | items %}\n                {{- arg_name + '=\"' + arg_val + '\"' }}\n                {%- if not loop.last %}\n                    {{- \", \" }}\n                {%- endif %}\n                {%- endfor %}\n            {{- \")\" }}\n        {%- else  %}\n            {{- '<|start_header_id|>assistant<|end_header_id|>\\n\\n' -}}\n            {{- '{\"name\": \"' + tool_call.name + '\", ' }}\n            {{- '\"parameters\": ' }}\n            {{- tool_call.arguments | tojson }}\n            {{- \"}\" }}\n        {%- endif %}\n        {%- if builtin_tools is defined %}\n            {#- This means we're in ipython mode #}\n            {{- \"<|eom_id|>\" }}\n        {%- else %}\n            {{- \"<|eot_id|>\" }}\n        {%- endif %}\n    {%- elif message.role == \"tool\" or message.role == \"ipython\" %}\n        {{- \"<|start_header_id|>ipython<|end_header_id|>\\n\\n\" }}\n        {%- if message.content is mapping or message.content is iterable %}\n            {{- message.content | tojson }}\n        {%- else %}\n            {{- message.content }}\n        {%- endif %}\n        {{- \"<|eot_id|>\" }}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|start_header_id|>assistant<|end_header_id|>\\n\\n' }}\n{%- endif %}\n" ## adopted for Llama
 dataset_name: Neelectric/OpenR1-Math-220k_extended_Llama3_4096toks
 dataset_config: default
-dataset_prompt_column: problem
-system_prompt: "You are a helpful AI Assistant that provides well-reasoned and detailed responses. You first think about the reasoning process as an internal monologue and then provide the user with the answer. Respond in the following format: <think>\n...\n</think>\n<answer>\n...\n</answer>"
+dataset_num_proc: 12
+eos_token: <|eot_id|>
 
-# VLLM settings
-# vllm_dtype: bfloat16
-use_vllm: true
-vllm_mode: colocate
-vllm_gpu_memory_utilization: 0.35
-vllm_tensor_parallel_size: 1
-vllm_importance_sampling_correction: true # comes from  https://fengyao.notion.site/off-policy-rl i think? we multiply loss by truncated importance sampling ratio to adjust for inference/training engine log prob diffs
-vllm_max_model_length: 6144 # Set it to at least the maximum prompt length in the dataset plus max_completion_length;
-# vllm_model_impl: "transformers"
 
-# GRPO trainer config
-cast_lm_head_to_fp32: false # as of 22.12.25 with trl==0.27.0.dev0 still broken with DS Z-3 and KL ref model?
-#this can cause the following
-# [rank1]:   File "/home/user/repos/open-r1_safety/openr1_clone/lib/python3.11/site-packages/transformers/models/olmo2/modeling_olmo2.py", line 455, in forward              [40/3403]
-# [rank1]:     logits = self.lm_head(hidden_states[:, slice_indices,
-# [rank1]:   File "/home/user/repos/open-r1_safety/openr1_clone/lib/python3.11/site-packages/torch/nn/modules/linear.py", line 125, in forward  
-# [rank1]:     return F.linear(input, self.weight, self.bias)                                                                                                                         
-# [rank1]: RuntimeError: expected mat1 and mat2 to have the same dtype, but got: float != c10::BFloat16
+#SFT hyperparam
+max_length: 4096 #6144 #8192 #16384 # 65536 
+# weight_decay: 0.0001
+optim: adamw_torch
+lr_scheduler_type: constant_with_warmup
+warmup_ratio: 0.1
+learning_rate: 1.0e-06
+gradient_accumulation_steps: 1
+per_device_eval_batch_size: 1
+per_device_train_batch_size: 4
+max_grad_norm: 0.2
+padding_free: true # following https://github.com/huggingface/trl/pull/3076
+
+# SFT trainer config
+max_steps: -1 #701/3348
+num_train_epochs: 3
 bf16: true
-fp16: false
-
-callbacks:
-- push_to_hub_revision
-# - benchmark_callback
-# benchmarks:
-# - aime24
-# - math_500
-# - ifeval
-# - ifbench_test
-beta: 0.0 #trying without KL-div # DeepSeek-R1 incentivizes reasoning in LLMs through reinforcement learning use a value of 0.001.
-epsilon: 0.2
-epsilon_high: 5.0 # When used with loss_type='cispo', this corresponds to the ε_max param specified in the ScaleRL paper and the recommended value is 5.0.
-disable_dropout: true # This is useful for training with a reference model, as it prevents the model from generating different logprobs for the same input
 do_eval: false
-gradient_accumulation_steps: 80
+eval_strategy: 'no'
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-hub_model_id: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.14
-# hub_model_revision: v00.14
-hub_private_repo: false # otherwise runs stop syncing because i hit the 100g max
+hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.21
+hub_model_revision: v00.21
 hub_strategy: every_save
-importance_sampling_level: "sequence"
-learning_rate: 1.0e-06
-loss_type: "cispo"
-log_completions: true
 log_level: info
-logging_first_step: true
 logging_steps: 1
 logging_strategy: steps
-lr_scheduler_type: constant_with_warmup
-lr_scheduler_kwargs:
-  min_lr_rate: 0.1
-mask_truncated_completions: true #according to DAPO paper important for training stability, OLMo paper seems to call it into question for v3.1? full excerpt here, page 105 2512.13961
-
-# 2. not masking truncated sequences, one of the components of DAPO (Yu et al., 2025). Despite initial results suggesting this masking improved the speed of the trainer (by having fewer completions to train on), we ultimately found that variations in batch size caused by some examples masked out to reduce stability. And without training on overlong negative sequences, completion lengths were higher, on average. We therefore found that any efficiency gains in training speed from masking were outweighed by slowdowns from generating longer sequence lengths.
-
-max_completion_length: 4096
-max_grad_norm: 0.2
-# max_prompt_length: 512
-max_steps: -1
-num_completions_to_print: 1
-num_generations: 16
-num_iterations: 1
-num_train_epochs: 1
-output_dir: data/Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.14
+packing: false
+output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.21
 overwrite_output_dir: true
-per_device_eval_batch_size: 1
-per_device_train_batch_size: 6
+push_to_hub: true
 report_to:
 - wandb
-reward_funcs:
-- accuracy
-- format
-# - tag_count
-reward_weights:
-- 1.0
-- 0.15
-# - 0.05
-run_name: Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.14
 save_strategy: "steps"
-save_steps: 25
+save_steps: 0.2
 save_total_limit: 2
-scale_rewards: "batch"
-shuffle_dataset: true
 seed: 42
-temperature: 0.8
-torch_compile: false #claude says "My recommendation: Turn off torch_compile for now. The combination of ZeRO-3 + flash attention + vLLM colocate mode is already quite optimized. The graph breaks from .item() calls and the constant ZeRO-3 parameter reshuffling mean you're likely losing more than you're gaining."
-use_liger_kernel: false #NotImplementedError: Liger Kernels currently only support token-level importance sampling. Please set`importance_sampling_level` to 'token'.
-use_bias_correction_kl: true # corrects the KL divergence estimate by multiplying it with the importance sampling ratio
+torch_compile: false
+use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_safety
-wandb_log_unique_prompts: True
-warmup_ratio: 0.05
+run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.21
+callbacks:
+- push_to_hub_revision
+- ema_callback
+ema_eta: 0.25

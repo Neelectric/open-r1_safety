@@ -83,6 +83,10 @@ class ScriptArguments(trl.ScriptArguments):
         default=0.5,
         metadata={"help": "Power to use in the preconditioner for DAdamW"}
     )
+    ema_eta: Optional[float] = field(
+        default=0.25,
+        metadata={"help": "EMA Momentum Parameter following Kim et al. (2025, COLM)"}
+    )
 
     def __post_init__(self):
         if self.dataset_name is None and self.dataset_mixture is None:
