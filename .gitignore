@@ -27,3 +27,5 @@ openr1_v3/
 git_login.sh
 hacky_helpers/
 fisher_testbed/datasets/
+safety-eval/*
+safety-eval
