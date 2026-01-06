@@ -245,22 +245,27 @@ class ShardedEMACallback(TrainerCallback):
     """
     I was somewhat worried about DeepSpeed ZeRO Stage 2 or 3 messing this up - would like to be able to keep using if so. This should be mathematically equivalent to simple version
     """
-    def __init__(self, eta=0.25, **kwargs):
-        self.eta = eta
-        self.ema_param_groups = []
+    def __init__(self, train_config=None, model_config=None, **kwargs):
+        self.eta = getattr(train_config, 'ema_eta', 0.25) if train_config else 0.25
+        self.ema_params = []
         self.initialized = False
-
-    def on_step_end(self, args, state, control, optimizer, **kwargs):
-        # Lazy initialization to grab sharded optimizer params
+        
+    def on_train_begin(self, args, state, control, model, optimizer, **kwargs):
+        if hasattr(optimizer, 'optimizer'):
+            base_optimizer = optimizer.optimizer
+        else:
+            base_optimizer = optimizer
         if not self.initialized:
             # here we create shadow copy of local optimizer shard, should automatically respect ZeRO partitioning
-            for group in optimizer.param_groups:
+            for group in base_optimizer.param_groups:
                 self.ema_param_groups.append([
                     p.clone().detach() 
                     for p in group['params'] 
                     if p.requires_grad
                 ])
             self.initialized = True
+
+    def on_step_end(self, args, state, control, optimizer, **kwargs):
 
         # here we apply EMA only to local shards, which should still work the same as global sync but avoids communication btw GPUs which is often a training bottleneck
         with torch.no_grad():
@@ -290,6 +295,9 @@ def get_callbacks(train_config, model_config) -> List[TrainerCallback]:
     for callback_name in train_config.callbacks:
         if callback_name not in CALLBACKS:
             raise ValueError(f"Callback {callback_name} not found in CALLBACKS.")
-        callbacks.append(CALLBACKS[callback_name](train_config, model_config))
+        callbacks.append(CALLBACKS[callback_name](
+            train_config=train_config, 
+            model_config=model_config,
+            ))
 
     return callbacks
