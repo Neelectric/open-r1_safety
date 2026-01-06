@@ -7,7 +7,7 @@ NUM_TOKS=4096
 
 # MODEL=/root/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10/snapshots/afbdbaa07751effee4a6f40b2d5b77ea1a876435
 # REVISION=main-step-000000275
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.14
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.13
 REVISION=main
 
 

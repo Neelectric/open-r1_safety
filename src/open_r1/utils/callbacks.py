@@ -44,7 +44,7 @@ class DummyConfig:
 
 
 class PushToHubRevisionCallback(TrainerCallback):
-    def __init__(self, model_config) -> None:
+    def __init__(self, model_config, **kwargs) -> None:
         self.model_config = model_config
 
     def on_save(
@@ -88,7 +88,7 @@ class BenchmarkCallback(TrainerCallback):
     Results are saved to ./results/checkpoint-{step}/ directory.
     """
 
-    def __init__(self, model_config) -> None:
+    def __init__(self, model_config, **kwargs) -> None:
         self.model_config = model_config
 
     def on_save(
@@ -198,12 +198,12 @@ class BenchmarkCallback(TrainerCallback):
             traceback.print_exc()
 
 class EMACallback(TrainerCallback):
-    def __init__(self, eta=0.25):
-        self.eta = eta
+    def __init__(self, train_config=None, model_config=None, **kwargs):
+        self.eta = getattr(train_config, 'ema_eta', 0.25) if train_config else 0.25
         self.ema_params = []
         self.initialized = False
-
-    def on_step_end(self, args, state, control, model, **kwargs):
+        
+    def on_train_begin(self, args, state, control, model, **kwargs):
         if not self.initialized:
             # this should handle DDP wrapping
             self.model_ref = model.module if hasattr(model, "module") else model
@@ -213,19 +213,39 @@ class EMACallback(TrainerCallback):
                 if p.requires_grad
             ]
             self.initialized = True
+            print(f"Simple EMA: Copied Model params into ema_params with eta = {self.eta}")
 
+    def on_step_end(self, args, state, control, model, **kwargs):
         # apply actual EMA: ema = eta * ema + (1-eta) * current
         with torch.no_grad():
             for ema_p, model_p in zip(self.ema_params, self.model_ref.parameters()):
                 if model_p.requires_grad:
                     ema_p.mul_(self.eta).add_(model_p, alpha=(1 - self.eta))
-                
+                    
+    def on_log(self, args, state, control, logs, **kwargs):
+        if state.global_step % 50 == 0 and state.global_step > 0:
+            with torch.no_grad():
+                param_dist = sum(
+                    (e - m).pow(2).sum() 
+                    for e, m in zip(self.ema_params, self.model_ref.parameters())
+                    if m.requires_grad
+                ).sqrt().item()
+            print(f"EMA: Param_dist is {param_dist}")
+            logs["ema_param_distance"] = param_dist
+
+                    
+    def on_train_end(self, args, state, control, model, **kwargs):
+        with torch.no_grad():
+            for ema_p, model_p in zip(self.ema_params, self.model_ref.parameters()):
+                if model_p.requires_grad:
+                    model_p.copy_(ema_p)
+        print(f"Successfully replaced all model params with the EMA params!")
                 
 class ShardedEMACallback(TrainerCallback):
     """
     I was somewhat worried about DeepSpeed ZeRO Stage 2 or 3 messing this up - would like to be able to keep using if so. This should be mathematically equivalent to simple version
     """
-    def __init__(self, eta=0.25):
+    def __init__(self, eta=0.25, **kwargs):
         self.eta = eta
         self.ema_param_groups = []
         self.initialized = False
@@ -248,6 +268,13 @@ class ShardedEMACallback(TrainerCallback):
                 for ema_p, opt_p in zip(ema_group, opt_group['params']):
                     if opt_p.requires_grad:
                         ema_p.mul_(self.eta).add_(opt_p, alpha=(1 - self.eta))
+    
+    def on_train_end(self, args, state, control, optimizer, **kwargs):
+        with torch.no_grad():
+            for ema_group, opt_group in zip(self.ema_param_groups, optimizer.param_groups):
+                for ema_p, opt_p in zip(ema_group, opt_group['params']):
+                    if opt_p.requires_grad:
+                        opt_p.copy_(ema_p)
         
 
 CALLBACKS = {
@@ -263,6 +290,6 @@ def get_callbacks(train_config, model_config) -> List[TrainerCallback]:
     for callback_name in train_config.callbacks:
         if callback_name not in CALLBACKS:
             raise ValueError(f"Callback {callback_name} not found in CALLBACKS.")
-        callbacks.append(CALLBACKS[callback_name](model_config))
+        callbacks.append(CALLBACKS[callback_name](train_config, model_config))
 
     return callbacks
