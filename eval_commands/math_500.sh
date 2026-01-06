@@ -10,7 +10,7 @@ NUM_TOKS=4096
 # REVISION=main-step-000000025
 
 MODEL=Neelectric/Llama-3.1-8B-Instruct_GRPO_Math-220kv00.14
-REVISION=main-step-000000250
+REVISION=main-step-000000225
 
 
 # 324
@@ -19,8 +19,6 @@ TASK=math_500
 # TASK=aime24
 OUTPUT_DIR=data/evals/
 
-# gpuselect --name A6000 -- \
-VLLM_ATTENTION_BACKEND=FLASH_ATTN \
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
 lighteval vllm $MODEL_ARGS $TASK \
     --output-dir $OUTPUT_DIR
