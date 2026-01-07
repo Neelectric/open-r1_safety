@@ -1,5 +1,6 @@
 # uv pip install lighteval==0.13.0
 uv pip install vllm==0.10.1
+uv pip uninstall flashinfer-python
 # uv pip install -U datasets
 uv pip install more_itertools
 
@@ -10,7 +11,7 @@ NUM_TOKS=4096
 # REVISION=main-step-000000025
 
 # need to check 00.07 through 00.09
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.07
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10
 REVISION=main
 
 
