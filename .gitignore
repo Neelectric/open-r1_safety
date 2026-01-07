@@ -29,3 +29,4 @@ hacky_helpers/
 fisher_testbed/datasets/
 safety-eval/*
 safety-eval
+safety-eval/
