@@ -138,7 +138,8 @@ def main(script_args, training_args, model_args):
     ############################
     # Initialize the SFT Trainer
     ############################
-    print(f"RNG state hash before optimizer: {hash(torch.get_rng_state().cpu().numpy().tobytes())}")
+    #was printing RNG state hash 
+    # print(f"RNG state hash before optimizer: {hash(torch.get_rng_state().cpu().numpy().tobytes())}")
     if script_args.custom_optim == "dadamw":
         
         trainer = SFTTrainerWithDAdamW( 
@@ -162,7 +163,7 @@ def main(script_args, training_args, model_args):
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
         )
-        print(f"RNG state hash after optimizer: {hash(torch.get_rng_state().cpu().numpy().tobytes())}")
+        # print(f"RNG state hash after optimizer: {hash(torch.get_rng_state().cpu().numpy().tobytes())}")
 
 
     ###############

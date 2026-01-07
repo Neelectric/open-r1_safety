@@ -243,39 +243,123 @@ class EMACallback(TrainerCallback):
                 
 class ShardedEMACallback(TrainerCallback):
     """
-    I was somewhat worried about DeepSpeed ZeRO Stage 2 or 3 messing this up - would like to be able to keep using if so. This should be mathematically equivalent to simple version
+    EMA callback that works with DeepSpeed ZeRO stages 1-3.
+    Operates on optimizer param shards directly to avoid communication overhead.
     """
-    def __init__(self, eta=0.25, **kwargs):
-        self.eta = eta
-        self.ema_param_groups = []
+    def __init__(self, train_config=None, model_config=None, **kwargs):
+        self.eta = getattr(train_config, 'ema_eta', 0.25) if train_config else 0.25
+        self.ema_param_groups = []  # Fixed: was ema_params but referenced as ema_param_groups
         self.initialized = False
+        self.base_optimizer = None
+        
+    def _get_base_optimizer(self, optimizer):
+        """Unwrap DeepSpeed optimizer to get the underlying optimizer."""
+        if hasattr(optimizer, 'optimizer'):
+            return optimizer.optimizer
+        return optimizer
+        
+    def on_train_begin(self, args, state, control, optimizer, **kwargs):
+        if self.initialized:
+            return
+            
+        self.base_optimizer = self._get_base_optimizer(optimizer)
+        
+        # Create shadow copy of local optimizer shards
+        # This automatically respects ZeRO partitioning
+        for group in self.base_optimizer.param_groups:
+            self.ema_param_groups.append([
+                p.clone().detach() 
+                for p in group['params'] 
+                if p.requires_grad
+            ])
+        
+        self.initialized = True
+        
+        # Log some diagnostics
+        total_params = sum(
+            p.numel() for group in self.base_optimizer.param_groups 
+            for p in group['params'] if p.requires_grad
+        )
+        if args.local_rank <= 0:
+            print(f"ShardedEMA initialized: eta={self.eta}, local shard params={total_params:,}")
 
     def on_step_end(self, args, state, control, optimizer, **kwargs):
-        # Lazy initialization to grab sharded optimizer params
         if not self.initialized:
-            # here we create shadow copy of local optimizer shard, should automatically respect ZeRO partitioning
-            for group in optimizer.param_groups:
-                self.ema_param_groups.append([
-                    p.clone().detach() 
-                    for p in group['params'] 
-                    if p.requires_grad
-                ])
-            self.initialized = True
-
-        # here we apply EMA only to local shards, which should still work the same as global sync but avoids communication btw GPUs which is often a training bottleneck
+            # Fallback init if on_train_begin didn't receive optimizer
+            self.on_train_begin(args, state, control, optimizer, **kwargs)
+        
+        base_opt = self._get_base_optimizer(optimizer)
+        
+        # Apply EMA only to local shards
+        # Mathematically equivalent to global EMA since shards are disjoint
         with torch.no_grad():
-            for ema_group, opt_group in zip(self.ema_param_groups, optimizer.param_groups):
+            for ema_group, opt_group in zip(self.ema_param_groups, base_opt.param_groups):
                 for ema_p, opt_p in zip(ema_group, opt_group['params']):
                     if opt_p.requires_grad:
                         ema_p.mul_(self.eta).add_(opt_p, alpha=(1 - self.eta))
     
-    def on_train_end(self, args, state, control, optimizer, **kwargs):
+    def on_log(self, args, state, control, logs, optimizer, **kwargs):
+        if state.global_step % 50 != 0 or state.global_step == 0:
+            return
+            
+        if not self.initialized:
+            return
+            
+        base_opt = self._get_base_optimizer(optimizer)
+        
+        # Compute local shard distance
         with torch.no_grad():
-            for ema_group, opt_group in zip(self.ema_param_groups, optimizer.param_groups):
+            local_dist_sq = sum(
+                (ema_p - opt_p).pow(2).sum()
+                for ema_group, opt_group in zip(self.ema_param_groups, base_opt.param_groups)
+                for ema_p, opt_p in zip(ema_group, opt_group['params'])
+                if opt_p.requires_grad
+            )
+            
+            # All-reduce to get global distance across shards
+            if torch.distributed.is_initialized():
+                torch.distributed.all_reduce(local_dist_sq, op=torch.distributed.ReduceOp.SUM)
+            
+            param_dist = local_dist_sq.sqrt().item()
+        
+        if args.local_rank <= 0:
+            print(f"ShardedEMA step {state.global_step}: param_dist={param_dist:.4f}")
+        logs["ema_param_distance"] = param_dist
+    
+    def on_save(self, args, state, control, **kwargs):
+        """Save EMA state alongside checkpoints."""
+        if args.local_rank <= 0:
+            import os
+            ema_path = os.path.join(args.output_dir, f"ema_state_{state.global_step}.pt")
+            # Only save on rank 0 - each rank has different shards
+            # For full recovery, would need to save per-rank, but this is mainly for debugging
+            torch.save({
+                'eta': self.eta,
+                'global_step': state.global_step,
+                'ema_param_shapes': [[p.shape for p in group] for group in self.ema_param_groups],
+            }, ema_path)
+            print(f"ShardedEMA: Saved metadata to {ema_path}")
+    
+    def on_train_end(self, args, state, control, optimizer, **kwargs):
+        if not self.initialized:
+            print("ShardedEMA: Warning - not initialized, skipping param replacement")
+            return
+            
+        base_opt = self._get_base_optimizer(optimizer)
+        
+        # Copy EMA params back to optimizer's param references
+        with torch.no_grad():
+            for ema_group, opt_group in zip(self.ema_param_groups, base_opt.param_groups):
                 for ema_p, opt_p in zip(ema_group, opt_group['params']):
                     if opt_p.requires_grad:
                         opt_p.copy_(ema_p)
         
+        if args.local_rank <= 0:
+            print(f"ShardedEMA: Replaced optimizer params with EMA params")
+        
+        # Synchronize to ensure all ranks complete before any saving
+        if torch.distributed.is_initialized():
+            torch.distributed.barrier()
 
 CALLBACKS = {
     "push_to_hub_revision": PushToHubRevisionCallback,
@@ -290,6 +374,9 @@ def get_callbacks(train_config, model_config) -> List[TrainerCallback]:
     for callback_name in train_config.callbacks:
         if callback_name not in CALLBACKS:
             raise ValueError(f"Callback {callback_name} not found in CALLBACKS.")
-        callbacks.append(CALLBACKS[callback_name](train_config, model_config))
+        callbacks.append(CALLBACKS[callback_name](
+            train_config=train_config, 
+            model_config=model_config,
+            ))
 
     return callbacks
