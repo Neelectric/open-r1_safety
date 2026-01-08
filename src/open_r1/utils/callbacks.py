@@ -247,8 +247,8 @@ class EMACallback(TrainerCallback):
                 
 class ShardedEMACallback(TrainerCallback):
     """
-    EMA callback that works with DeepSpeed ZeRO stages 1-3.
-    Operates on optimizer param shards directly to avoid communication overhead.
+    EMA callback that is intended to work with DeepSpeed ZeRO stages 1 through 3.
+    Operates on optimizer param shards directly which should help avoid communication overhead and minimizes per-GPU VRAM overhead
     """
     def __init__(self, train_config=None, model_config=None, **kwargs):
         self.eta = getattr(train_config, 'ema_eta', 0.25) if train_config else 0.25
@@ -289,13 +289,13 @@ class ShardedEMACallback(TrainerCallback):
 
     def on_step_end(self, args, state, control, optimizer, **kwargs):
         if not self.initialized:
-            # Fallback init if on_train_begin didn't receive optimizer
+            # fallback init just in case if on_train_begin didn't receive optimizer
             self.on_train_begin(args, state, control, optimizer, **kwargs)
         
         base_opt = self._get_base_optimizer(optimizer)
         
-        # Apply EMA only to local shards
-        # Mathematically equivalent to global EMA since shards are disjoint
+        # apply EMA only to local shards
+        # as far as I can tell this should be mathematically equivalent to global EMA since shards are disjoint
         with torch.no_grad():
             for ema_group, opt_group in zip(self.ema_param_groups, base_opt.param_groups):
                 for ema_p, opt_p in zip(ema_group, opt_group['params']):

@@ -804,3 +804,14 @@ If you find this project is useful in your own work, please consider citing as f
     year = {2025}
 }
 ```
+
+
+Metric	SmolLM2-135M-Instruct	SmolLM-135M-Instruct
+IFEval (Average prompt/inst)	29.9	17.2
+MT-Bench	19.8	16.8
+HellaSwag	40.9	38.9
+ARC (Average)	37.3	33.9
+PIQA	66.3	64.0
+MMLU (cloze)	29.3	28.3
+BBH (3-shot)	28.2	25.2
+GSM8K (5-shot)	1.4	1.4
