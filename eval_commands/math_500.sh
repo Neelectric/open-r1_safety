@@ -11,7 +11,7 @@ NUM_TOKS=4096
 # REVISION=main-step-000000025
 
 # need to check 00.07 through 00.09
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.10
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.26
 REVISION=main
 
 

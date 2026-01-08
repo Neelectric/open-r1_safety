@@ -8,6 +8,10 @@ VERSION=v00.26 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_di
 ### SFT distillation Zero3_last
 VERSION=v00.23 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.23.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero3_last.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
+### SFT distillation fsdp
+VERSION=v00.27 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.27.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/fsdp.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+
+
 ### SFT distillation no zero (LOOKS BROKEN! BECAUSE OF padding_free=true??)
 VERSION=v00.22 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.22.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/ddp.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-CHECK_INTERVAL=30  # seconds between checks
+CHECK_INTERVAL=300  # seconds between checks
 MEMORY_THRESHOLD=500  # MB - GPUs with less memory used are considered free
 UTIL_THRESHOLD=5  # % - GPUs with less utilization are considered free
 
@@ -34,5 +34,4 @@ while true; do
 done
 
 # Launch the command
-VERSION=v00.18 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.18.yaml > temp_config.yaml && \
-accelerate launch --config_file recipes/accelerate_configs/zero3_last.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+VERSION=v00.27 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.27.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/fsdp.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
