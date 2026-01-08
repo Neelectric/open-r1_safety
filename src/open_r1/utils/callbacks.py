@@ -23,6 +23,7 @@ from transformers.trainer_callback import TrainerControl, TrainerState
 from transformers.training_args import TrainingArguments
 
 import torch
+import wandb
 
 from .evaluation import run_benchmark_jobs
 from .hub import push_to_hub_revision
@@ -232,6 +233,9 @@ class EMACallback(TrainerCallback):
                 ).sqrt().item()
             print(f"EMA: Param_dist is {param_dist}")
             logs["ema_param_distance"] = param_dist
+            if "wandb" in args.report_to:
+                if wandb.run is not None:
+                    wandb.log({"ema_param_distance": param_dist}, step=state.global_step)
 
                     
     def on_train_end(self, args, state, control, model, **kwargs):
@@ -324,7 +328,12 @@ class ShardedEMACallback(TrainerCallback):
         
         if args.local_rank <= 0:
             print(f"ShardedEMA step {state.global_step}: param_dist={param_dist:.4f}")
+            if "wandb" in args.report_to:
+                if wandb.run is not None:
+                    wandb.log({"ema_param_distance": param_dist}, step=state.global_step)
+                
         logs["ema_param_distance"] = param_dist
+        
     
     def on_save(self, args, state, control, **kwargs):
         """Save EMA state alongside checkpoints."""
