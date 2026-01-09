@@ -20,7 +20,8 @@ install:
 	uv pip install vllm==0.11.2 && \
 	uv pip install gpustat && \
 	uv pip install more_itertools && \
-	uv pip install gpuselect
+	uv pip install gpuselect && \
+	uv pip install ipykernel jupyter matplotlib seaborn
 	
 # . openr1_v3/bin/activate && uv pip install flashinfer-python
 

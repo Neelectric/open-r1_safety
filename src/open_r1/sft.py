@@ -126,7 +126,7 @@ def main(script_args, training_args, model_args):
             preconditioner_power=script_args.preconditioner_power,
         )
         
-    # to use dadamw, .yaml needs to contain "custom_optim: fisher" and "recompute_fisher_intervals: 0.25"
+    # to use dadamw, .yaml needs to contain "custom_optim: fisher", "recompute_fisher_intervals: 0.25", "retain_dataset_id", "ewc_lambda"
     elif script_args.custom_optim == "fisher":
         trainer = SFTTrainerWithFisher( 
             model=model,
@@ -137,6 +137,8 @@ def main(script_args, training_args, model_args):
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
             recompute_fisher_intervals=script_args.recompute_fisher_intervals,
+            retain_dataset_id=script_args.retain_dataset_id,
+            ewc_lambda=script_args.retain_dataset_id,
         )
         
     else:

@@ -1,10 +1,17 @@
 
 
-from trl import ModelConfig, SFTTrainer
-from open_r1.optims.dadamw import DAdamW, setup_dadamw
+
+
 import torch
 from torch.optim.lr_scheduler import LambdaLR
+from torch.utils.data import DataLoader
+
+from trl import ModelConfig, SFTTrainer, DataCollatorForLanguageModeling
+from trl.trainer.sft_trainer import DataCollatorForLanguageModeling
 from transformers.optimization import get_constant_schedule_with_warmup
+from datasets import load_dataset
+
+from open_r1.optims.dadamw import DAdamW, setup_dadamw
 
 
 class SFTTrainerWithDAdamW(SFTTrainer):
@@ -160,23 +167,96 @@ def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=N
 ###
 
 
+# TRL's Trainer accepts a custom `compute_loss_func` when instantiating the trainer: 
+# """
+# compute_loss_func (Callable, optional) — A function that accepts the raw model outputs, labels, and the number of items in the entire accumulated batch (batch_size * gradient_accumulation_steps) and returns the loss. For example, see the default loss function used by Trainer.
+# """"
+# in training_step(), trainer calls 
+# ``` loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch) ``
+# and then later
+# ``` self.accelerator.backward(loss, **kwargs) ```
+# 
+# SFTTrainer inherits this, so all we need write is 
+# - code to compute Fisher
+# - compute_loss_func that uses fisher in calculating total loss
+# this loss will be passed to trainer's training_step(), which will do backward() wrt our Fisher-respecting loss
     
-    
+
 class SFTTrainerWithFisher(SFTTrainer):
-    def __init__(self, *args, recompute_fisher_intervals=0.25, **kwargs):
+    """
+    SFTTrainerWithFisher implements Elastic Weight Consolidation, compatible with FSDP and DeepSpeed ZeRO stages 1-3. 
+
+    Args:
+        args ([`TrainingArguments`]):
+            The arguments to tweak for training. Will default to a basic instance of [`TrainingArguments`].
+        recompute_fisher_mode (`string`):
+            The strategy to use for recomputing Fisher Information. Must be one of 'never', 'intervals', or 'dynamically'.
+        recompute_fisher_intervals (`float`, *optional*):
+            The intervals at which Fisher Information should be recomputed, for e.g. 0.25. Must be set if recompute_fisher_mode == 'intervals'.
+        fisher_batch_size (`int`):
+            The batch size to use while computing Fisher Information.
+        retain_dataset_id (`string`):
+            The 🤗 identifier of the dataset to use for commputing Fisher Information.
+        ewc_lambda (`float`):
+            The lambda weight that scales the EWC loss during training.
+            """
+    def __init__(
+        self, 
+        *args, 
+        recompute_fisher_mode: str,
+        recompute_fisher_intervals: float, 
+        retain_dataset_id: str,
+        ewc_lambda: float,
+        fisher_batch_size: int,
+        **kwargs
+        ):
         super().__init__(*args, **kwargs)
+        self.args = args
+        self.recompute_fisher_mode = recompute_fisher_mode
         self.recompute_fisher_intervals = recompute_fisher_intervals
+        self.retain_dataset_id = retain_dataset_id
+        self.ewc_lambda = ewc_lambda
+        self.fisher_batch_size = fisher_batch_size
         
-    # TRL's Trainer accepts a custom `compute_loss_func` when instantiating the trainer: 
-    # """
-    # compute_loss_func (Callable, optional) — A function that accepts the raw model outputs, labels, and the number of items in the entire accumulated batch (batch_size * gradient_accumulation_steps) and returns the loss. For example, see the default loss function used by Trainer.
-    # """"
-    # in training_step(), trainer calls 
-    # ``` loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch) ``
-    # and then later
-    # ``` self.accelerator.backward(loss, **kwargs) ```
-    # 
-    # SFTTrainer inherits this, so all we need write is 
-    # - code to compute Fisher
-    # - compute_loss_func that uses fisher in calculating total loss
-    # this loss will be passed to trainer's training_step(), which will do backward() wrt our Fisher-respecting loss
+        
+    def preprocess_retain_dataset(self, retain_dataset_id: str, ):
+        # making sure the chat template was passed reasoning format correctly before filtering with it
+        assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in self.tokenizer.chat_template
+        num_proc = 16
+        max_length = self.args.max_length
+        raw_dataset = load_dataset(retain_dataset_id)["train"]
+        
+        # tokenize to check full lengths of sequences
+        def preprocess(example):
+            tokenized = self.tokenizer.apply_chat_template(
+                example["messages"],
+                tokenize=True,
+                return_assistant_tokens_mask=True,
+                return_dict=True,
+            )
+            return {
+                "input_ids": tokenized["input_ids"],
+                "assistant_masks": tokenized["assistant_masks"],
+            }
+        tokenized_dataset = raw_dataset.map(preprocess, remove_columns=raw_dataset.column_names, num_proc=num_proc, desc="Tokenizing")
+        
+        # then filter to max length
+        def shorter_than(example):
+            return len(example["input_ids"]) <= max_length
+        final_dataset = tokenized_dataset.filter(shorter_than, num_proc=num_proc, desc=f"Filtering retain dataset to max length {max_length}")
+        print(f"Original retain dataset length: {len(tokenized_dataset)}, retain dataset length after filtering: {len(final_dataset)}")
+        
+        collator = DataCollatorForLanguageModeling(pad_token_id=self.tokenizer.pad_token_id, completion_only_loss=True)
+        dataloader = DataLoader(
+            tokenized_dataset,
+            batch_size=self.fisher_batch_size,
+            shuffle=True,
+            collate_fn=collator,
+        )
+        return dataloader
+    
+    
+    
+    def recompute_fisher(self):
+        return
+    

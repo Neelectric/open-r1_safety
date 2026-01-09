@@ -21,7 +21,6 @@ install:
 	uv pip install gpustat && \
 	uv pip install more_itertools && \
 	uv pip install gpuselect && \ 
-	uv pip install peft && \
 	uv pip install ipykernel jupyter matplotlib seaborn
 
 
