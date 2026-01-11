@@ -175,11 +175,20 @@ def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=N
 # ``` loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch) ``
 # and then later
 # ``` self.accelerator.backward(loss, **kwargs) ```
-# 
+
 # SFTTrainer inherits this, so all we need write is 
 # - code to compute Fisher
 # - compute_loss_func that uses fisher in calculating total loss
 # this loss will be passed to trainer's training_step(), which will do backward() wrt our Fisher-respecting loss
+
+
+### update Jan'25: I was going to use compute_loss_func, but the call indeed is 🤗 transformers trainer.py L4123
+# loss = self.compute_loss_func(
+            #     outputs,
+            #     labels,
+            #     num_items_in_batch=num_items_in_batch,
+            # )
+# so we don't get access to the model! Need to subclass after all...
     
 
 class SFTTrainerWithFisher(SFTTrainer):
@@ -189,37 +198,38 @@ class SFTTrainerWithFisher(SFTTrainer):
     Args:
         args ([`TrainingArguments`]):
             The arguments to tweak for training. Will default to a basic instance of [`TrainingArguments`].
+        retain_dataset_id (`string`):
+            The 🤗 identifier of the dataset to use for commputing Fisher Information.
+        ewc_lambda (`float`):
+            The lambda weight that scales the EWC loss during training, e.g. 50.0.
+        fisher_batch_size (`int`):
+            The batch size to use while computing Fisher Information.
         recompute_fisher_mode (`string`):
             The strategy to use for recomputing Fisher Information. Must be one of 'never', 'intervals', or 'dynamically'.
         recompute_fisher_intervals (`float`, *optional*):
             The intervals at which Fisher Information should be recomputed, for e.g. 0.25. Must be set if recompute_fisher_mode == 'intervals'.
-        fisher_batch_size (`int`):
-            The batch size to use while computing Fisher Information.
-        retain_dataset_id (`string`):
-            The 🤗 identifier of the dataset to use for commputing Fisher Information.
-        ewc_lambda (`float`):
-            The lambda weight that scales the EWC loss during training.
+        
             """
     def __init__(
         self, 
         *args, 
-        recompute_fisher_mode: str,
-        recompute_fisher_intervals: float, 
         retain_dataset_id: str,
         ewc_lambda: float,
         fisher_batch_size: int,
+        recompute_fisher_mode: str,
+        recompute_fisher_intervals: float, 
         **kwargs
         ):
+        print("Fisher: Init")
         super().__init__(*args, **kwargs)
-        self.args = args
-        self.recompute_fisher_mode = recompute_fisher_mode
-        self.recompute_fisher_intervals = recompute_fisher_intervals
         self.retain_dataset_id = retain_dataset_id
         self.ewc_lambda = ewc_lambda
         self.fisher_batch_size = fisher_batch_size
-        
+        self.recompute_fisher_mode = recompute_fisher_mode
+        self.recompute_fisher_intervals = recompute_fisher_intervals        
         
     def preprocess_retain_dataset(self, retain_dataset_id: str, ):
+        print("Fisher: Pre-processing dataset")
         # making sure the chat template was passed reasoning format correctly before filtering with it
         assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in self.tokenizer.chat_template
         num_proc = 16
@@ -258,5 +268,9 @@ class SFTTrainerWithFisher(SFTTrainer):
     
     
     def recompute_fisher(self):
+        print("Fisher: recompute fisher")
         return
     
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        print("Fisher: compute loss")
+        return

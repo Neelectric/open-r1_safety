@@ -87,6 +87,28 @@ class ScriptArguments(trl.ScriptArguments):
         default=0.25,
         metadata={"help": "EMA Momentum Parameter following Kim et al. (2025, COLM)"}
     )
+    
+    ## Fisher fields
+    retain_dataset_id: str = field(
+        default="Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks",
+        metadata={"help": "The 🤗 identifier of the dataset to use for commputing Fisher Information."}
+    )    
+    ewc_lambda: float = field(
+        default=50.0,
+        metadata={"help": "The lambda weight that scales the EWC loss during training, e.g. 50.0."}
+    )
+    fisher_batch_size: int = field(
+        default=8,
+        metadata={"help": "The batch size to use while computing Fisher Information."}
+    )
+    recompute_fisher_mode: str = field(
+        default="never",
+        metadata={"help": "The strategy to use for recomputing Fisher Information. Must be one of 'never', 'intervals', or 'dynamically'."}
+    )
+    recompute_fisher_intervals: float = field(
+        default=0.25,
+        metadata={"help": "The intervals at which Fisher Information should be recomputed, for e.g. 0.25. Must be set if recompute_fisher_mode == 'intervals'."}
+    )
 
     def __post_init__(self):
         if self.dataset_name is None and self.dataset_mixture is None:
