@@ -250,8 +250,9 @@ class ShardedEMACallback(TrainerCallback):
     EMA callback that is intended to work with DeepSpeed ZeRO stages 1 through 3.
     Operates on optimizer param shards directly which should help avoid communication overhead and minimizes per-GPU VRAM overhead
     """
-    def __init__(self, train_config=None, model_config=None, **kwargs):
-        self.eta = getattr(train_config, 'ema_eta', 0.25) if train_config else 0.25
+    def __init__(self, train_config=None, model_config=None, script_args=None, **kwargs):
+        self.eta = getattr(script_args, 'ema_eta', 0.25) if script_args else 0.25
+        print(f"self.eta is {self.eta}")
         self.ema_param_groups = []  # Fixed: was ema_params but referenced as ema_param_groups
         self.initialized = False
         self.base_optimizer = None
@@ -378,7 +379,7 @@ CALLBACKS = {
 }
 
 
-def get_callbacks(train_config, model_config) -> List[TrainerCallback]:
+def get_callbacks(train_config, model_config, script_args=None) -> List[TrainerCallback]:
     callbacks = []
     for callback_name in train_config.callbacks:
         if callback_name not in CALLBACKS:
@@ -386,6 +387,6 @@ def get_callbacks(train_config, model_config) -> List[TrainerCallback]:
         callbacks.append(CALLBACKS[callback_name](
             train_config=train_config, 
             model_config=model_config,
-            ))
-
+            script_args=script_args,
+        ))
     return callbacks

@@ -6,8 +6,8 @@ import torch
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader
 
-from trl import ModelConfig, SFTTrainer, DataCollatorForLanguageModeling
-from trl.trainer.sft_trainer import DataCollatorForLanguageModeling
+from trl import ModelConfig, SFTTrainer
+from transformers import DataCollatorForLanguageModeling
 from transformers.optimization import get_constant_schedule_with_warmup
 from datasets import load_dataset
 

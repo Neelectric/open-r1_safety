@@ -59,4 +59,4 @@ run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220k${VERSION}
 callbacks:
 - push_to_hub_revision
 - sharded_ema_callback
-ema_eta: 0.75
+ema_eta: 0.4

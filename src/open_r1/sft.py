@@ -149,7 +149,7 @@ def main(script_args, training_args, model_args):
             eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
             processing_class=tokenizer,
             peft_config=get_peft_config(model_args),
-            callbacks=get_callbacks(training_args, model_args),
+            callbacks=get_callbacks(training_args, model_args, script_args=script_args),
         )
         # print(f"RNG state hash after optimizer: {hash(torch.get_rng_state().cpu().numpy().tobytes())}")
 

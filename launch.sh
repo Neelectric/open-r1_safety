@@ -34,4 +34,4 @@ while true; do
 done
 
 # Launch the command
-VERSION=v00.27 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.27.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/fsdp.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+VERSION=v00.30 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.30.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml

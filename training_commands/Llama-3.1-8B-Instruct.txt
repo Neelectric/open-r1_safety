@@ -3,7 +3,7 @@ VERSION=v00.001 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_d
 
 
 ### SFT distillation zero1_claude
-VERSION=v00.28 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.28.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+VERSION=v00.31 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.31.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 ### SFT distillation Zero3_last
 VERSION=v00.23 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.23.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero3_last.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml

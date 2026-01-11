@@ -58,5 +58,10 @@ wandb_project: open-r1_safety
 run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220k${VERSION}
 callbacks:
 - push_to_hub_revision
-- sharded_ema_callback
-ema_eta: 0.75
+
+custom_optim: fisher
+recompute_fisher_mode: intervals
+recompute_fisher_intervals: 0.25
+retain_dataset_id: Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks
+ewc_lambda: 50.0
+fisher_batch_size: 8
