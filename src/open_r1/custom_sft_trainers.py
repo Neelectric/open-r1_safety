@@ -7,9 +7,11 @@ from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader
 
 from trl import ModelConfig, SFTTrainer
-from transformers import DataCollatorForLanguageModeling
+from trl.trainer.sft_trainer import DataCollatorForLanguageModeling
 from transformers.optimization import get_constant_schedule_with_warmup
 from datasets import load_dataset
+import accelerate
+from tqdm import tqdm
 
 from open_r1.optims.dadamw import DAdamW, setup_dadamw
 
@@ -226,13 +228,20 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.ewc_lambda = ewc_lambda
         self.fisher_batch_size = fisher_batch_size
         self.recompute_fisher_mode = recompute_fisher_mode
-        self.recompute_fisher_intervals = recompute_fisher_intervals        
+        self.recompute_fisher_intervals = recompute_fisher_intervals       
+        raw_dataloader = self.preprocess_retain_dataset(retain_dataset_id)
+        
+        # super().__init_() calls SFTTrainer init which calls Trainer init, so we should have an accelerator already 
+        # so this should prep the dataloader for num_gpus
+        self.retain_dataloader = self.accelerator.prepare(raw_dataloader)
+        self.fisher_initialised = False
         
     def preprocess_retain_dataset(self, retain_dataset_id: str, ):
         print("Fisher: Pre-processing dataset")
         # making sure the chat template was passed reasoning format correctly before filtering with it
         assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in self.tokenizer.chat_template
-        num_proc = 16
+        print('num porc stll 1')
+        num_proc = 1
         max_length = self.args.max_length
         raw_dataset = load_dataset(retain_dataset_id)["train"]
         
@@ -265,12 +274,40 @@ class SFTTrainerWithFisher(SFTTrainer):
         )
         return dataloader
     
+    def train(self, *args, **kwargs):
+        print("Fisher: calling overridden train() method in hopes model is properly prepared")
+        print("Fisher: BSZ is still 1 to avoid OOM!")
+        # Model is now prepared, accelerator is ready
+        self._compute_fisher_distributed()
+        return super().train(*args, **kwargs)
     
     
-    def recompute_fisher(self):
-        print("Fisher: recompute fisher")
+    def _compute_fisher_distributed(self,):
+        print("Fisher: preparing to (re)compute fisher")
+        # TODO: implement this with DeepSpeed ZeRO stage 3 using 
+        #   with deepspeed.zero.GatheredParameters(linear.weight, modifier_rank=0):
+        if not self.fisher_initialised:
+            unwrapped_model = self.accelerator.unwrap_model(self.model)
+            self.fisher = {name: param.detach().clone() for name, param in unwrapped_model.named_parameters() if param.requires_grad}
+            self.fisher_initialised = True
+        else:
+            print("Not supporting recomputation yet!")
+            quit()
+            
+        print("Fisher: starting to (re)compute fisher")
+        for batch in tqdm(self.retain_dataloader, dynamic_ncols=True):
+            batch = {k: v.to(self.device) for k, v in batch.items()}
+            self.model.zero_grad()
+            out = self.model(**batch)
+            loss = out.loss
+            loss.backward()
+        
+        
+        # TODO: we probably need to do smart memory management here!
         return
     
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         print("Fisher: compute loss")
+        model_loss = super().compute_loss(self, model, inputs, return_outputs, num_items_in_batch)
+        
         return
