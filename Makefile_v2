@@ -5,14 +5,15 @@ export PYTHONPATH = src
 
 check_dirs := src tests
 
+VENV_PATH ?= /root/openr1_v2 #this puts venv on local SSD which is hopefully much faster than NFS
 
 # dev dependencies
 install:
-	uv venv openr1_v2 --python 3.12
-	. openr1_v2/bin/activate && uv pip install --upgrade pip && \
+	uv venv $(VENV_PATH) --python 3.12
+	. $(VENV_PATH)/bin/activate && uv pip install --upgrade pip && \
 	uv pip install setuptools && \
 	GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
-	. openr1_v2/bin/activate && uv pip uninstall torch && \
+	. $(VENV_PATH)/bin/activate && uv pip uninstall torch && \
 	uv pip install torch==2.9.0 && \
 	uv pip install git+https://github.com/huggingface/trl.git && \
 	uv pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl --no-build-isolation --no-deps && \
