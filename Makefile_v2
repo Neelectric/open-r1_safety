@@ -19,9 +19,8 @@ install:
 	uv pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.9cxx11abiTRUE-cp312-cp312-linux_x86_64.whl --no-build-isolation --no-deps && \
 	GIT_LFS_SKIP_SMUDGE=1 uv pip install git+https://github.com/Neelectric/lighteval && \
 	uv pip install vllm==0.11.2 && \
-	uv pip install gpustat && \
+	uv pip install gpustat gpuselect && \
 	uv pip install more_itertools && \
-	uv pip install gpuselect && \ 
 	uv pip install ipykernel jupyter matplotlib seaborn
 
 
