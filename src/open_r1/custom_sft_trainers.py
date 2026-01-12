@@ -1,16 +1,19 @@
 
 
-
+import math
 
 import torch
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader
+import torch.distributed as dist
 
 from trl import ModelConfig, SFTTrainer
 from trl.trainer.sft_trainer import DataCollatorForLanguageModeling
 from transformers.optimization import get_constant_schedule_with_warmup
+from transformers import TrainerCallback
 from datasets import load_dataset
 import accelerate
+
 from tqdm import tqdm
 
 from open_r1.optims.dadamw import DAdamW, setup_dadamw
@@ -191,11 +194,24 @@ def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=N
             #     num_items_in_batch=num_items_in_batch,
             # )
 # so we don't get access to the model! Need to subclass after all...
+
+class FisherCallback(TrainerCallback):
+    """Compute Fisher Information after model is on device but before training starts."""
+    
+    def on_train_begin(self, args, state, control, model=None, **kwargs):
+        # self.trainer is set by the trainer when adding callback
+        trainer = self.trainer
+        print("Fisher: calling FisherCallback in hopes model is properly wrapped with accelerator")
+        print("Fisher: BSZ is still 1 to avoid OOM!")
+        if not trainer.fisher_initialised:
+            trainer._compute_fisher_distributed()
+        
+
     
 
 class SFTTrainerWithFisher(SFTTrainer):
     """
-    SFTTrainerWithFisher implements Elastic Weight Consolidation, compatible with FSDP and DeepSpeed ZeRO stages 1-3. 
+    SFTTrainerWithFisher implements Elastic Weight Consolidation, compatible with FSDP and DeepSpeed ZeRO stages 1-2 (Stage 3 will require a rewrite, FIM wrt. sharded model params is finnicky). 
 
     Args:
         args ([`TrainingArguments`]):
@@ -210,7 +226,10 @@ class SFTTrainerWithFisher(SFTTrainer):
             The strategy to use for recomputing Fisher Information. Must be one of 'never', 'intervals', or 'dynamically'.
         recompute_fisher_intervals (`float`, *optional*):
             The intervals at which Fisher Information should be recomputed, for e.g. 0.25. Must be set if recompute_fisher_mode == 'intervals'.
-        
+        fisher_num_batches (`int`):
+            The number of batches with respect to compute Fisher Information.
+        fisher_completion_only_loss (`bool`):
+            If using completion_only_loss=True in SFT, Fisher loss computation should use this too for gradients to be aligned.
             """
     def __init__(
         self, 
@@ -220,6 +239,8 @@ class SFTTrainerWithFisher(SFTTrainer):
         fisher_batch_size: int,
         recompute_fisher_mode: str,
         recompute_fisher_intervals: float, 
+        fisher_num_batches: int,
+        fisher_completion_only_loss: bool,
         **kwargs
         ):
         print("Fisher: Init")
@@ -228,13 +249,21 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.ewc_lambda = ewc_lambda
         self.fisher_batch_size = fisher_batch_size
         self.recompute_fisher_mode = recompute_fisher_mode
-        self.recompute_fisher_intervals = recompute_fisher_intervals       
-        raw_dataloader = self.preprocess_retain_dataset(retain_dataset_id)
+        self.recompute_fisher_intervals = recompute_fisher_intervals
+        self.fisher_num_batches = fisher_num_batches
+        self.fisher_completion_only_loss = fisher_completion_only_loss
+        with self.accelerator.main_process_first(): #otherwise we preprocess num_gpu times
+            raw_dataloader = self.preprocess_retain_dataset(retain_dataset_id)
         
         # super().__init_() calls SFTTrainer init which calls Trainer init, so we should have an accelerator already 
         # so this should prep the dataloader for num_gpus
         self.retain_dataloader = self.accelerator.prepare(raw_dataloader)
         self.fisher_initialised = False
+
+        fisher_callback = FisherCallback()
+        fisher_callback.trainer = self  # Give callback access to trainer
+        self.add_callback(fisher_callback)
+
         
     def preprocess_retain_dataset(self, retain_dataset_id: str, ):
         print("Fisher: Pre-processing dataset")
@@ -247,6 +276,7 @@ class SFTTrainerWithFisher(SFTTrainer):
         num_proc = 16
         max_length = self.args.max_length
         raw_dataset = load_dataset(retain_dataset_id)["train"]
+        # TODO: properly implement fisher_completion_only_loss toggle
         
         # tokenize to check full lengths of sequences
         def preprocess(example):
@@ -256,10 +286,16 @@ class SFTTrainerWithFisher(SFTTrainer):
                 return_assistant_tokens_mask=True,
                 return_dict=True,
             )
-            return {
-                "input_ids": tokenized["input_ids"],
-                "assistant_masks": tokenized["assistant_masks"],
-            }
+            if self.fisher_completion_only_loss: # if we want to support completion_only_loss=True in SFT, we need to align Fisher loss computation.
+                return_dict = {
+                    "input_ids": tokenized["input_ids"],
+                    "assistant_masks": tokenized["assistant_masks"], 
+                }
+            else:
+                return_dict = {
+                    "input_ids": tokenized["input_ids"],
+                }
+            return return_dict
         tokenized_dataset = raw_dataset.map(
             preprocess, 
             remove_columns=raw_dataset.column_names, 
@@ -287,41 +323,80 @@ class SFTTrainerWithFisher(SFTTrainer):
         )
         return dataloader
     
-    def train(self, *args, **kwargs):
-        print("Fisher: calling overridden train() method in hopes model is properly wrapped with accelerator")
-        print("Fisher: BSZ is still 1 to avoid OOM!")
-        self._compute_fisher_distributed()
-        return super().train(*args, **kwargs)
-    
-    
     def _compute_fisher_distributed(self,):
-        print("Fisher: preparing to (re)compute fisher")
+
         # TODO: implement this with DeepSpeed ZeRO stage 3 using 
-        #   with deepspeed.zero.GatheredParameters(linear.weight, modifier_rank=0):
-        if not self.fisher_initialised:
-            unwrapped_model = self.accelerator.unwrap_model(self.model)
-            self.unwrapped_model = unwrapped_model
-            self.fisher = {name: param.detach().clone() for name, param in unwrapped_model.named_parameters() if param.requires_grad}
-            self.fisher_initialised = True
-        else:
-            print("Not supporting recomputation yet!")
-            quit()
-        device = self.unwrapped_model.device
-            
-        print("Fisher: starting to (re)compute fisher")
-        for batch in tqdm(self.retain_dataloader, dynamic_ncols=True):
-            batch = {k: v.to(device) for k, v in batch.items()}
+        #   with deepspeed.zero.GatheredParameters(param.weight, modifier_rank=0):
+        print("Fisher: preparing to (re)compute fisher")
+        self.accelerator.wait_for_everyone() # so that DeepSpeed setup finishes printing to CLI before fisher info is printed across all devices
+
+        
+        if self.accelerator.is_main_process:
+            print("Fisher: computing FIM across all devices")
+        print(f"Fisher: rank {self.accelerator.process_index} on {self.accelerator.device}")
+
+
+        self.model.eval()
+        
+        self.fisher = {}
+        for name, param in self.model.named_parameters():
+            if param.requires_grad:
+                self.fisher[name] = torch.zeros_like(param)
+        
+        self.reference_params = {
+            name: param.detach().clone() 
+            for name, param in self.model.named_parameters() 
+            if param.requires_grad
+        }
+        
+        num_batches = 0
+        batches_per_device = math.ceil(self.fisher_num_batches / self.accelerator.num_processes)
+
+        for batch in tqdm(self.retain_dataloader, desc="Computing Fisher (total shows fisher_num_batches/num_gpus )", disable=not self.accelerator.is_main_process, total=batches_per_device): 
             self.model.zero_grad()
-            out = self.model(**batch)
-            loss = out.loss
+            outputs = self.model(**batch)
+            loss = outputs.loss
             loss.backward()
+            
+            for name, param in self.model.named_parameters():
+                if param.requires_grad and param.grad is not None:
+                    self.fisher[name] += param.grad.detach().pow(2)
+            
+            num_batches += 1
+            if num_batches >= batches_per_device:
+                break
+
+
+        self.accelerator.wait_for_everyone() # critical to sync before all-reduce to ensure all ranks have finished their portion of the retain dataset
+        for name in self.fisher:
+            self.fisher[name] /= num_batches # this should be a local averaging
+        print(f"Rank {self.accelerator.process_index}: "
+            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+
+        if self.accelerator.num_processes > 1:
+            for name in self.fisher:
+                dist.all_reduce(self.fisher[name], op=dist.ReduceOp.SUM) # sync between ranks to 'accumulate' fisher info
+                self.fisher[name] /= self.accelerator.num_processes # then divide by num ranks to get the average
+
+        self.accelerator.wait_for_everyone()  # another sync to ensure we're ready everywhere before training starts
+
+        self.fisher_initialised = True
+        self.model.zero_grad(set_to_none=True) # quite critical to ensure i don't add gradients into model before actual training starts
+        torch.cuda.empty_cache()
+        self.model.train()
+        if self.accelerator.is_main_process:
+            print("Fisher: done")
         
-        
-        # TODO: we probably need to do smart memory management here!
         return
     
-    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-        print("Fisher: compute loss")
-        model_loss = super().compute_loss(self, model, inputs, return_outputs, num_items_in_batch)
+    def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
+        loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
+        ewc_loss = 0.0
+        for name, param in model.named_parameters():
+            if name in self.fisher:
+                ewc_loss += (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
         
-        return
+        loss = loss + self.ewc_lambda * ewc_loss
+        
+        return (loss, outputs) if return_outputs else loss

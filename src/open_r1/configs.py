@@ -109,6 +109,14 @@ class ScriptArguments(trl.ScriptArguments):
         default=0.25,
         metadata={"help": "The intervals at which Fisher Information should be recomputed, for e.g. 0.25. Must be set if recompute_fisher_mode == 'intervals'."}
     )
+    fisher_num_batches: int = field(
+        default=2000,
+        metadata={"help": "The number of batches with respect to compute Fisher Information."}
+    )
+    fisher_completion_only_loss: bool = field(
+        default=False,
+        metadata={"help": "If using completion_only_loss=True in SFT, Fisher loss computation should use this too for gradients to be aligned."}
+    )
 
     def __post_init__(self):
         if self.dataset_name is None and self.dataset_mixture is None:

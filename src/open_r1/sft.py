@@ -142,6 +142,8 @@ def main(script_args, training_args, model_args):
             fisher_batch_size=script_args.fisher_batch_size,
             recompute_fisher_mode=script_args.recompute_fisher_mode,
             recompute_fisher_intervals=script_args.recompute_fisher_intervals,
+            fisher_num_batches=script_args.fisher_num_batches,
+            fisher_completion_only_loss=script_args.fisher_completion_only_loss,
         )
         
     else:
