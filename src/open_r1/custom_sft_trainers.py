@@ -53,115 +53,116 @@ class SFTTrainerWithDAdamW(SFTTrainer):
 #
 ###
 # need some extra imports from TRL to avoid PyLance from complaining about a bunch of "is not defined"
-from trl.trainer.utils import entropy_from_logits
-from transformers.utils import is_peft_available
-if is_peft_available():
-    from peft import PeftConfig, PeftModel, PeftType, get_peft_model
 
-def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-        mode = "train" if self.model.training else "eval"
+# from trl.trainer.utils import entropy_from_logits
+# from transformers.utils import is_peft_available
+# if is_peft_available():
+#     from peft import PeftConfig, PeftModel, PeftType, get_peft_model
 
-        # Set aside labels as it will be dropped by super().compute_loss() if a custom `compute_loss_func` is used.
-        # This can be removed when this issue is fixed.
-        # When using CP or SP, labels are pre-shifted, we must use shift_labels instead.
-        labels = inputs["labels"] if "shift_labels" not in inputs else None
+# def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+#         mode = "train" if self.model.training else "eval"
 
-        # If not set, defaults from model config and may warn since cache isn't compatible with gradient checkpointing
-        inputs["use_cache"] = False
+#         # Set aside labels as it will be dropped by super().compute_loss() if a custom `compute_loss_func` is used.
+#         # This can be removed when this issue is fixed.
+#         # When using CP or SP, labels are pre-shifted, we must use shift_labels instead.
+#         labels = inputs["labels"] if "shift_labels" not in inputs else None
 
-        # Request token accuracy from Liger kernel and set token scaling if using DFT loss
-        if self.args.use_liger_kernel:
-            inputs["return_token_accuracy"] = True
-            inputs["use_token_scaling"] = self.args.loss_type == "dft"
+#         # If not set, defaults from model config and may warn since cache isn't compatible with gradient checkpointing
+#         inputs["use_cache"] = False
 
-        (loss, outputs) = super().compute_loss(
-            model, inputs, return_outputs=True, num_items_in_batch=num_items_in_batch
-        )
+#         # Request token accuracy from Liger kernel and set token scaling if using DFT loss
+#         if self.args.use_liger_kernel:
+#             inputs["return_token_accuracy"] = True
+#             inputs["use_token_scaling"] = self.args.loss_type == "dft"
 
-        # Compute entropy
-        if not self.args.use_liger_kernel:  # liger doesn't return logits
-            with torch.no_grad():
-                per_token_entropy = entropy_from_logits(outputs.logits)
-                # When using Prompt Tuning, skip the virtual tokens in logits before entropy computation, since they
-                # do not correspond to actual input tokens.
-                if (
-                    self.num_virtual_tokens > 0
-                    and model.peft_config[model.active_adapter].peft_type != PeftType.PREFIX_TUNING
-                ):
-                    per_token_entropy = per_token_entropy[:, self.num_virtual_tokens :]
-                if "attention_mask" in inputs:
-                    attention_mask = inputs["attention_mask"]
-                    entropy = torch.sum(per_token_entropy * attention_mask) / attention_mask.sum()
-                elif "position_ids" in inputs:
-                    entropy = torch.mean(per_token_entropy)
-                else:
-                    raise ValueError("Expected 'attention_mask' or 'position_ids' in inputs.")
-                entropy = self.accelerator.gather_for_metrics(entropy).mean().item()
-            self._metrics[mode]["entropy"].append(entropy)
+#         (loss, outputs) = super().compute_loss(
+#             model, inputs, return_outputs=True, num_items_in_batch=num_items_in_batch
+#         )
 
-        if mode == "train":
-            # When using padding-free, the attention_mask is not present in the inputs, instead we have cu_seq_lens_q,
-            # cu_seq_lens_k, and max_length_k, max_length_q and position_ids.
-            if "attention_mask" in inputs:
-                num_tokens_in_batch = self.accelerator.gather_for_metrics(inputs["attention_mask"].sum()).sum().item()
-            elif "position_ids" in inputs:
-                local_num_tokens = torch.tensor(inputs["position_ids"].size(1), device=inputs["position_ids"].device)
-                num_tokens_in_batch = self.accelerator.gather_for_metrics(local_num_tokens).sum().item()
-            else:
-                raise ValueError("Expected 'attention_mask' or 'position_ids' in inputs.")
-            self._total_train_tokens += num_tokens_in_batch
-        self._metrics[mode]["num_tokens"] = [self._total_train_tokens]
+#         # Compute entropy
+#         if not self.args.use_liger_kernel:  # liger doesn't return logits
+#             with torch.no_grad():
+#                 per_token_entropy = entropy_from_logits(outputs.logits)
+#                 # When using Prompt Tuning, skip the virtual tokens in logits before entropy computation, since they
+#                 # do not correspond to actual input tokens.
+#                 if (
+#                     self.num_virtual_tokens > 0
+#                     and model.peft_config[model.active_adapter].peft_type != PeftType.PREFIX_TUNING
+#                 ):
+#                     per_token_entropy = per_token_entropy[:, self.num_virtual_tokens :]
+#                 if "attention_mask" in inputs:
+#                     attention_mask = inputs["attention_mask"]
+#                     entropy = torch.sum(per_token_entropy * attention_mask) / attention_mask.sum()
+#                 elif "position_ids" in inputs:
+#                     entropy = torch.mean(per_token_entropy)
+#                 else:
+#                     raise ValueError("Expected 'attention_mask' or 'position_ids' in inputs.")
+#                 entropy = self.accelerator.gather_for_metrics(entropy).mean().item()
+#             self._metrics[mode]["entropy"].append(entropy)
 
-        if self.args.use_liger_kernel:
-            token_accuracy = self.accelerator.gather_for_metrics(outputs.token_accuracy).mean().item()
-            self._metrics[mode]["mean_token_accuracy"].append(token_accuracy)
-        else:
-            # Compute accuracy from logits using argmax (traditional method)
-            with torch.no_grad():
-                if "shift_labels" in inputs:
-                    # When using CP or SP, labels are pre-shifted. We must use these (and cannot manually shift) because:
-                    # - The first discarded token from inputs["labels"] actually belongs to process n-1
-                    # - The last logits require the label from process n+1
-                    shift_logits = outputs.logits.contiguous()
-                    shift_labels = inputs["shift_labels"]
-                else:
-                    shift_logits = outputs.logits[..., :-1, :].contiguous()
-                    shift_labels = labels[..., 1:].contiguous()
+#         if mode == "train":
+#             # When using padding-free, the attention_mask is not present in the inputs, instead we have cu_seq_lens_q,
+#             # cu_seq_lens_k, and max_length_k, max_length_q and position_ids.
+#             if "attention_mask" in inputs:
+#                 num_tokens_in_batch = self.accelerator.gather_for_metrics(inputs["attention_mask"].sum()).sum().item()
+#             elif "position_ids" in inputs:
+#                 local_num_tokens = torch.tensor(inputs["position_ids"].size(1), device=inputs["position_ids"].device)
+#                 num_tokens_in_batch = self.accelerator.gather_for_metrics(local_num_tokens).sum().item()
+#             else:
+#                 raise ValueError("Expected 'attention_mask' or 'position_ids' in inputs.")
+#             self._total_train_tokens += num_tokens_in_batch
+#         self._metrics[mode]["num_tokens"] = [self._total_train_tokens]
 
-                # Prompt Tuning and P-Tuning output logits for virtual tokens but Prefix-Tuning does not.
-                if (
-                    self.num_virtual_tokens > 0
-                    and model.peft_config[model.active_adapter].peft_type != PeftType.PREFIX_TUNING
-                ):
-                    shift_logits = shift_logits[:, self.num_virtual_tokens :, :]
+#         if self.args.use_liger_kernel:
+#             token_accuracy = self.accelerator.gather_for_metrics(outputs.token_accuracy).mean().item()
+#             self._metrics[mode]["mean_token_accuracy"].append(token_accuracy)
+#         else:
+#             # Compute accuracy from logits using argmax (traditional method)
+#             with torch.no_grad():
+#                 if "shift_labels" in inputs:
+#                     # When using CP or SP, labels are pre-shifted. We must use these (and cannot manually shift) because:
+#                     # - The first discarded token from inputs["labels"] actually belongs to process n-1
+#                     # - The last logits require the label from process n+1
+#                     shift_logits = outputs.logits.contiguous()
+#                     shift_labels = inputs["shift_labels"]
+#                 else:
+#                     shift_logits = outputs.logits[..., :-1, :].contiguous()
+#                     shift_labels = labels[..., 1:].contiguous()
 
-                # Get predictions
-                predictions = shift_logits.argmax(dim=-1)
+#                 # Prompt Tuning and P-Tuning output logits for virtual tokens but Prefix-Tuning does not.
+#                 if (
+#                     self.num_virtual_tokens > 0
+#                     and model.peft_config[model.active_adapter].peft_type != PeftType.PREFIX_TUNING
+#                 ):
+#                     shift_logits = shift_logits[:, self.num_virtual_tokens :, :]
 
-                # Create mask for non-padding tokens (assuming ignore_index is -100)
-                mask = shift_labels != -100
+#                 # Get predictions
+#                 predictions = shift_logits.argmax(dim=-1)
 
-                # Calculate accuracy only on non-padding tokens
-                correct_predictions = (predictions == shift_labels) & mask
-                total_tokens = mask.sum()
-                correct_tokens = correct_predictions.sum()
+#                 # Create mask for non-padding tokens (assuming ignore_index is -100)
+#                 mask = shift_labels != -100
 
-                # Gather the correct_tokens and total_tokens across all processes
-                correct_tokens = self.accelerator.gather_for_metrics(correct_tokens)
-                total_tokens = self.accelerator.gather_for_metrics(total_tokens)
+#                 # Calculate accuracy only on non-padding tokens
+#                 correct_predictions = (predictions == shift_labels) & mask
+#                 total_tokens = mask.sum()
+#                 correct_tokens = correct_predictions.sum()
 
-                # Compute the mean token accuracy and log it
-                total_sum = total_tokens.sum()
-                accuracy = (correct_tokens.sum() / total_sum).item() if total_sum > 0 else 0.0
-                self._metrics[mode]["mean_token_accuracy"].append(accuracy)
+#                 # Gather the correct_tokens and total_tokens across all processes
+#                 correct_tokens = self.accelerator.gather_for_metrics(correct_tokens)
+#                 total_tokens = self.accelerator.gather_for_metrics(total_tokens)
 
-        # Log auxiliary loss if enabled (applies to both Liger and non-Liger)
-        if self.aux_loss_enabled:
-            aux_loss = outputs.aux_loss
-            aux_loss = self.accelerator.gather_for_metrics(aux_loss).mean().item()
-            self._metrics[mode]["aux_loss"].append(aux_loss)
+#                 # Compute the mean token accuracy and log it
+#                 total_sum = total_tokens.sum()
+#                 accuracy = (correct_tokens.sum() / total_sum).item() if total_sum > 0 else 0.0
+#                 self._metrics[mode]["mean_token_accuracy"].append(accuracy)
 
-        return (loss, outputs) if return_outputs else loss
+#         # Log auxiliary loss if enabled (applies to both Liger and non-Liger)
+#         if self.aux_loss_enabled:
+#             aux_loss = outputs.aux_loss
+#             aux_loss = self.accelerator.gather_for_metrics(aux_loss).mean().item()
+#             self._metrics[mode]["aux_loss"].append(aux_loss)
+
+#         return (loss, outputs) if return_outputs else loss
     
     
 ### Above is the untouched, default compute_loss() function of TRL's SFTTrainer
@@ -205,8 +206,6 @@ class FisherCallback(TrainerCallback):
         print("Fisher: BSZ is still 1 to avoid OOM!")
         if not trainer.fisher_initialised:
             trainer._compute_fisher_distributed()
-        
-
     
 
 class SFTTrainerWithFisher(SFTTrainer):
@@ -243,7 +242,7 @@ class SFTTrainerWithFisher(SFTTrainer):
         fisher_completion_only_loss: bool,
         **kwargs
         ):
-        print("Fisher: Init")
+        print(f"Fisher: Init with ewc_lambda {ewc_lambda}")
         super().__init__(*args, **kwargs)
         self.retain_dataset_id = retain_dataset_id
         self.ewc_lambda = ewc_lambda
@@ -269,9 +268,19 @@ class SFTTrainerWithFisher(SFTTrainer):
         print("Fisher: Pre-processing dataset")
         # if using self.tokenizer, we get thousands of "Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead." because of .map()
         tokenizer = self.processing_class 
+        print("Generation tag present:", "{% generation %}" in tokenizer.chat_template)
+        print("Endgeneration tag present:", "{% endgeneration %}" in tokenizer.chat_template)
 
-        # making sure the chat template was passed reasoning format correctly before filtering with it
+        # If False, print a snippet around where it should be
+        if "{% generation %}" not in tokenizer.chat_template:
+            # Find assistant handling section
+            idx = tokenizer.chat_template.find("assistant")
+            print("Around 'assistant':", repr(tokenizer.chat_template[idx:idx+200]))
+
+
+        # making sure the chat template was passed reasoning format and generation format correctly before filtering with it
         assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in tokenizer.chat_template
+        assert "{% generation %}" in tokenizer.chat_template
         print('num proc still hardcoded')
         num_proc = 16
         max_length = self.args.max_length
@@ -283,7 +292,7 @@ class SFTTrainerWithFisher(SFTTrainer):
             tokenized = tokenizer.apply_chat_template(
                 example["messages"],
                 tokenize=True,
-                return_assistant_tokens_mask=True,
+                return_assistant_tokens_mask=self.fisher_completion_only_loss,
                 return_dict=True,
             )
             if self.fisher_completion_only_loss: # if we want to support completion_only_loss=True in SFT, we need to align Fisher loss computation.
@@ -387,10 +396,16 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.model.train()
         if self.accelerator.is_main_process:
             print("Fisher: done")
+                
         
         return
     
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
+        # Debug: check Fisher types
+        if not hasattr(self, '_fisher_debug_done'):
+            for name, val in list(self.fisher.items())[:3]:
+                print(f"Fisher type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}")
+            self._fisher_debug_done = True
         loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
         ewc_loss = 0.0
         for name, param in model.named_parameters():

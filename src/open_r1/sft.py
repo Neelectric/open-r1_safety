@@ -138,7 +138,7 @@ def main(script_args, training_args, model_args):
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
             retain_dataset_id=script_args.retain_dataset_id,
-            ewc_lambda=script_args.retain_dataset_id,
+            ewc_lambda=script_args.ewc_lambda,
             fisher_batch_size=script_args.fisher_batch_size,
             recompute_fisher_mode=script_args.recompute_fisher_mode,
             recompute_fisher_intervals=script_args.recompute_fisher_intervals,

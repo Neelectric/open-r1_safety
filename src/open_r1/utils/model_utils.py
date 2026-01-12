@@ -13,8 +13,13 @@ def get_tokenizer(model_args: ModelConfig, training_args: SFTConfig | GRPOConfig
         revision=model_args.model_revision,
         trust_remote_code=model_args.trust_remote_code,
     )
-
-    if training_args.chat_template is not None:
+    if hasattr(training_args, 'chat_template_file') and training_args.chat_template_file:
+        with open(training_args.chat_template_file, 'r') as f:
+            tokenizer.chat_template = f.read()
+        print("Found a chat_template_file, overriding chat_template to")
+        print(tokenizer.chat_template)
+    elif training_args.chat_template is not None:
+        print("Dod not find a chat_template_file, overriding chat_template to training_args.chat_template")
         tokenizer.chat_template = training_args.chat_template
 
     return tokenizer
