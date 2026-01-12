@@ -238,16 +238,19 @@ class SFTTrainerWithFisher(SFTTrainer):
         
     def preprocess_retain_dataset(self, retain_dataset_id: str, ):
         print("Fisher: Pre-processing dataset")
+        # if using self.tokenizer, we get thousands of "Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead." because of .map()
+        tokenizer = self.processing_class 
+
         # making sure the chat template was passed reasoning format correctly before filtering with it
-        assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in self.tokenizer.chat_template
-        print('num porc stll 1')
-        num_proc = 1
+        assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in tokenizer.chat_template
+        print('num proc still hardcoded')
+        num_proc = 16
         max_length = self.args.max_length
         raw_dataset = load_dataset(retain_dataset_id)["train"]
         
         # tokenize to check full lengths of sequences
         def preprocess(example):
-            tokenized = self.tokenizer.apply_chat_template(
+            tokenized = tokenizer.apply_chat_template(
                 example["messages"],
                 tokenize=True,
                 return_assistant_tokens_mask=True,
@@ -257,14 +260,24 @@ class SFTTrainerWithFisher(SFTTrainer):
                 "input_ids": tokenized["input_ids"],
                 "assistant_masks": tokenized["assistant_masks"],
             }
-        tokenized_dataset = raw_dataset.map(preprocess, remove_columns=raw_dataset.column_names, num_proc=num_proc, desc="Tokenizing")
+        tokenized_dataset = raw_dataset.map(
+            preprocess, 
+            remove_columns=raw_dataset.column_names, 
+            num_proc=num_proc, 
+            batched=True,
+            batch_size=1000,
+            desc="Tokenizing"
+            )
         
         # then filter to max length
         def shorter_than(example):
             return len(example["input_ids"]) <= max_length
         final_dataset = tokenized_dataset.filter(shorter_than, num_proc=num_proc, desc=f"Filtering retain dataset to max length {max_length}")
         print(f"Original retain dataset length: {len(tokenized_dataset)}, retain dataset length after filtering: {len(final_dataset)}")
-        
+        if tokenizer.pad_token_id is None:
+            tokenizer.pad_token = tokenizer.eos_token
+
+        # and prep 
         collator = DataCollatorForLanguageModeling(pad_token_id=self.tokenizer.pad_token_id, completion_only_loss=True)
         dataloader = DataLoader(
             tokenized_dataset,
@@ -275,9 +288,8 @@ class SFTTrainerWithFisher(SFTTrainer):
         return dataloader
     
     def train(self, *args, **kwargs):
-        print("Fisher: calling overridden train() method in hopes model is properly prepared")
+        print("Fisher: calling overridden train() method in hopes model is properly wrapped with accelerator")
         print("Fisher: BSZ is still 1 to avoid OOM!")
-        # Model is now prepared, accelerator is ready
         self._compute_fisher_distributed()
         return super().train(*args, **kwargs)
     
@@ -288,15 +300,17 @@ class SFTTrainerWithFisher(SFTTrainer):
         #   with deepspeed.zero.GatheredParameters(linear.weight, modifier_rank=0):
         if not self.fisher_initialised:
             unwrapped_model = self.accelerator.unwrap_model(self.model)
+            self.unwrapped_model = unwrapped_model
             self.fisher = {name: param.detach().clone() for name, param in unwrapped_model.named_parameters() if param.requires_grad}
             self.fisher_initialised = True
         else:
             print("Not supporting recomputation yet!")
             quit()
+        device = self.unwrapped_model.device
             
         print("Fisher: starting to (re)compute fisher")
         for batch in tqdm(self.retain_dataloader, dynamic_ncols=True):
-            batch = {k: v.to(self.device) for k, v in batch.items()}
+            batch = {k: v.to(device) for k, v in batch.items()}
             self.model.zero_grad()
             out = self.model(**batch)
             loss = out.loss
