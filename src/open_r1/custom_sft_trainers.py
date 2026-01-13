@@ -1,4 +1,4 @@
-
+"""Implements DAdamW (dampened AdamW, where the preconditioner power can be varied as needed), as well as training with Fisher Information (e.g. for EWC)."""
 
 import math
 
@@ -21,13 +21,11 @@ from open_r1.optims.dadamw import DAdamW, setup_dadamw
 
 class SFTTrainerWithDAdamW(SFTTrainer):
     def __init__(self, *args, preconditioner_power=0.5, **kwargs):
-        # Call parent __init__ with all its arguments so I pass that correctly
         super().__init__(*args, **kwargs)
-        # Then I can set custom precond power
         self.preconditioner_power = preconditioner_power
 
     def create_optimizer(self):
-        """Override to use DAdamW instead of default optimizer. A custom trainer is necessary to handle the DS Z-3 stuff correctly"""
+        """Override to use DAdamW instead of default optimizer. A custom trainer is necessary to handle DeepSpeed ZeRO-3 correctly"""
         if self.optimizer is None:
             # Model is already wrapped by Accelerator at this point
             optimizer = setup_dadamw(self.args, self.model, self.preconditioner_power)
@@ -44,134 +42,19 @@ class SFTTrainerWithDAdamW(SFTTrainer):
             num_warmup_steps=int(0.1 * num_training_steps)  # warmup_ratio=0.1
         )
         return self.lr_scheduler
+
+
+# Originally implemented fisher computation inside an overriden _inner_training_loop(), but only at the start of that is the model actually wrapped appropriately - so we need a callback.
+class FisherCallback(TrainerCallback):
+    """Compute Fisher Information after model is on device but before training starts."""
     
+    def on_train_begin(self, args, state, control, model=None, **kwargs):
+        trainer = self.trainer
+        print("Fisher: calling FisherCallback in hopes model is properly wrapped with accelerator")
+        print("Fisher: BSZ is still 1 to avoid OOM!")
+        if not trainer.fisher_initialised:
+            trainer._compute_fisher_distributed()
     
-### What follows is the default compute_loss() function of TRL's SFTTrainer
-#
-#
-#
-#
-###
-# need some extra imports from TRL to avoid PyLance from complaining about a bunch of "is not defined"
-from trl.trainer.utils import entropy_from_logits
-from transformers.utils import is_peft_available
-if is_peft_available():
-    from peft import PeftConfig, PeftModel, PeftType, get_peft_model
-
-def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-        mode = "train" if self.model.training else "eval"
-
-        # Set aside labels as it will be dropped by super().compute_loss() if a custom `compute_loss_func` is used.
-        # This can be removed when this issue is fixed.
-        # When using CP or SP, labels are pre-shifted, we must use shift_labels instead.
-        labels = inputs["labels"] if "shift_labels" not in inputs else None
-
-        # If not set, defaults from model config and may warn since cache isn't compatible with gradient checkpointing
-        inputs["use_cache"] = False
-
-        # Request token accuracy from Liger kernel and set token scaling if using DFT loss
-        if self.args.use_liger_kernel:
-            inputs["return_token_accuracy"] = True
-            inputs["use_token_scaling"] = self.args.loss_type == "dft"
-
-        (loss, outputs) = super().compute_loss(
-            model, inputs, return_outputs=True, num_items_in_batch=num_items_in_batch
-        )
-
-        # Compute entropy
-        if not self.args.use_liger_kernel:  # liger doesn't return logits
-            with torch.no_grad():
-                per_token_entropy = entropy_from_logits(outputs.logits)
-                # When using Prompt Tuning, skip the virtual tokens in logits before entropy computation, since they
-                # do not correspond to actual input tokens.
-                if (
-                    self.num_virtual_tokens > 0
-                    and model.peft_config[model.active_adapter].peft_type != PeftType.PREFIX_TUNING
-                ):
-                    per_token_entropy = per_token_entropy[:, self.num_virtual_tokens :]
-                if "attention_mask" in inputs:
-                    attention_mask = inputs["attention_mask"]
-                    entropy = torch.sum(per_token_entropy * attention_mask) / attention_mask.sum()
-                elif "position_ids" in inputs:
-                    entropy = torch.mean(per_token_entropy)
-                else:
-                    raise ValueError("Expected 'attention_mask' or 'position_ids' in inputs.")
-                entropy = self.accelerator.gather_for_metrics(entropy).mean().item()
-            self._metrics[mode]["entropy"].append(entropy)
-
-        if mode == "train":
-            # When using padding-free, the attention_mask is not present in the inputs, instead we have cu_seq_lens_q,
-            # cu_seq_lens_k, and max_length_k, max_length_q and position_ids.
-            if "attention_mask" in inputs:
-                num_tokens_in_batch = self.accelerator.gather_for_metrics(inputs["attention_mask"].sum()).sum().item()
-            elif "position_ids" in inputs:
-                local_num_tokens = torch.tensor(inputs["position_ids"].size(1), device=inputs["position_ids"].device)
-                num_tokens_in_batch = self.accelerator.gather_for_metrics(local_num_tokens).sum().item()
-            else:
-                raise ValueError("Expected 'attention_mask' or 'position_ids' in inputs.")
-            self._total_train_tokens += num_tokens_in_batch
-        self._metrics[mode]["num_tokens"] = [self._total_train_tokens]
-
-        if self.args.use_liger_kernel:
-            token_accuracy = self.accelerator.gather_for_metrics(outputs.token_accuracy).mean().item()
-            self._metrics[mode]["mean_token_accuracy"].append(token_accuracy)
-        else:
-            # Compute accuracy from logits using argmax (traditional method)
-            with torch.no_grad():
-                if "shift_labels" in inputs:
-                    # When using CP or SP, labels are pre-shifted. We must use these (and cannot manually shift) because:
-                    # - The first discarded token from inputs["labels"] actually belongs to process n-1
-                    # - The last logits require the label from process n+1
-                    shift_logits = outputs.logits.contiguous()
-                    shift_labels = inputs["shift_labels"]
-                else:
-                    shift_logits = outputs.logits[..., :-1, :].contiguous()
-                    shift_labels = labels[..., 1:].contiguous()
-
-                # Prompt Tuning and P-Tuning output logits for virtual tokens but Prefix-Tuning does not.
-                if (
-                    self.num_virtual_tokens > 0
-                    and model.peft_config[model.active_adapter].peft_type != PeftType.PREFIX_TUNING
-                ):
-                    shift_logits = shift_logits[:, self.num_virtual_tokens :, :]
-
-                # Get predictions
-                predictions = shift_logits.argmax(dim=-1)
-
-                # Create mask for non-padding tokens (assuming ignore_index is -100)
-                mask = shift_labels != -100
-
-                # Calculate accuracy only on non-padding tokens
-                correct_predictions = (predictions == shift_labels) & mask
-                total_tokens = mask.sum()
-                correct_tokens = correct_predictions.sum()
-
-                # Gather the correct_tokens and total_tokens across all processes
-                correct_tokens = self.accelerator.gather_for_metrics(correct_tokens)
-                total_tokens = self.accelerator.gather_for_metrics(total_tokens)
-
-                # Compute the mean token accuracy and log it
-                total_sum = total_tokens.sum()
-                accuracy = (correct_tokens.sum() / total_sum).item() if total_sum > 0 else 0.0
-                self._metrics[mode]["mean_token_accuracy"].append(accuracy)
-
-        # Log auxiliary loss if enabled (applies to both Liger and non-Liger)
-        if self.aux_loss_enabled:
-            aux_loss = outputs.aux_loss
-            aux_loss = self.accelerator.gather_for_metrics(aux_loss).mean().item()
-            self._metrics[mode]["aux_loss"].append(aux_loss)
-
-        return (loss, outputs) if return_outputs else loss
-    
-    
-### Above is the untouched, default compute_loss() function of TRL's SFTTrainer
-#
-#
-#
-#
-###
-
-
 # TRL's Trainer accepts a custom `compute_loss_func` when instantiating the trainer: 
 # """
 # compute_loss_func (Callable, optional) — A function that accepts the raw model outputs, labels, and the number of items in the entire accumulated batch (batch_size * gradient_accumulation_steps) and returns the loss. For example, see the default loss function used by Trainer.
@@ -186,28 +69,13 @@ def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=N
 # - compute_loss_func that uses fisher in calculating total loss
 # this loss will be passed to trainer's training_step(), which will do backward() wrt our Fisher-respecting loss
 
-
-### update Jan'25: I was going to use compute_loss_func, but the call indeed is 🤗 transformers trainer.py L4123
+### update: I was going to use compute_loss_func, but the call indeed is 🤗 transformers trainer.py L4123
 # loss = self.compute_loss_func(
             #     outputs,
             #     labels,
             #     num_items_in_batch=num_items_in_batch,
             # )
-# so we don't get access to the model! Need to subclass after all...
-
-class FisherCallback(TrainerCallback):
-    """Compute Fisher Information after model is on device but before training starts."""
-    
-    def on_train_begin(self, args, state, control, model=None, **kwargs):
-        # self.trainer is set by the trainer when adding callback
-        trainer = self.trainer
-        print("Fisher: calling FisherCallback in hopes model is properly wrapped with accelerator")
-        print("Fisher: BSZ is still 1 to avoid OOM!")
-        if not trainer.fisher_initialised:
-            trainer._compute_fisher_distributed()
-        
-
-    
+# so we don't get access to the model! Need to subclass the trainer after all...
 
 class SFTTrainerWithFisher(SFTTrainer):
     """
@@ -243,7 +111,7 @@ class SFTTrainerWithFisher(SFTTrainer):
         fisher_completion_only_loss: bool,
         **kwargs
         ):
-        print("Fisher: Init")
+        print(f"Fisher: Init with ewc_lambda {ewc_lambda}")
         super().__init__(*args, **kwargs)
         self.retain_dataset_id = retain_dataset_id
         self.ewc_lambda = ewc_lambda
@@ -266,42 +134,47 @@ class SFTTrainerWithFisher(SFTTrainer):
 
         
     def preprocess_retain_dataset(self, retain_dataset_id: str, ):
-        print("Fisher: Pre-processing dataset")
+        print(f"Fisher: Pre-processing dataset while respecting self.fisher_completion_only_loss = {self.fisher_completion_only_loss}")
         # if using self.tokenizer, we get thousands of "Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead." because of .map()
         tokenizer = self.processing_class 
 
-        # making sure the chat template was passed reasoning format correctly before filtering with it
+        # making sure the chat template was passed reasoning format and generation format correctly before filtering with it
         assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in tokenizer.chat_template
+        assert "{% generation %}" in tokenizer.chat_template
         print('num proc still hardcoded')
         num_proc = 16
         max_length = self.args.max_length
         raw_dataset = load_dataset(retain_dataset_id)["train"]
-        # TODO: properly implement fisher_completion_only_loss toggle
+        raw_dataset = raw_dataset.select(range(0,10000))
         
         # tokenize to check full lengths of sequences
-        def preprocess(example):
-            tokenized = tokenizer.apply_chat_template(
-                example["messages"],
-                tokenize=True,
-                return_assistant_tokens_mask=True,
-                return_dict=True,
-            )
-            if self.fisher_completion_only_loss: # if we want to support completion_only_loss=True in SFT, we need to align Fisher loss computation.
-                return_dict = {
-                    "input_ids": tokenized["input_ids"],
-                    "assistant_masks": tokenized["assistant_masks"], 
+        def preprocess(examples):
+            include_mask = self.fisher_completion_only_loss
+            processed = [
+                tokenizer.apply_chat_template(
+                    messages,
+                    tokenize=True,
+                    return_assistant_tokens_mask=include_mask,
+                    return_dict=True,
+                )
+                for messages in examples["messages"]
+            ]
+            
+            if self.fisher_completion_only_loss:
+                return {
+                    "input_ids": [p["input_ids"] for p in processed],
+                    "assistant_masks": [p["assistant_masks"] for p in processed] if include_mask else []
                 }
-            else:
-                return_dict = {
-                    "input_ids": tokenized["input_ids"],
-                }
-            return return_dict
+            return {
+                "input_ids": [p["input_ids"] for p in processed],
+            }
+
         tokenized_dataset = raw_dataset.map(
             preprocess, 
             remove_columns=raw_dataset.column_names, 
             num_proc=num_proc, 
             batched=True,
-            batch_size=1000,
+            batch_size=100,
             desc="Tokenizing"
             )
         
@@ -314,9 +187,9 @@ class SFTTrainerWithFisher(SFTTrainer):
             tokenizer.pad_token = tokenizer.eos_token
 
         # and prep 
-        collator = DataCollatorForLanguageModeling(pad_token_id=self.tokenizer.pad_token_id, completion_only_loss=True)
+        collator = DataCollatorForLanguageModeling(pad_token_id=self.tokenizer.pad_token_id, completion_only_loss=self.fisher_completion_only_loss)
         dataloader = DataLoader(
-            tokenized_dataset,
+            final_dataset,
             batch_size=self.fisher_batch_size,
             shuffle=True,
             collate_fn=collator,
@@ -330,11 +203,9 @@ class SFTTrainerWithFisher(SFTTrainer):
         print("Fisher: preparing to (re)compute fisher")
         self.accelerator.wait_for_everyone() # so that DeepSpeed setup finishes printing to CLI before fisher info is printed across all devices
 
-        
         if self.accelerator.is_main_process:
             print("Fisher: computing FIM across all devices")
         print(f"Fisher: rank {self.accelerator.process_index} on {self.accelerator.device}")
-
 
         self.model.eval()
         
@@ -366,7 +237,6 @@ class SFTTrainerWithFisher(SFTTrainer):
             if num_batches >= batches_per_device:
                 break
 
-
         self.accelerator.wait_for_everyone() # critical to sync before all-reduce to ensure all ranks have finished their portion of the retain dataset
         for name in self.fisher:
             self.fisher[name] /= num_batches # this should be a local averaging
@@ -387,10 +257,14 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.model.train()
         if self.accelerator.is_main_process:
             print("Fisher: done")
-        
         return
     
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
+        # Debug: check Fisher types
+        if not hasattr(self, '_fisher_debug_done'):
+            for name, val in list(self.fisher.items())[:3]:
+                print(f"Fisher type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}")
+            self._fisher_debug_done = True
         loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
         ewc_loss = 0.0
         for name, param in model.named_parameters():
