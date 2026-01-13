@@ -98,6 +98,8 @@ class SFTTrainerWithFisher(SFTTrainer):
             The number of batches with respect to compute Fisher Information.
         fisher_completion_only_loss (`bool`):
             If using completion_only_loss=True in SFT, Fisher loss computation should use this too for gradients to be aligned.
+        fisher_completion_only_loss (`bool`):
+            If using completion_only_loss=True in SFT, Fisher loss computation should use this too for gradients to be aligned.
             """
     def __init__(
         self, 
@@ -109,10 +111,10 @@ class SFTTrainerWithFisher(SFTTrainer):
         recompute_fisher_intervals: float, 
         fisher_num_batches: int,
         fisher_completion_only_loss: bool,
+        processing_class,
         **kwargs
         ):
         print(f"Fisher: Init with ewc_lambda {ewc_lambda}")
-        super().__init__(*args, **kwargs)
         self.retain_dataset_id = retain_dataset_id
         self.ewc_lambda = ewc_lambda
         self.fisher_batch_size = fisher_batch_size
@@ -120,8 +122,30 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.recompute_fisher_intervals = recompute_fisher_intervals
         self.fisher_num_batches = fisher_num_batches
         self.fisher_completion_only_loss = fisher_completion_only_loss
+        
+        # we need to preprocess dataset first, otherwise pod gets OOMKilled
+        # it's possible multiprocessing in .map() forks the process, and 
+        # each fork copies entire memory space including the model?
+        self.raw_retain_dataset = self.preprocess_retain_dataset(
+            retain_dataset_id=retain_dataset_id,
+            processing_class=processing_class,
+            max_length=kwargs.get('args').max_length,
+            fisher_completion_only_loss=fisher_completion_only_loss,
+        )
+        
+        super().__init__(*args, processing_class=processing_class, **kwargs)
+        
         with self.accelerator.main_process_first(): #otherwise we preprocess num_gpu times
-            raw_dataloader = self.preprocess_retain_dataset(retain_dataset_id)
+            collator = DataCollatorForLanguageModeling(
+                pad_token_id=processing_class.pad_token_id, 
+                completion_only_loss=self.fisher_completion_only_loss
+            )
+            raw_dataloader = DataLoader(
+                self.raw_retain_dataset,
+                batch_size=self.fisher_batch_size,
+                shuffle=True,
+                collate_fn=collator,
+            )
         
         # super().__init_() calls SFTTrainer init which calls Trainer init, so we should have an accelerator already 
         # so this should prep the dataloader for num_gpus
@@ -132,24 +156,23 @@ class SFTTrainerWithFisher(SFTTrainer):
         fisher_callback.trainer = self  # Give callback access to trainer
         self.add_callback(fisher_callback)
 
-        
-    def preprocess_retain_dataset(self, retain_dataset_id: str, ):
-        print(f"Fisher: Pre-processing dataset while respecting self.fisher_completion_only_loss = {self.fisher_completion_only_loss}")
+    @staticmethod # needs to be static because it gets called before super().__init__(), but we need access to its attrs
+    def preprocess_retain_dataset(retain_dataset_id: str, processing_class, max_length, fisher_completion_only_loss):
+        print(f"Fisher: Pre-processing dataset while respecting self.fisher_completion_only_loss = {fisher_completion_only_loss}")
         # if using self.tokenizer, we get thousands of "Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead." because of .map()
-        tokenizer = self.processing_class 
+        tokenizer = processing_class 
 
         # making sure the chat template was passed reasoning format and generation format correctly before filtering with it
         assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in tokenizer.chat_template
         assert "{% generation %}" in tokenizer.chat_template
         print('num proc still hardcoded')
-        num_proc = 16
-        max_length = self.args.max_length
+        num_proc = 1
         raw_dataset = load_dataset(retain_dataset_id)["train"]
         raw_dataset = raw_dataset.select(range(0,10000))
         
         # tokenize to check full lengths of sequences
         def preprocess(examples):
-            include_mask = self.fisher_completion_only_loss
+            include_mask = fisher_completion_only_loss
             processed = [
                 tokenizer.apply_chat_template(
                     messages,
@@ -160,7 +183,7 @@ class SFTTrainerWithFisher(SFTTrainer):
                 for messages in examples["messages"]
             ]
             
-            if self.fisher_completion_only_loss:
+            if fisher_completion_only_loss:
                 return {
                     "input_ids": [p["input_ids"] for p in processed],
                     "assistant_masks": [p["assistant_masks"] for p in processed] if include_mask else []
@@ -174,8 +197,9 @@ class SFTTrainerWithFisher(SFTTrainer):
             remove_columns=raw_dataset.column_names, 
             num_proc=num_proc, 
             batched=True,
-            batch_size=100,
-            desc="Tokenizing"
+            batch_size=50,
+            desc=f"Tokenizing retain dataset (num_proc={num_proc})",
+            load_from_cache_file=True,
             )
         
         # then filter to max length
@@ -185,16 +209,8 @@ class SFTTrainerWithFisher(SFTTrainer):
         print(f"Original retain dataset length: {len(tokenized_dataset)}, retain dataset length after filtering: {len(final_dataset)}")
         if tokenizer.pad_token_id is None:
             tokenizer.pad_token = tokenizer.eos_token
-
-        # and prep 
-        collator = DataCollatorForLanguageModeling(pad_token_id=self.tokenizer.pad_token_id, completion_only_loss=self.fisher_completion_only_loss)
-        dataloader = DataLoader(
-            final_dataset,
-            batch_size=self.fisher_batch_size,
-            shuffle=True,
-            collate_fn=collator,
-        )
-        return dataloader
+        
+        return final_dataset
     
     def _compute_fisher_distributed(self,):
 

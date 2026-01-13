@@ -4,8 +4,9 @@
 export PYTHONPATH = src
 
 check_dirs := src tests
-
-VENV_PATH ?= /root/openr1_v2 #this puts venv on local SSD which is hopefully much faster than NFS
+# this puts venv on local SSD which is hopefully much faster than NFS
+VENV_PATH ?= /root/openr1_v2
+$(info    VENV_PATH is $(VENV_PATH))
 
 # dev dependencies
 install:
@@ -24,7 +25,7 @@ install:
 	uv pip install ipykernel jupyter matplotlib seaborn
 
 
-	
+
 # lighteval==0.13.0 requires "vllm>=0.10.0,<0.10.2", but vllm==0.10.1 requires torch==2.7.1 which is incompatible with trl and FA2 versions. forked own lighteval branch with vllm req lifted
 
 # . openr1_v2/bin/activate && uv pip install flashinfer-python
