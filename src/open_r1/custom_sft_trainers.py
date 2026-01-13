@@ -146,7 +146,6 @@ class SFTTrainerWithFisher(SFTTrainer):
         max_length = self.args.max_length
         raw_dataset = load_dataset(retain_dataset_id)["train"]
         raw_dataset = raw_dataset.select(range(0,10000))
-        # TODO: properly implement fisher_completion_only_loss toggle
         
         # tokenize to check full lengths of sequences
         def preprocess(examples):
@@ -188,7 +187,7 @@ class SFTTrainerWithFisher(SFTTrainer):
             tokenizer.pad_token = tokenizer.eos_token
 
         # and prep 
-        collator = DataCollatorForLanguageModeling(pad_token_id=self.tokenizer.pad_token_id, completion_only_loss=True)
+        collator = DataCollatorForLanguageModeling(pad_token_id=self.tokenizer.pad_token_id, completion_only_loss=self.fisher_completion_only_loss)
         dataloader = DataLoader(
             final_dataset,
             batch_size=self.fisher_batch_size,
