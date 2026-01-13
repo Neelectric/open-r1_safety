@@ -98,7 +98,7 @@ class SFTTrainerWithFisher(SFTTrainer):
             The number of batches with respect to compute Fisher Information.
         fisher_completion_only_loss (`bool`):
             If using completion_only_loss=True in SFT, Fisher loss computation should use this too for gradients to be aligned.
-        fisher_completion_only_loss (`bool`):
+        processing_class (`PreTrainedTokenizerBase`):
             If using completion_only_loss=True in SFT, Fisher loss computation should use this too for gradients to be aligned.
             """
     def __init__(
@@ -168,7 +168,9 @@ class SFTTrainerWithFisher(SFTTrainer):
         print('num proc still hardcoded')
         num_proc = 1
         raw_dataset = load_dataset(retain_dataset_id)["train"]
-        raw_dataset = raw_dataset.select(range(0,10000))
+        small_subset_size = 2000
+        print(f"Still only using {small_subset_size} samples of retain!!! " * 10)
+        raw_dataset = raw_dataset.select(range(0,small_subset_size))
         
         # tokenize to check full lengths of sequences
         def preprocess(examples):
@@ -213,6 +215,10 @@ class SFTTrainerWithFisher(SFTTrainer):
         return final_dataset
     
     def _compute_fisher_distributed(self,):
+        print("Fisher: before start of fisher computation"
+            f"Rank {self.accelerator.process_index}: "
+            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
 
         # TODO: implement this with DeepSpeed ZeRO stage 3 using 
         #   with deepspeed.zero.GatheredParameters(param.weight, modifier_rank=0):
@@ -238,8 +244,13 @@ class SFTTrainerWithFisher(SFTTrainer):
         
         num_batches = 0
         batches_per_device = math.ceil(self.fisher_num_batches / self.accelerator.num_processes)
+        print("Fisher: we have ",
+              f"len(self.retain_dataloader) {len(self.retain_dataloader)}",
+              f"self.fisher_num_batches {self.fisher_num_batches}",
+              f"self.accelerator.num_processes {self.accelerator.num_processes}",
+              f"batches_per_device {batches_per_device}")
 
-        for batch in tqdm(self.retain_dataloader, desc="Computing Fisher (total shows fisher_num_batches/num_gpus )", disable=not self.accelerator.is_main_process, total=batches_per_device): 
+        for batch in tqdm(self.retain_dataloader, desc="Computing Fisher (total = fisher_num_batches/num_gpus)", disable=not self.accelerator.is_main_process, total=batches_per_device): 
             self.model.zero_grad()
             outputs = self.model(**batch)
             loss = outputs.loss
@@ -256,7 +267,9 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.accelerator.wait_for_everyone() # critical to sync before all-reduce to ensure all ranks have finished their portion of the retain dataset
         for name in self.fisher:
             self.fisher[name] /= num_batches # this should be a local averaging
-        print(f"Rank {self.accelerator.process_index}: "
+            
+        print("Fisher: fisher computation before all reduce"
+            f"Rank {self.accelerator.process_index}: "
             f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
             f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
 
@@ -269,24 +282,50 @@ class SFTTrainerWithFisher(SFTTrainer):
 
         self.fisher_initialised = True
         self.model.zero_grad(set_to_none=True) # quite critical to ensure i don't add gradients into model before actual training starts
+        del batch, outputs, loss
         torch.cuda.empty_cache()
         self.model.train()
         if self.accelerator.is_main_process:
             print("Fisher: done")
+            
+        print("Fisher: end of fisher computation"
+            f"Rank {self.accelerator.process_index}: "
+            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
         return
     
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
+        
+        print("Fisher: before super compute loss"
+            f"Rank {self.accelerator.process_index}: "
+            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+        
         # Debug: check Fisher types
         if not hasattr(self, '_fisher_debug_done'):
             for name, val in list(self.fisher.items())[:3]:
-                print(f"Fisher type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}")
+                print(f"Fisher type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
+            for name, val in list(self.reference_params.items())[:3]:
+                print(f"Ref params type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
+                
             self._fisher_debug_done = True
         loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
+        
+        print("Fisher: after super compute loss"
+            f"Rank {self.accelerator.process_index}: "
+            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+        
         ewc_loss = 0.0
         for name, param in model.named_parameters():
             if name in self.fisher:
                 ewc_loss += (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
         
         loss = loss + self.ewc_lambda * ewc_loss
+        
+        print("Fisher: after ewc compute loss"
+            f"Rank {self.accelerator.process_index}: "
+            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
         
         return (loss, outputs) if return_outputs else loss

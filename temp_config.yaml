@@ -22,7 +22,7 @@ optim: adamw_torch
 lr_scheduler_type: constant_with_warmup
 warmup_ratio: 0.1
 learning_rate: 1.0e-06
-gradient_accumulation_steps: 4
+gradient_accumulation_steps: 1
 per_device_eval_batch_size: 1
 per_device_train_batch_size: 1 # RESET THIS TO 4
 max_grad_norm: 0.2
@@ -37,14 +37,14 @@ eval_strategy: 'no'
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.31
-hub_model_revision: v00.31
+hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv_debug
+hub_model_revision: v_debug
 hub_strategy: every_save
 log_level: info
 logging_steps: 1
 logging_strategy: steps
 packing: false
-output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.31
+output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv_debug
 overwrite_output_dir: true
 push_to_hub: true
 report_to:
@@ -57,15 +57,15 @@ torch_compile: false
 use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_safety
-run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.31
+run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv_debug
 callbacks:
 - push_to_hub_revision
 
-custom_optim: fisher
-recompute_fisher_mode: intervals
-recompute_fisher_intervals: 0.25
-retain_dataset_id: Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks
-ewc_lambda: 50.0
-fisher_batch_size: 1
-fisher_num_batches: 2000 # Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks is 86,746 samples, on 4 GPUs that turns to 21,686.5, i reckon 2k is enough for now
-fisher_completion_only_loss: False  # if we later want to support completion_only_loss=True in SFT, we need to align Fisher loss computation, otherwise there is a mismatch
+# custom_optim: fisher
+# recompute_fisher_mode: intervals
+# recompute_fisher_intervals: 0.25
+# retain_dataset_id: Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks
+# ewc_lambda: 50.0
+# fisher_batch_size: 1
+# fisher_num_batches: 2000 # Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks is 86,746 samples, on 4 GPUs that turns to 21,686.5, i reckon 2k is enough for now
+# fisher_completion_only_loss: False  # if we later want to support completion_only_loss=True in SFT, we need to align Fisher loss computation, otherwise there is a mismatch
