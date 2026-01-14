@@ -297,39 +297,59 @@ class SFTTrainerWithFisher(SFTTrainer):
         return
     
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
+        print_mem = False
+        print_debug = False
+        if print_mem:
+            print("Fisher: before super compute loss"
+                f"Rank {self.accelerator.process_index}: "
+                f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+                f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
         
-        print("Fisher: before super compute loss"
-            f"Rank {self.accelerator.process_index}: "
-            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
-            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
-        
-        # Debug: check Fisher types
-        if not hasattr(self, '_fisher_debug_done'):
-            for name, val in list(self.fisher.items())[:3]:
-                print(f"Fisher type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
-            for name, val in list(self.reference_params.items())[:3]:
-                print(f"Ref params type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
+        if print_debug:
+            # Debug: check Fisher types
+            if not hasattr(self, '_fisher_debug_done'):
+                for name, val in list(self.fisher.items())[:3]:
+                    print(f"Fisher type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
+                for name, val in list(self.reference_params.items())[:3]:
+                    print(f"Ref params type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
+                    
+                self._fisher_debug_done = True
                 
-            self._fisher_debug_done = True
         loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
         
-        print("Fisher: after super compute loss"
-            f"Rank {self.accelerator.process_index}: "
-            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
-            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+        if print_mem:
+            print("Fisher: after super compute loss"
+                f"Rank {self.accelerator.process_index}: "
+                f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+                f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
         
         ewc_loss = 0.0
         for name, param in model.named_parameters():
+            if "module." in name:
+                name = name.replace("module.", "")
             if name in self.fisher:
+                diff_of_params = (param - self.reference_params[name])
+                sq_diff_of_params = diff_of_params.pow(2)
+                fisher_times_sq_diff_of_params = (self.fisher[name] * sq_diff_of_params)
+                sum_fisher_times_sq_diff_of_params = fisher_times_sq_diff_of_params.sum()
+                full = (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
                 ewc_loss += (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
+            else:
+                print(f"Fisher: Encountered param {name} which is not fisher. Continuing training as param.requires_grad may have intentionally been False at Fisher instantiation")
         
         loss = loss + self.ewc_lambda * ewc_loss
-        
-        print("Fisher: after ewc compute loss"
-            f"Rank {self.accelerator.process_index}: "
-            f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
-            f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+        if print_mem:
+            print("Fisher: after ewc compute loss"
+                f"Rank {self.accelerator.process_index}: "
+                f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+                f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+            
         if wandb.run is not None:
             wandb.log({"ewc_loss": ewc_loss}, step=self.state.global_step)
+            
+        # AFAICT we can't trivially access self.log() here so storing it as an attr for CallBack to log with on_log()
+        self._ewc_loss = ewc_loss.item() if isinstance(ewc_loss, torch.Tensor) else float(ewc_loss)
+
+        print(f"Fisher: ewc_loss: {ewc_loss}")
         
         return (loss, outputs) if return_outputs else loss

@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "v00.31 (accelerate)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "accelerate.commands.launch",
+            "console": "integratedTerminal",
+            "args": [
+                "--config_file", "recipes/accelerate_configs/zero1_claude.yaml",
+                "--num_processes=1",
+                "src/open_r1/sft.py",
+                "--config", "temp_config.yaml"
+            ]
+        },
+        {
+            "name": "v00.04 (accelerate)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "accelerate.commands.launch",
+            "console": "integratedTerminal",
+            "args": [
+                "--config_file", "recipes/accelerate_configs/zero1_claude.yaml",
+                "--num_processes=1",
+                "src/open_r1/sft.py",
+                "--config", "temp_config.yaml"
+            ]
+        }
+    ]
+}
