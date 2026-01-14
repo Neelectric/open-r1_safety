@@ -56,6 +56,15 @@ class FisherCallback(TrainerCallback):
         print("Fisher: BSZ is still 1 to avoid OOM!")
         if not trainer.fisher_initialised:
             trainer._compute_fisher_distributed()
+            
+    def on_log(self, args, state, control, logs, optimizer, **kwargs):
+        if logs is not None and hasattr(self.trainer, '_ewc_loss'):
+            logs["ewc_loss"] = self.trainer._ewc_loss
+            if "wandb" in args.report_to:
+                if wandb.run is not None:
+                    wandb.log({"ewc_loss": self.trainer._ewc_loss}, step=state.global_step)
+                
+        
     
 # TRL's Trainer accepts a custom `compute_loss_func` when instantiating the trainer: 
 # """
@@ -323,6 +332,8 @@ class SFTTrainerWithFisher(SFTTrainer):
                 f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
                 f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
         
+        assert self.accelerator.num_processes == 1, "don't think multi-GPU will train correctly yet - need to look into all-reduce of ewc_loss, though i think it should be the same on all devices?"
+        
         ewc_loss = 0.0
         for name, param in model.named_parameters():
             if "module." in name:
@@ -344,12 +355,9 @@ class SFTTrainerWithFisher(SFTTrainer):
                 f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
                 f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
             
-        if wandb.run is not None:
-            wandb.log({"ewc_loss": ewc_loss}, step=self.state.global_step)
-            
         # AFAICT we can't trivially access self.log() here so storing it as an attr for CallBack to log with on_log()
         self._ewc_loss = ewc_loss.item() if isinstance(ewc_loss, torch.Tensor) else float(ewc_loss)
-
-        print(f"Fisher: ewc_loss: {ewc_loss}")
+        if print_debug:
+            print(f"Fisher: ewc_loss: {ewc_loss}")
         
         return (loss, outputs) if return_outputs else loss
