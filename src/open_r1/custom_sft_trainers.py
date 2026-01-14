@@ -14,6 +14,8 @@ from transformers import TrainerCallback
 from datasets import load_dataset
 import accelerate
 
+import wandb
+
 from tqdm import tqdm
 
 from open_r1.optims.dadamw import DAdamW, setup_dadamw
@@ -327,5 +329,7 @@ class SFTTrainerWithFisher(SFTTrainer):
             f"Rank {self.accelerator.process_index}: "
             f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
             f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+        if wandb.run is not None:
+            wandb.log({"ewc_loss": ewc_loss}, step=self.state.global_step)
         
         return (loss, outputs) if return_outputs else loss
