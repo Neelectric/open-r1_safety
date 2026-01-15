@@ -27,8 +27,6 @@ def main(
 
     ft = ft.remove_columns([c for c in ft.column_names if c != "messages"])
     replay = replay.remove_columns([c for c in replay.column_names if c != "messages"])
-    
-    
 
     n_replay = int(len(ft) * replay_pct)
     if n_replay > len(replay):
@@ -49,4 +47,5 @@ def main(
 
 
 if __name__ == "__main__":
+    print("Example usage: python replay_creation.py 'Neelectric/OpenR1-Math-220k_extended_Llama3_4096toks' 'Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks' 0.02")
     fire.Fire(main)

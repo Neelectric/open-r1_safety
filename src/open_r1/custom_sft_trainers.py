@@ -333,6 +333,7 @@ class SFTTrainerWithFisher(SFTTrainer):
             if "module." in name:
                 name = name.replace("module.", "")
             if name in self.fisher:
+                # L(θ) = LB (θ) +  ∑_i  λ/2 F_i (θ_i − θ_{A,i}^*)^2
                 diff_of_params = (param - self.reference_params[name])
                 sq_diff_of_params = diff_of_params.pow(2)
                 fisher_times_sq_diff_of_params = (self.fisher[name] * sq_diff_of_params)
