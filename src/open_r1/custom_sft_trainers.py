@@ -1,6 +1,7 @@
 """Implements DAdamW (dampened AdamW, where the preconditioner power can be varied as needed), as well as training with Fisher Information (e.g. for EWC)."""
 
 import math
+from typing import Any, Callable, Optional, Union
 
 import torch
 from torch.optim.lr_scheduler import LambdaLR
@@ -56,14 +57,7 @@ class FisherCallback(TrainerCallback):
         print("Fisher: BSZ is still 1 to avoid OOM!")
         if not trainer.fisher_initialised:
             trainer._compute_fisher_distributed()
-            
-    def on_log(self, args, state, control, logs, optimizer, **kwargs):
-        if logs is not None and hasattr(self.trainer, '_ewc_loss'):
-            logs["ewc_loss"] = self.trainer._ewc_loss
-            if "wandb" in args.report_to:
-                if wandb.run is not None:
-                    wandb.log({"ewc_loss": self.trainer._ewc_loss}, step=state.global_step)
-                
+
         
     
 # TRL's Trainer accepts a custom `compute_loss_func` when instantiating the trainer: 
@@ -361,3 +355,22 @@ class SFTTrainerWithFisher(SFTTrainer):
             print(f"Fisher: ewc_loss: {ewc_loss}")
         
         return (loss, outputs) if return_outputs else loss
+    
+    def log(self, logs: dict[str, float], start_time: Optional[float] = None) -> None:
+        """
+        Log `logs` on the various objects watching training.
+
+        Overrides Trainer.log() to inject custom behavior of tracking ewc_loss
+
+        Args:
+            logs (`dict[str, float]`):
+                The values to log.
+            start_time (`Optional[float]`):
+                The start of training.
+        """
+        if hasattr(self, '_ewc_loss'):
+            logs['ewc_loss'] = self._ewc_loss
+            if wandb.run is not None:
+                    wandb.log({"train/ewc_loss": self._ewc_loss}, step=self.state.global_step)
+            
+        super().log(logs, start_time)
