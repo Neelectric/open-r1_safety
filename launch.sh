@@ -35,6 +35,6 @@ done
 
 # Launch the command
 # VERSION=v00.30 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.30.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
-bash eval_commands/math_500.sh meta-llama/Llama-3.2-1B-Instruct
-bash eval_commands/math_500.sh Neelectric/Llama-3.2-1B-Instruct_SFT_Math-220kvdebug_bsz160
-bash eval_commands/math_500.sh Neelectric/Llama-3.2-1B-Instruct_SFT_Math-220kv00.04
+# bash eval_commands/math_500.sh meta-llama/Llama-3.2-1B-Instruct
+VERSION=vdebug_00.03 envsubst < recipes/meta-llama/Llama-3.2-1B-Instruct/sft/config_distill_vdebug_00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=1 src/open_r1/sft.py --config temp_config.yaml
+VERSION=vdebug_00.04 envsubst < recipes/meta-llama/Llama-3.2-1B-Instruct/sft/config_distill_vdebug_00.04.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=1 src/open_r1/sft.py --config temp_config.yaml

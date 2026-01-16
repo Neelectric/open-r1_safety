@@ -1,4 +1,4 @@
-MODEL_ID="${1:-Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.30}"
+MODEL_ID="${1:-Neelectric/Llama-3.2-1B-Instruct_SFT_Math-220kvdebug_00.04}"
 REVISION="${2:-main}"
 
 uv pip install vllm==0.10.1
@@ -7,6 +7,7 @@ uv pip install more_itertools
 
 NUM_GPUS=1
 NUM_TOKS=4096
+GPU_MEM_UTIL=0.95
 
 # MODEL=/root/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10/snapshots/e2583dfaba3d8acc831710720ff608b0fac3c4a9
 # REVISION=main-step-000000025
@@ -16,7 +17,7 @@ NUM_TOKS=4096
 
 
 # 324
-MODEL_ARGS="model_name=$MODEL_ID,revision=$REVISION,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=$NUM_TOKS,gpu_memory_utilization=0.9,generation_parameters={max_new_tokens:$NUM_TOKS,temperature:0.6,top_p:0.95}"
+MODEL_ARGS="model_name=$MODEL_ID,revision=$REVISION,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=$NUM_TOKS,gpu_memory_utilization=$GPU_MEM_UTIL,generation_parameters={max_new_tokens:$NUM_TOKS,temperature:0.6,top_p:0.95}"
 TASK=math_500
 # TASK=aime24
 OUTPUT_DIR=data/evals/
