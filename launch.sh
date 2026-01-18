@@ -34,7 +34,10 @@ while true; do
 done
 
 # Launch the command
-# VERSION=v00.30 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.30.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
-# bash eval_commands/math_500.sh meta-llama/Llama-3.2-1B-Instruct
-VERSION=vdebug_00.03 envsubst < recipes/meta-llama/Llama-3.2-1B-Instruct/sft/config_distill_vdebug_00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=1 src/open_r1/sft.py --config temp_config.yaml
-VERSION=vdebug_00.04 envsubst < recipes/meta-llama/Llama-3.2-1B-Instruct/sft/config_distill_vdebug_00.04.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=1 src/open_r1/sft.py --config temp_config.yaml
+VERSION=v00.32 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.32.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+
+VERSION=v00.33 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.33.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+
+VERSION=v00.34 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.34.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+
+VERSION=v00.35 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.35.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
