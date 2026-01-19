@@ -5,7 +5,7 @@ uv pip install vllm==0.10.1
 uv pip uninstall flashinfer-python
 uv pip install more_itertools
 
-NUM_GPUS=1
+NUM_GPUS=4
 NUM_TOKS=4096
 GPU_MEM_UTIL=0.95
 
