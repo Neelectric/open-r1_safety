@@ -173,9 +173,9 @@ class SFTTrainerWithFisher(SFTTrainer):
         print('num proc still hardcoded')
         num_proc = 1
         raw_dataset = load_dataset(retain_dataset_id)["train"]
-        small_subset_size = 2000
-        print(f"Still only using {small_subset_size} samples of retain!!! " * 10)
-        raw_dataset = raw_dataset.select(range(0,small_subset_size))
+        # small_subset_size = 2000
+        # print(f"Still only using {small_subset_size} samples of retain!!! " * 10)
+        # raw_dataset = raw_dataset.select(range(0,small_subset_size))
         
         # tokenize to check full lengths of sequences
         def preprocess(examples):
@@ -204,7 +204,7 @@ class SFTTrainerWithFisher(SFTTrainer):
             remove_columns=raw_dataset.column_names, 
             num_proc=num_proc, 
             batched=True,
-            batch_size=50,
+            batch_size=10,
             desc=f"Tokenizing retain dataset (num_proc={num_proc})",
             load_from_cache_file=True,
             )
