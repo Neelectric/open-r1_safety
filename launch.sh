@@ -35,7 +35,4 @@ done
 
 # Launch the command
 # cd safety-eval/
-VERSION=fisher_v00.02 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_fisher_v00.02.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
-
-
-# bash checkpoint_evals.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.32 main
+VERSION=fisher_v00.03 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_fisher_v00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
