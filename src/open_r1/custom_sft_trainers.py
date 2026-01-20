@@ -57,6 +57,20 @@ class FisherCallback(TrainerCallback):
         print("Fisher: BSZ is still 1 to avoid OOM!")
         if not trainer.fisher_initialised:
             trainer._compute_fisher_distributed()
+        if wandb.run is not None:
+            wandb.run.config.update({
+                "recompute_fisher_mode": trainer.recompute_fisher_mode, 
+                "recompute_fisher_intervals": trainer.recompute_fisher_intervals,
+                "retain_dataset_id": trainer.retain_dataset_id,
+                "ewc_lambda": trainer.ewc_lambda,
+                "fisher_batch_size": trainer.fisher_batch_size,
+                "fisher_num_batches": trainer.fisher_num_batches,
+                "fisher_completion_only_loss": trainer.fisher_completion_only_loss,
+                })
+            print("Fisher: Updated config with all vars")
+        else: 
+            print("wandb.run is None?")
+
 
         
     
