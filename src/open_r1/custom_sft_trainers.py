@@ -326,7 +326,10 @@ class SFTTrainerWithFisher(SFTTrainer):
                 f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
                 f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
         
-        assert self.accelerator.num_processes == 1, "don't think multi-GPU will train correctly yet - need to look into all-reduce of ewc_loss, though i think it should be the same on all devices?"
+        # assert self.accelerator.num_processes == 1, "don't think multi-GPU will train correctly yet - need to look into all-reduce of ewc_loss, though i think it should be the same on all devices?"
+        # update: in Z-1, each device will have a different batch, and hence different loss and different local gradients
+        # to ensure that everything is correct when synchronization happens before optimizer causes param update, 
+        # i suspect it is important for us to all-gather ewc_loss
         
         ewc_loss = 0.0
         for name, param in model.named_parameters():
@@ -342,7 +345,20 @@ class SFTTrainerWithFisher(SFTTrainer):
                 ewc_loss += (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
             else:
                 print(f"Fisher: Encountered param {name} which is not fisher. Continuing training as param.requires_grad may have intentionally been False at Fisher instantiation")
+                
+        # according to https://docs.pytorch.org/docs/stable/distributed.html,
+        # AVG divides values by the world size before summing across ranks. AVG is only available with the NCCL backend, and only for NCCL versions 2.10 or later.
+        # so we will do it manually for now
+        print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss before all_reduce SUM and avg {ewc_loss}")
+        dist.all_reduce(ewc_loss, op=dist.ReduceOp.SUM) #
+        ewc_loss = ewc_loss / self.accelerator.num_processes
+        print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss after all_reduce SUM and avg {ewc_loss}")
         
+        # also this currently seems to cause
+        # /root/openr1_v2/lib/python3.12/site-packages/torch/autograd/graph.py:841: UserWarning: c10d::allreduce_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at /pytorch/torch/csrc/autograd/autograd_not_implemented_fallback.cpp:62.)
+        
+        
+        # apply lambda, add to loss, log and return
         loss = loss + self.ewc_lambda * ewc_loss
         if print_mem:
             print("Fisher: after ewc compute loss"

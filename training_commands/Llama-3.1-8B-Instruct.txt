@@ -15,8 +15,15 @@ VERSION=v00.27 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_di
 ### SFT distillation with DDP (LOOKS BROKEN! BECAUSE OF padding_free=true??)
 VERSION=v00.22 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.22.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/ddp.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
+
+
+
+# Fisher
+
+config_distill_fisher_v00.01.yaml
+
 ### Fisher SFT
-VERSION=v00.31 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v00.31.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=1 src/open_r1/sft.py --config temp_config.yaml
+VERSION=fisher_v00.01 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_fisher_v00.01.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 ### Fisher debug SFT
 VERSION=v_debug envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_v_debug.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=1 src/open_r1/sft.py --config temp_config.yaml

@@ -34,14 +34,8 @@ while true; do
 done
 
 # Launch the command
-bash eval_commands/ifeval_ifbench.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.13 main
-cd safety_eval/
-deactivate
-source .venv/bin/activate
+# cd safety-eval/
+VERSION=fisher_v00.02 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft/config_distill_fisher_v00.02.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 
-checkpoint_evals.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.32 main
-checkpoint_evals.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.33 main
-checkpoint_evals.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.34 main
-checkpoint_evals.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.35 main
-checkpoint_evals.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.13 main
+# bash checkpoint_evals.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.32 main
