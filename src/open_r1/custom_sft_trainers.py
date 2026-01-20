@@ -142,6 +142,13 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.fisher_num_batches = fisher_num_batches
         self.fisher_completion_only_loss = fisher_completion_only_loss
         
+        # simple check all variables are reasonable
+        assert (type(ewc_lambda) == float) and (ewc_lambda > 25.0), "probably needs to be higher than 25.0?"
+        assert (type(fisher_batch_size) == int) and (fisher_batch_size > 0) 
+        assert recompute_fisher_mode == "never", "recomputation modes 'intervals' and 'dynamically' are not yet implemented"
+        assert (recompute_fisher_intervals < 1.0)
+        assert (fisher_num_batches > 100)
+        
         # we need to preprocess dataset first, otherwise pod gets OOMKilled
         # it's possible multiprocessing in .map() forks the process, and 
         # each fork copies entire memory space including the model?
@@ -360,16 +367,29 @@ class SFTTrainerWithFisher(SFTTrainer):
             else:
                 print(f"Fisher: Encountered param {name} which is not fisher. Continuing training as param.requires_grad may have intentionally been False at Fisher instantiation")
                 
-        # according to https://docs.pytorch.org/docs/stable/distributed.html,
-        # AVG divides values by the world size before summing across ranks. AVG is only available with the NCCL backend, and only for NCCL versions 2.10 or later.
-        # so we will do it manually for now
-        print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss before all_reduce SUM and avg {ewc_loss}")
-        dist.all_reduce(ewc_loss, op=dist.ReduceOp.SUM) #
-        ewc_loss = ewc_loss / self.accelerator.num_processes
-        print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss after all_reduce SUM and avg {ewc_loss}")
+                
+        # edit: I was unusure whether we would need to all_reduce ewc_loss across accelerators before adding it to our loss. However, when using DeepSpeed ZeRO Stage 1 this prints a lot of
+        # "Fisher: Rank 1 - ewc_loss before all_reduce SUM and avg 1.4823076576950256e-19"
+        # "Fisher: Rank 1 - ewc_loss after all_reduce SUM and avg 1.4823076576950256e-19"
+        # So in Stage 1 im fairly certain we don't need this
         
-        # also this currently seems to cause
-        # /root/openr1_v2/lib/python3.12/site-packages/torch/autograd/graph.py:841: UserWarning: c10d::allreduce_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at /pytorch/torch/csrc/autograd/autograd_not_implemented_fallback.cpp:62.)
+        assert model.optimizer.zero_stage_string == "ZeRO-1", "I need to revisit 'ZeRO-2' to make check whether we need to all_reduce ewc_loss on every compute_loss call..."
+        
+        if model.optimizer.zero_stage_string != "ZeRO-1":
+            # according to https://docs.pytorch.org/docs/stable/distributed.html,
+            # AVG divides values by the world size before summing across ranks. AVG is only available with the NCCL backend, and only for NCCL versions 2.10 or later.
+            # so we will do it manually for now
+            
+            print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss before all_reduce SUM and avg {ewc_loss}") # this prints stuff like: 
+            dist.all_reduce(ewc_loss, op=dist.ReduceOp.SUM) #
+            ewc_loss = ewc_loss / self.accelerator.num_processes
+            print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss after all_reduce SUM and avg {ewc_loss}") # this prints stuff like: 
+            
+            # also this currently seems to cause:
+            
+            # /root/openr1_v2/lib/python3.12/site-packages/torch/autograd/graph.py:841: UserWarning: c10d::allreduce_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at /pytorch/torch/csrc/autograd/autograd_not_implemented_fallback.cpp:62.)
+            
+            # which is concerning. need to read up on how all_reduce interacts with Autograd/backprop
         
         
         # apply lambda, add to loss, log and return

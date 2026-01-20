@@ -62,7 +62,7 @@ callbacks:
 - push_to_hub_revision
 
 custom_optim: fisher
-recompute_fisher_mode: intervals
+recompute_fisher_mode: never
 recompute_fisher_intervals: 0.25
 retain_dataset_id: Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks
 ewc_lambda: 50.0
