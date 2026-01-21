@@ -37,14 +37,14 @@ eval_strategy: 'no'
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kfisher_v00.02
-hub_model_revision: fisher_v00.02
+hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kfisher_v00.03
+hub_model_revision: fisher_v00.03
 hub_strategy: every_save
 log_level: info
 logging_steps: 1
 logging_strategy: steps
 packing: false
-output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kfisher_v00.02
+output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kfisher_v00.03
 overwrite_output_dir: true
 push_to_hub: true
 report_to:
@@ -57,7 +57,7 @@ torch_compile: false
 use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_safety
-run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kfisher_v00.02
+run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kfisher_v00.03
 callbacks:
 - push_to_hub_revision
 
@@ -65,7 +65,7 @@ custom_optim: fisher
 recompute_fisher_mode: never
 recompute_fisher_intervals: 0.25
 retain_dataset_id: Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks
-ewc_lambda: 100.0
+ewc_lambda: 200.0
 fisher_batch_size: 1
 fisher_num_batches: 10000 # Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks is 86,746 samples, on 4 GPUs that turns to 21,686.5, i reckon 2k is enough for now
 fisher_completion_only_loss: False  # if we later want to support completion_only_loss=True in SFT, we need to align Fisher loss computation, otherwise there is a mismatch

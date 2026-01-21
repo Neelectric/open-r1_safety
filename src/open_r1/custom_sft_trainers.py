@@ -143,7 +143,7 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.fisher_completion_only_loss = fisher_completion_only_loss
         
         # simple check all variables are reasonable
-        assert (type(ewc_lambda) == float) and (ewc_lambda > 25.0), "probably needs to be higher than 25.0?"
+        assert (type(ewc_lambda) == float) and (ewc_lambda >= 25.0), "probably needs to be higher than 25.0?"
         assert (type(fisher_batch_size) == int) and (fisher_batch_size > 0) 
         assert recompute_fisher_mode == "never", "recomputation modes 'intervals' and 'dynamically' are not yet implemented"
         assert (recompute_fisher_intervals < 1.0)

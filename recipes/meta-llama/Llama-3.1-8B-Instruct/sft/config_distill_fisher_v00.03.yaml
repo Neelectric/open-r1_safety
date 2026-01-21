@@ -65,7 +65,7 @@ custom_optim: fisher
 recompute_fisher_mode: never
 recompute_fisher_intervals: 0.25
 retain_dataset_id: Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks
-ewc_lambda: 25.0
+ewc_lambda: 200.0
 fisher_batch_size: 1
 fisher_num_batches: 10000 # Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks is 86,746 samples, on 4 GPUs that turns to 21,686.5, i reckon 2k is enough for now
 fisher_completion_only_loss: False  # if we later want to support completion_only_loss=True in SFT, we need to align Fisher loss computation, otherwise there is a mismatch
