@@ -5,7 +5,7 @@ REVISION="${2:-main}"
 uv pip install vllm==0.10.1
 uv pip uninstall flashinfer-python
 uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
-
+# echo "STILL ONLY 3 GPUS"
 NUM_GPUS=4
 NUM_TOKS=4096
 
