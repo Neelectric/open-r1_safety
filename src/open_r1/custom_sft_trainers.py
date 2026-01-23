@@ -241,6 +241,7 @@ class SFTTrainerWithFisher(SFTTrainer):
         return final_dataset
     
     def _compute_fisher_distributed(self,):
+        # TODO: pull out some of this logic into smaller methods, write tests for them!!!
         print("Fisher: before start of fisher computation"
             f"Rank {self.accelerator.process_index}: "
             f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "

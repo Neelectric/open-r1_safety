@@ -1,11 +1,12 @@
 MODEL_ID="${1:-Neelectric/Llama-3.2-1B-Instruct_SFT_Math-220kvdebug_00.04}"
 REVISION="${2:-main}"
 
-# uv pip install lighteval==0.13.0
-uv pip install vllm==0.10.1
-uv pip uninstall flashinfer-python
-uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
-# echo "STILL ONLY 3 GPUS"
+echo "UV COMMANDS STILL COMMENTED"
+# uv pip install vllm==0.10.1
+# uv pip uninstall flashinfer-python
+# uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
+
+
 NUM_GPUS=4
 NUM_TOKS=4096
 
@@ -22,4 +23,4 @@ lighteval vllm $MODEL_ARGS ifeval,ifbench_test \
     --output-dir $OUTPUT_DIR
 
 
-uv pip install vllm==0.11.2
+# uv pip install vllm==0.11.2
