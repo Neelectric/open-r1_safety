@@ -24,3 +24,4 @@ lighteval vllm $MODEL_ARGS ifeval,ifbench_test \
 
 
 # uv pip install vllm==0.11.2
+# uv pip install flashinfer-python

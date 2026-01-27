@@ -804,27 +804,3 @@ If you find this project is useful in your own work, please consider citing as f
     year = {2025}
 }
 ```
-
-
-Version	ckpt		Metric	Value		Stderr
-base		ifeval:0	prompt_level_strict_acc	0.7024	±	0.0197
-		ifbench_test:0	prompt_level_strict_acc	0.2433	±	0.0248
-chat v00.01	v00.01-step-000003934	ifeval:0	prompt_level_strict_acc	0.6044	±	0.0210
-		ifbench_test:0	prompt_level_strict_acc	0.1967	±	0.0230
-2	v00.01-step-000007868	ifeval:0	prompt_level_strict_acc	0.6414	±	0.0206
-		ifbench_test:0	prompt_level_strict_acc	0.2100	±	0.0236
-3	v00.01-step-000011802	ifeval:0	prompt_level_strict_acc	0.6821	±	0.0200
-		ifbench_test:0	prompt_level_strict_acc	0.2467	±	0.0249
-4	v00.01-step-000015736	ifeval:0	prompt_level_strict_acc	0.6710	±	0.0202
-		ifbench_test:0	prompt_level_strict_acc	0.2200	±	0.0240
-5	v00.01-step-000019670	ifeval:0	prompt_level_strict_acc	0.6858	±	0.0200
-		ifbench_test:0	prompt_level_strict_acc	0.2200	±	0.0240
-6	v00.01-step-000023604	ifeval:0	prompt_level_strict_acc	0.6599	±	0.0204
-		ifbench_test:0	prompt_level_strict_acc	0.2167	±	0.0238
-7	v00.01-step-000027538	ifeval:0	prompt_level_strict_acc	0.6932	±	0.0198
-		ifbench_test:0	prompt_level_strict_acc	0.2133	±	0.0237
-8	v00.01-step-000031472	ifeval:0	prompt_level_strict_acc	0.6858	±	0.0200
-		ifbench_test:0	prompt_level_strict_acc	0.2033	±	0.0233
-9	v00.01-step-000035406	ifeval:0	prompt_level_strict_acc	0.6839	±	0.0200
-		ifbench_test:0	prompt_level_strict_acc	0.2267	±	0.0242
-	v00.01-step-000039339	ifeval:0	prompt_level_strict_acc	0.6654	±	0.0203

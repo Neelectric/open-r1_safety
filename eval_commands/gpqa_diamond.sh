@@ -15,11 +15,8 @@ GPU_MEM_UTIL=0.95
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Math-220kv00.30
 # REVISION=main
 
-
-# 324
 MODEL_ARGS="model_name=$MODEL_ID,revision=$REVISION,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=$NUM_TOKS,gpu_memory_utilization=$GPU_MEM_UTIL,generation_parameters={max_new_tokens:$NUM_TOKS,temperature:0.6,top_p:0.95}"
-TASK=math_500
-# TASK=aime24
+TASK=gpqa
 OUTPUT_DIR=data/evals/
 
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
