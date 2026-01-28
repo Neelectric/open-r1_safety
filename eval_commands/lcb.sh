@@ -7,7 +7,9 @@ uv pip install more_itertools
 
 NUM_GPUS=4
 # 4096
-NUM_TOKS=32768
+NUM_TOKS=16384
+echo $NUM_TOKS
+# NUM_TOKS=32768
 GPU_MEM_UTIL=0.95
 
 

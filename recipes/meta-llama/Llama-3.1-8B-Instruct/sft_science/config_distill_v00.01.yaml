@@ -52,6 +52,7 @@ save_strategy: "steps"
 save_steps: 0.1
 save_total_limit: 2
 seed: 42
+shuffle_dataset: true
 torch_compile: false
 use_liger_kernel: true
 wandb_entity: Neelectric
