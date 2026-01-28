@@ -62,13 +62,14 @@ uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2
 # bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000039339
 # bash eval_commands/ifeval_ifbench.sh $MODEL main
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.04
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.3
 VERSION=main
 bash eval_commands/lcb.sh $MODEL $VERSION
 
-# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.01
-# VERSION=main
-# bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
+
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.02
+VERSION=main
+bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
 
 
 uv pip install vllm==0.11.2

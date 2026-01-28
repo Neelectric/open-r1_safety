@@ -41,9 +41,11 @@ def main(
     combined = combined.shuffle(seed=42)
 
     print(f"Final dataset: {len(combined)} rows ({n_ft} finetune + {n_replay} replay), {len(ft)} * {str(replay_pct)} = {n_replay}")
-    ds_name = f"Neelectric/Replay_{replay_pct}.OpenR1-Math-220k_extended.wildguardmix.Llama3_4096toks"
+    target_domain_ds_name = finetune_ds.split('/')[1]
+    target_domain_ds_name = target_domain_ds_name.replace('_Llama3_4096toks', '')
+    ds_name = f"Neelectric/Replay_{replay_pct}.{target_domain_ds_name}.wildguardmix.Llama3_4096toks"
+    print(f"Pushing to {ds_name}")
     combined.push_to_hub(ds_name, private=True)
-    return combined
 
 
 if __name__ == "__main__":

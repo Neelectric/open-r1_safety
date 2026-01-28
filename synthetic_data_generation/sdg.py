@@ -8,6 +8,9 @@ from datasets import Dataset
 from openai import AsyncOpenAI
 from tqdm import tqdm
 from create_dataset import create_dataset
+import httpx
+from transformers import AutoTokenizer
+
 
 frontier_model_id = "meta-llama/Llama-3.1-8B-Instruct"
 guard_model_id = "allenai/wildguard"
@@ -31,20 +34,24 @@ Answers: [/INST]
 """
 
 def start_vllm_servers():
+    llama3_reasoning_chat_template_path = "../fisher_testbed/chat_templates/llama3_all_assistant.jinja"
+    print(f"GENERATING REFUSALS WITH llama3_reasoning_chat_template_path UNDER {llama3_reasoning_chat_template_path}")
     frontier_proc = subprocess.Popen(
-        ["vllm", "serve", frontier_model_id, "--port", "8001", "--max-model-len", "6000", "--data-parallel-size", "5"],
-        env={**os.environ, "CUDA_VISIBLE_DEVICES": "0,1,2,3,4"},
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        ["vllm", "serve", frontier_model_id, "--port", "8001", "--gpu-memory-utilization", "0.95", "--max-model-len", "6000", "--data-parallel-size", "3", "--chat-template", llama3_reasoning_chat_template_path],
+        env={**os.environ, "CUDA_VISIBLE_DEVICES": "0,1,2"},
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        start_new_session=True
     )
     guard_proc = subprocess.Popen(
-        ["vllm", "serve", guard_model_id, "--port", "8002", "--max-model-len", "7000", "--data-parallel-size", "3"],
-        env={**os.environ, "CUDA_VISIBLE_DEVICES": "5,6,7"},
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        ["vllm", "serve", guard_model_id, "--port", "8002", "--gpu-memory-utilization", "0.95", "--max-model-len", "7000", "--data-parallel-size", "1"],
+        env={**os.environ, "CUDA_VISIBLE_DEVICES": "3"},
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        start_new_session=True
     )
     return frontier_proc, guard_proc
 
 def wait_for_servers(timeout=300):
-    import httpx
+    
     start = time.time()
     for url in [FRONTIER_URL, GUARD_URL]:
         while time.time() - start < timeout:
@@ -94,9 +101,21 @@ async def main():
     frontier_proc, guard_proc = start_vllm_servers()
     try:
         wait_for_servers()
+        print("Servers all started successfully!")
         
         frontier_client = AsyncOpenAI(api_key="EMPTY", base_url=FRONTIER_URL, timeout=1200)
         guard_client = AsyncOpenAI(api_key="EMPTY", base_url=GUARD_URL, timeout=1200)
+
+        test_response = await frontier_client.chat.completions.create(
+            model=frontier_model_id,
+            messages=[
+                {"role": "user", "content": "Hey Llama! Please explain LoRA fine-tuning from first principles. spend a large token budget!"},
+                {"role": "assistant", "content": "<think>"},
+            ],
+            temperature=0.7,
+            max_tokens=2048
+        )
+        print(test_response)
         
         tasks = []
         for i, prompt in tqdm(enumerate(prompts), total=len(prompts)):
@@ -109,7 +128,7 @@ async def main():
         ds = Dataset.from_list(results)
         print(ds)
         print(ds[0])
-        ds.push_to_hub("Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks", private=True)
+        ds.push_to_hub("Neelectric/wildguardmix_reasoning_Llama-3.1-8B-Instruct_4096toks", private=True)
     finally:
         kill_servers(frontier_proc, guard_proc)
 

@@ -6,8 +6,8 @@ uv pip install flashinfer-python
 uv pip install more_itertools
 
 NUM_GPUS=4
-MAX_NEW_TOKENS=4096
-MAX_MODEL_LENGTH=8192
+MAX_NEW_TOKENS=16384
+MAX_MODEL_LENGTH=16384
 # MAX_MODEL_LENGTH=16384
 GPU_MEM_UTIL=0.95
 
@@ -18,7 +18,7 @@ GPU_MEM_UTIL=0.95
 # REVISION=main
 
 MODEL_ARGS="model_name=$MODEL_ID,revision=$REVISION,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=$MAX_MODEL_LENGTH,gpu_memory_utilization=$GPU_MEM_UTIL,generation_parameters={max_new_tokens:$MAX_NEW_TOKENS,temperature:0.6,top_p:0.95}"
-TASK=gpqa:main:0,gpqa:diamond:0
+TASK=gpqa:main
 OUTPUT_DIR=data/evals/
 
 # VLLM_USE_RAY_SPMD_WORKER=0 \
@@ -29,4 +29,4 @@ lighteval vllm $MODEL_ARGS $TASK \
 
 
 uv pip install vllm==0.11.2
-uv pip install flashinfer-python
+# uv pip install flashinfer-python
