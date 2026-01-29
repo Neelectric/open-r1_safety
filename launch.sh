@@ -2,7 +2,7 @@
 source /root/openr1_v2/bin/activate
 
 # Configuration
-CHECK_INTERVAL=300  # seconds between checks
+CHECK_INTERVAL=600  # seconds between checks
 MEMORY_THRESHOLD=500  # MB - GPUs with less memory used are considered free
 UTIL_THRESHOLD=5  # % - GPUs with less utilization are considered free
 
@@ -35,39 +35,27 @@ while true; do
 done
 
 # Launch fisher
-uv pip install vllm==0.11.2
+# uv pip install vllm==0.11.2
 
 # launch code sft
-VERSION=v00.03 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_code/config_distill_v00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+# VERSION=v00.03 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_code/config_distill_v00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
-
-# bash eval_commands/math_500.sh Neelectric/Llama-3.1-8B-Instruct_SFT_Chat-220kv00.01 main
 
 uv pip install vllm==0.10.1
 uv pip uninstall flashinfer-python
 uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
 
-# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_Chat-220kv00.03
-# VERSION=v00.03
 
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000003934
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000007868
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000011802
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000015736
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000019670
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000023604
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000027538
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000031472
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000035406
-# bash eval_commands/ifeval_ifbench.sh $MODEL $VERSION-step-000039339
-# bash eval_commands/ifeval_ifbench.sh $MODEL main
-
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.3
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.03
 VERSION=main
 bash eval_commands/lcb.sh $MODEL $VERSION
 
 
 MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.02
+VERSION=main
+bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
+
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.03
 VERSION=main
 bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
 
