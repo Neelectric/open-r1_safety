@@ -46,18 +46,18 @@ uv pip uninstall flashinfer-python
 uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
 
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.03
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoTv00.01
 VERSION=main
 bash eval_commands/lcb.sh $MODEL $VERSION
 
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.02
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoTv00.01
 VERSION=main
 bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.03
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoTv00.01
 VERSION=main
-bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
+bash eval_commands/math_500.sh $MODEL $VERSION
 
 
 uv pip install vllm==0.11.2

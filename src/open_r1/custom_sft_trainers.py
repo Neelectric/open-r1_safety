@@ -319,6 +319,8 @@ class SFTTrainerWithFisher(SFTTrainer):
             f"Rank {self.accelerator.process_index}: "
             f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
             f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+        print("NOTE TO SELF: Implement Frobenius Norm or Average of Fisher visualized and saved as plot to disk!\n"*5)
+        print("NOTE TO SELF: Actually it might be interesting to plot GIF of FIM across its computation, how many batches of D_retain do we need before FIM convergence?\n Actually, come to think of it, given that every batch adds grad.pow(2) to FIM_i, is it reasonable to expect it to keep increasing if D_retain comes from a narrow distribution?"*5)
         return
     
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
