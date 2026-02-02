@@ -21,7 +21,7 @@ MODEL_ARGS="model_name=$MODEL_ID,revision=$REVISION,dtype=bfloat16,data_parallel
 TASK=gpqa:main
 OUTPUT_DIR=data/evals/
 
-# VLLM_USE_RAY_SPMD_WORKER=0 \
+VLLM_USE_RAY_SPMD_WORKER=0 \
 VLLM_WORKER_MULTIPROC_METHOD="spawn" \
 lighteval vllm $MODEL_ARGS $TASK \
     --output-dir $OUTPUT_DIR
