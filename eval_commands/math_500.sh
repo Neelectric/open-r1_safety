@@ -6,7 +6,7 @@ uv pip uninstall flashinfer-python
 uv pip install more_itertools
 
 NUM_GPUS=4
-NUM_TOKS=4096
+NUM_TOKS=8192
 GPU_MEM_UTIL=0.95
 
 # MODEL=/root/.cache/huggingface/hub/models--Neelectric--Llama-3.1-8B-Instruct_GRPO_Math-220kv00.10/snapshots/e2583dfaba3d8acc831710720ff608b0fac3c4a9

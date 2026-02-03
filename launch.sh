@@ -2,7 +2,7 @@
 source /root/openr1_v2/bin/activate
 
 # Configuration
-CHECK_INTERVAL=600  # seconds between checks
+CHECK_INTERVAL=60  # seconds between checks
 MEMORY_THRESHOLD=500  # MB - GPUs with less memory used are considered free
 UTIL_THRESHOLD=5  # % - GPUs with less utilization are considered free
 
@@ -46,34 +46,34 @@ uv pip uninstall flashinfer-python
 uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
 
 
-# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoTv00.01
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoTv00.02
+VERSION=main
+bash eval_commands/gpqa.sh $MODEL $VERSION
+
+
+# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.04
 # VERSION=main
-# bash eval_commands/lcb.sh $MODEL $VERSION
+# bash eval_commands/gpqa.sh $MODEL $VERSION
 
+# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.05
+# VERSION=main
+# bash eval_commands/gpqa.sh $MODEL $VERSION
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.04
-VERSION=main
-bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
-
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.05
-VERSION=main
-bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
-
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.06
-VERSION=main
-bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
+# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.06
+# VERSION=main
+# bash eval_commands/gpqa.sh $MODEL $VERSION
 
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.07
 # VERSION=main
-# bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
+# bash eval_commands/gpqa.sh $MODEL $VERSION
 
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.08
 # VERSION=main
-# bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
+# bash eval_commands/gpqa.sh $MODEL $VERSION
 
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.09
 # VERSION=main
-# bash eval_commands/gpqa_diamond.sh $MODEL $VERSION
+# bash eval_commands/gpqa.sh $MODEL $VERSION
 
 
 
