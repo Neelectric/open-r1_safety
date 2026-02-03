@@ -38,7 +38,7 @@ done
 # uv pip install vllm==0.11.2
 
 # launch code sft
-# VERSION=v00.02 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_mot/config_distill_v00.02.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+# VERSION=v00.03 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_mot/config_distill_v00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 
 uv pip install vllm==0.10.1
