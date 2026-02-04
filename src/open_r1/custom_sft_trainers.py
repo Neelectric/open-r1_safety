@@ -62,6 +62,7 @@ class FisherCallback(TrainerCallback):
                 "recompute_fisher_mode": trainer.recompute_fisher_mode, 
                 "recompute_fisher_intervals": trainer.recompute_fisher_intervals,
                 "retain_dataset_id": trainer.retain_dataset_id,
+                "retain_dataset_config": trainer.retain_dataset_config,
                 "ewc_lambda": trainer.ewc_lambda,
                 "fisher_batch_size": trainer.fisher_batch_size,
                 "fisher_num_batches": trainer.fisher_num_batches,
@@ -105,6 +106,8 @@ class SFTTrainerWithFisher(SFTTrainer):
             The arguments to tweak for training. Will default to a basic instance of [`TrainingArguments`].
         retain_dataset_id (`string`):
             The 🤗 identifier of the dataset to use for commputing Fisher Information.
+        retain_dataset_config (`string`):
+            The 🤗 subset/config of the retain dataset ('default' if left empty or None).
         ewc_lambda (`float`):
             The lambda weight that scales the EWC loss during training, e.g. 50.0.
         fisher_batch_size (`int`):
@@ -124,6 +127,7 @@ class SFTTrainerWithFisher(SFTTrainer):
         self, 
         *args, 
         retain_dataset_id: str,
+        retain_dataset_config: str,
         ewc_lambda: float,
         fisher_batch_size: int,
         recompute_fisher_mode: str,
@@ -134,20 +138,24 @@ class SFTTrainerWithFisher(SFTTrainer):
         **kwargs
         ):
         print(f"Fisher: Init with ewc_lambda {ewc_lambda}")
+        # simple check that all variables are reasonable
+        assert (type(ewc_lambda) == float) and (ewc_lambda >= 25.0), "probably needs to be higher than 25.0?"
+        assert (type(fisher_batch_size) == int) and (fisher_batch_size > 0) 
+        assert recompute_fisher_mode == "never", "recomputation modes 'intervals' and 'dynamically' are not yet implemented"
+        assert (recompute_fisher_intervals < 1.0)
+        assert (fisher_num_batches > 100)
+        if (retain_dataset_config == None) or (retain_dataset_config == ""):
+            retain_dataset_config = "default"
+        
+        # then attach them to trainer object
         self.retain_dataset_id = retain_dataset_id
+        self.retain_dataset_config = retain_dataset_config
         self.ewc_lambda = ewc_lambda
         self.fisher_batch_size = fisher_batch_size
         self.recompute_fisher_mode = recompute_fisher_mode
         self.recompute_fisher_intervals = recompute_fisher_intervals
         self.fisher_num_batches = fisher_num_batches
         self.fisher_completion_only_loss = fisher_completion_only_loss
-        
-        # simple check all variables are reasonable
-        assert (type(ewc_lambda) == float) and (ewc_lambda >= 25.0), "probably needs to be higher than 25.0?"
-        assert (type(fisher_batch_size) == int) and (fisher_batch_size > 0) 
-        assert recompute_fisher_mode == "never", "recomputation modes 'intervals' and 'dynamically' are not yet implemented"
-        assert (recompute_fisher_intervals < 1.0)
-        assert (fisher_num_batches > 100)
         
         # we need to preprocess dataset first, otherwise pod gets OOMKilled
         # it's possible multiprocessing in .map() forks the process, and 
@@ -200,12 +208,11 @@ class SFTTrainerWithFisher(SFTTrainer):
         
         # tokenize to check full lengths of sequences
         def preprocess(examples):
-            include_mask = fisher_completion_only_loss
             processed = [
                 tokenizer.apply_chat_template(
                     messages,
                     tokenize=True,
-                    return_assistant_tokens_mask=include_mask,
+                    return_assistant_tokens_mask=fisher_completion_only_loss,
                     return_dict=True,
                 )
                 for messages in examples["messages"]
@@ -214,7 +221,7 @@ class SFTTrainerWithFisher(SFTTrainer):
             if fisher_completion_only_loss:
                 return {
                     "input_ids": [p["input_ids"] for p in processed],
-                    "assistant_masks": [p["assistant_masks"] for p in processed] if include_mask else []
+                    "assistant_masks": [p["assistant_masks"] for p in processed]
                 }
             return {
                 "input_ids": [p["input_ids"] for p in processed],

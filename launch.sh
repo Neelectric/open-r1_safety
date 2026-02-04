@@ -2,7 +2,7 @@
 source /root/openr1_v2/bin/activate
 
 # Configuration
-CHECK_INTERVAL=60  # seconds between checks
+CHECK_INTERVAL=600  # seconds between checks
 MEMORY_THRESHOLD=500  # MB - GPUs with less memory used are considered free
 UTIL_THRESHOLD=5  # % - GPUs with less utilization are considered free
 
@@ -35,10 +35,9 @@ while true; do
 done
 
 # Launch fisher
-# uv pip install vllm==0.11.2
+uv pip install vllm==0.11.2
 
-# launch code sft
-# VERSION=v00.03 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_mot/config_distill_v00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+VERSION=fisher_v00.01 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_fisher_v00.01.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 
 uv pip install vllm==0.10.1
@@ -46,9 +45,11 @@ uv pip uninstall flashinfer-python
 uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
 
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoTv00.02
-VERSION=main
-bash eval_commands/gpqa.sh $MODEL $VERSION
+
+
+# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_MoTv00.02
+# VERSION=main
+# bash eval_commands/gpqa.sh $MODEL $VERSION
 
 
 # MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.04

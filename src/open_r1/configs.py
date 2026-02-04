@@ -93,6 +93,10 @@ class ScriptArguments(trl.ScriptArguments):
         default="Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks",
         metadata={"help": "The 🤗 identifier of the dataset to use for commputing Fisher Information."}
     )    
+    retain_dataset_config: str = field(
+        default="default",
+        metadata={"help": "The 🤗 subset/config of the retain dataset ('default' if left empty or None)."}
+    )    
     ewc_lambda: float = field(
         default=50.0,
         metadata={"help": "The lambda weight that scales the EWC loss during training, e.g. 50.0."}
