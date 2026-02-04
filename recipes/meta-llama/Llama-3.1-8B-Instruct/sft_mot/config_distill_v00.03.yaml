@@ -27,7 +27,6 @@ max_grad_norm: 0.2
 padding_free: true # following https://github.com/huggingface/trl/pull/3076
 
 # SFT trainer config
-assistant_only_loss: true
 max_steps: -1 
 num_train_epochs: 3
 bf16: true
