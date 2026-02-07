@@ -1,0 +1,75 @@
+# Config for 1 node of 4 x H100s (80GB)
+# Model arguments
+model_name_or_path: HuggingFaceTB/SmolLM2-135M
+model_revision: main
+dtype: bfloat16
+attn_implementation: flash_attention_2
+
+# Data training arguments
+dataset_name: Neelectric/wikipedia_20231101.374k_en_41k_eu # this includes train split with 9k english texts and test split with 1k basque texts
+dataset_train_split: train # CPT value
+dataset_test_split: test # CPT value
+dataset_config: default # CPT value
+dataset_text_field: text
+dataset_num_proc: 12
+# eos_token: <|endoftext|>
+
+#SFT hyperparam
+# assistant_only_loss: true # CPT value
+max_length: 4096 #6144 #8192 #16384 # 65536 
+optim: adamw_torch
+weight_decay: 0.0
+lr_scheduler_type: constant_with_warmup
+warmup_ratio: 0.1
+learning_rate: 3.0e-3
+gradient_accumulation_steps: 1
+per_device_eval_batch_size: 40
+per_device_train_batch_size: 40
+max_grad_norm: 1.0 # 
+padding_free: true # following https://github.com/huggingface/trl/pull/3076
+
+# SFT trainer config
+max_steps: -1 #701/3348
+num_train_epochs: 1
+bf16: true
+do_eval: true # CPT value
+eval_strategy: 'steps' # CPT value
+eval_steps: 0.05 # CPT value
+eval_on_start: true # CPT value
+# eval_dataset: Neelectric/wikipedia_20231101.eu_10k_test # CPT value
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+hub_model_id: Neelectric/SmolLM2-135M_SFT_science${VERSION}
+# hub_model_revision: ${VERSION} # CPT value
+hub_strategy: end # CPT value
+log_level: info
+logging_steps: 1
+logging_strategy: steps
+packing: true # CPT value
+output_dir: data/Neelectric/SmolLM2-135M_SFT_science${VERSION}
+overwrite_output_dir: true
+push_to_hub: true
+report_to:
+- wandb
+save_strategy: 'no' # CPT value
+# save_steps: 0.5 # CPT value
+# save_total_limit: 2 # CPT value
+seed: 42
+torch_compile: false # CPT value
+use_liger_kernel: true
+wandb_entity: Neelectric
+wandb_project: open-r1_science
+run_name: Neelectric/SmolLM2-135M_SFT_science${VERSION}
+callbacks:
+- push_to_hub_revision
+
+# custom_optim: fisher
+# recompute_fisher_mode: never
+# recompute_fisher_intervals: 0.25
+# retain_dataset_id: Neelectric/wildguardmix_reasoning_Llama-3.1-8B-Instruct_4096toks
+# retain_dataset_config: refusals_only
+# ewc_lambda: 50.0
+# fisher_batch_size: 1
+# fisher_num_batches: 10000 # Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks is 86,746 samples, on 4 GPUs that turns to 21,686.5, i reckon 2k is enough for now
+# fisher_completion_only_loss: True  # if we later want to support completion_only_loss=True in SFT, we need to align Fisher loss computation, otherwise there is a mismatch

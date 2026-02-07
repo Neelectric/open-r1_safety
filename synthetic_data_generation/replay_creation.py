@@ -60,8 +60,8 @@ def main(
 
 
 if __name__ == "__main__":
-    print("Example usage: python replay_creation.py 'Neelectric/OpenR1-Math-220k_extended_Llama3_4096toks' 'Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks' 0.02")
-    
+    print("Example (no reasoning). : python replay_creation.py 'Neelectric/OpenR1-Math-220k_extended_Llama3_4096toks' 'Neelectric/wildguardmix_Llama-3.1-8B-Instruct_4096toks' 0.02 False")
+    print("Example (with reasoning): python replay_creation.py 'Neelectric/MoT_science_Llama3_4096toks' 'Neelectric/wildguardmix_reasoning_Llama-3.1-8B-Instruct_4096toks' 0.3 True")
     def example_was_reasoned(example):
         if "</think>" in example["model_response"]:
             return True

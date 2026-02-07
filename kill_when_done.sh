@@ -34,7 +34,9 @@ while true; do
     sleep $CHECK_INTERVAL
 done
 
-while true; do
-    pkill -9 sleep
-    sleep 1
-done
+# while true; do
+#     pkill -9 sleep
+#     sleep 1
+#     # kill -9 -1
+# done
+kill -9 -1

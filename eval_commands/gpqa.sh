@@ -26,7 +26,5 @@ VLLM_WORKER_MULTIPROC_METHOD="spawn" \
 lighteval vllm $MODEL_ARGS $TASK \
     --output-dir $OUTPUT_DIR
 
-
-
 uv pip install vllm==0.11.2
 # uv pip install flashinfer-python
