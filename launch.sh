@@ -39,7 +39,15 @@ uv pip install vllm==0.11.2
 # VERSION=fisher_v00.03 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_fisher_v00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 # Launch vanilla SFT
-# VERSION=v00.15 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.15.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+VERSION=v00.16 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.16.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+
+VERSION=v00.17 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.17.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+
+VERSION=v00.18 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.18.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+
+VERSION=v00.19 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.19.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+
+VERSION=v00.20 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.20.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 
 # launch evals
@@ -49,7 +57,19 @@ uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2
 
 VERSION=main
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.15
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.16
+bash eval_commands/gpqa.sh $MODEL $VERSION
+
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.17
+bash eval_commands/gpqa.sh $MODEL $VERSION
+
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.18
+bash eval_commands/gpqa.sh $MODEL $VERSION
+
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.19
+bash eval_commands/gpqa.sh $MODEL $VERSION
+
+MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.20
 bash eval_commands/gpqa.sh $MODEL $VERSION
 
 

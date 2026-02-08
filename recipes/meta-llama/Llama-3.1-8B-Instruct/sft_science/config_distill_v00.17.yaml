@@ -50,7 +50,7 @@ report_to:
 - wandb
 save_strategy: "steps"
 save_steps: 0.5
-save_total_limit: 2
+save_total_limit: 1
 seed: 42
 shuffle_dataset: true
 torch_compile: false
