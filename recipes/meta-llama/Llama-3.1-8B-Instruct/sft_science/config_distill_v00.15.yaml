@@ -35,14 +35,14 @@ eval_strategy: 'no'
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.15
-hub_model_revision: v00.15
+hub_model_id: Neelectric/Llama-3.1-8B-Instruct_SFT_science${VERSION}
+hub_model_revision: ${VERSION}
 hub_strategy: every_save
 log_level: info
 logging_steps: 1
 logging_strategy: steps
 packing: false
-output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.15
+output_dir: data/Neelectric/Llama-3.1-8B-Instruct_SFT_science${VERSION}
 overwrite_output_dir: true
 push_to_hub: true
 report_to:
@@ -56,6 +56,6 @@ torch_compile: false
 use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_science
-run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.15
+run_name: Neelectric/Llama-3.1-8B-Instruct_SFT_science${VERSION}
 callbacks:
 - push_to_hub_revision
