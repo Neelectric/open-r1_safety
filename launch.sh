@@ -39,7 +39,7 @@ uv pip install vllm==0.11.2
 # VERSION=fisher_v00.03 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_fisher_v00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 # Launch vanilla SFT
-VERSION=v00.16 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.16.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+# VERSION=v00.16 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.16.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 VERSION=v00.17 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.17.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
@@ -71,6 +71,11 @@ bash eval_commands/gpqa.sh $MODEL $VERSION
 
 MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.20
 bash eval_commands/gpqa.sh $MODEL $VERSION
+
+
+
+
+
 
 
 # bash eval_commands/math_500.sh $MODEL $VERSION
