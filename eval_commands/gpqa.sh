@@ -1,11 +1,12 @@
 MODEL_ID="${1:-Neelectric/Llama-3.2-1B-Instruct_SFT_Math-220kvdebug_00.04}"
 REVISION="${2:-main}"
+NUM_GPUS="${3:-4}"
 
 uv pip install vllm==0.10.1
 uv pip install flashinfer-python
 uv pip install more_itertools
 
-NUM_GPUS=4
+# NUM_GPUS=4
 MAX_NEW_TOKENS=16384
 MAX_MODEL_LENGTH=16384
 # MAX_MODEL_LENGTH=16384

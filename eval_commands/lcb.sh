@@ -1,11 +1,12 @@
 MODEL_ID="${1:-Neelectric/Llama-3.1-8B-Instruct_SFT_codeforcesv00.01}"
 REVISION="${2:-main}"
+NUM_GPUS="${3:-4}"
 
 uv pip install vllm==0.10.1
 uv pip uninstall flashinfer-python
 uv pip install more_itertools
 
-NUM_GPUS=4
+# NUM_GPUS=4
 # 4096
 NUM_TOKS=16384
 echo $NUM_TOKS
