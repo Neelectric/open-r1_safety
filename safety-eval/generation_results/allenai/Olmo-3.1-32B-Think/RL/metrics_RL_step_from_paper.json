@@ -1,0 +1,11 @@
+{
+    "wildjailbreak::harmful_wildguard_reasoning_answer": {
+        "inverted_macro_asr": 0.717
+    },
+    "do_anything_now::wildguard_reasoning_answer": {
+        "inverted_macro_asr": 0.547
+    },
+    "wmdp::default_reasoning_answer": {
+        "inverted_accuracy": 0.327
+    }
+}

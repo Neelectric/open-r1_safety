@@ -1,0 +1,149 @@
+{
+    "wildguardtest": {
+        "inverted_micro_harm_lower": 0.9506008010680908,
+        "inverted_prompt_type_harm_lower": {
+            "private_information_individual": 0.9753086419753086,
+            "others": 1.0,
+            "cyberattack": 0.8958333333333334,
+            "sexual_content": 0.9574468085106383,
+            "social_stereotypes_and_unfair_discrimination": 0.9736842105263158,
+            "toxic_language_hate_speech": 0.9024390243902439,
+            "violence_and_physical_harm": 0.95,
+            "defamation_encouraging_unethical_or_unsafe_actions": 0.9347826086956522,
+            "fraud_assisting_illegal_activities": 0.9166666666666666,
+            "mental_health_over-reliance_crisis": 1.0,
+            "causing_material_harm_by_disseminating_misinformation": 0.9333333333333333,
+            "disseminating_false_or_misleading_information_encouraging_disinformation_campaigns": 0.8372093023255813,
+            "copyright_violations": 1.0,
+            "sensitive_information_organization_government": 0.9591836734693877
+        },
+        "inverted_adversarial_harm_lower": 0.8931750741839762,
+        "inverted_vanilla_harm_lower": 0.9975728155339806,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    },
+    "harmbench": {
+        "inverted_micro_asr_lower": 0.925,
+        "inverted_functional_category_asr_lower": {
+            "standard": 0.9748427672955975,
+            "contextual": 0.8395061728395061,
+            "copyright": 0.9125
+        },
+        "inverted_semantic_category_asr_lower": {
+            "misinformation_disinformation": 0.9074074074074074,
+            "chemical_biological": 0.8095238095238095,
+            "illegal": 0.9622641509433962,
+            "harmful": 0.9444444444444444,
+            "copyright": 0.9125,
+            "cybercrime_intrusion": 0.9807692307692307,
+            "harassment_bullying": 1.0
+        },
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    },
+    "toxigen": {
+        "safe_asian": 1.0,
+        "safe_black": 1.0,
+        "safe_chinese": 1.0,
+        "safe_jewish": 1.0,
+        "safe_latino": 1.0,
+        "safe_lgbtq": 1.0,
+        "safe_mental_disability": 1.0,
+        "safe_mexican": 1.0,
+        "safe_middle_east": 1.0,
+        "safe_muslim": 1.0,
+        "safe_native_american": 1.0,
+        "safe_physical_disability": 1.0,
+        "safe_trans": 1.0,
+        "safe_women": 1.0,
+        "safe_overall": 1.0,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    },
+    "do_anything_now": {
+        "inverted_macro_asr": 0.3666666666666667,
+        "inverted_jailbreak_chat_asr": 0.3563218390804598,
+        "inverted_llm_promptwriting_asr": 0.16666666666666663,
+        "inverted_breakgpt_asr": 0.3125,
+        "inverted_chatgptjailbreak_asr": 0.5,
+        "inverted_chatgpt_asr": 0.7,
+        "inverted_ai_prompt_sharing_asr": 0.6666666666666667,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    },
+    "xstest": {
+        "inverted_rta_all_safe": 0.908,
+        "rta_all_contrast": 0.9,
+        "inverted_rta_homonyms": 0.96,
+        "rta_contrast_homonyms": 0.8,
+        "inverted_rta_figurative_language": 1.0,
+        "rta_contrast_figurative_language": 0.92,
+        "inverted_rta_safe_targets": 1.0,
+        "rta_contrast_safe_targets": 0.84,
+        "inverted_rta_safe_contexts": 0.8,
+        "rta_contrast_safe_contexts": 0.92,
+        "inverted_rta_definitions": 1.0,
+        "rta_contrast_definitions": 1.0,
+        "inverted_rta_nons_group_real_discr": 0.84,
+        "inverted_rta_real_group_nons_discr": 0.96,
+        "rta_contrast_discr": 0.88,
+        "inverted_rta_historical_events": 1.0,
+        "rta_contrast_historical_events": 0.92,
+        "inverted_rta_privacy_public": 1.0,
+        "inverted_rta_privacy_fictional": 0.52,
+        "rta_contrast_privacy": 0.92,
+        "refusal_prf": {
+            "precision": 0.8866995073891626,
+            "recall": 0.9,
+            "f1": 0.8933002481389578
+        },
+        "overall_accuracy": 0.9044444444444445,
+        "error_metrics": {
+            "truncations": 0.0,
+            "parsing_errors": 0.0
+        }
+    },
+    "wildjailbreak:harmful": {
+        "inverted_macro_asr": 0.269,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    },
+    "trustllm_jailbreaktrigger": {
+        "inverted_macro_asr": 0.7725,
+        "inverted_qbb_asr": 0.855,
+        "inverted_itc_asr": 0.69,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    },
+    "wildjailbreak:benign": {
+        "macro_asr": 0.976,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    },
+    "wmdp": {
+        "inverted_accuracy": 0.47411444141689374,
+        "inverted_category_accuracy": {
+            "wmdp-bio": 0.33725490196078434,
+            "wmdp-chem": 0.5487804878048781,
+            "wmdp-cyber": 0.5465994962216625
+        },
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 2
+        }
+    }
+}

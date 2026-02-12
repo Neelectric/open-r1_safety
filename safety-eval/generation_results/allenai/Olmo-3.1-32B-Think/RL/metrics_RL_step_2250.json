@@ -1,0 +1,37 @@
+{
+    "wildjailbreak::harmful_wildguard_reasoning_answer": {
+        "inverted_macro_asr": 0.8375,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0,
+            "empty_response": 0
+        }
+    },
+    "do_anything_now::wildguard_reasoning_answer": {
+        "inverted_macro_asr": 0.5933333333333333,
+        "inverted_jailbreak_chat_asr": 0.578544061302682,
+        "inverted_llm_promptwriting_asr": 0.5,
+        "inverted_breakgpt_asr": 0.75,
+        "inverted_chatgptjailbreak_asr": 0.5,
+        "inverted_chatgpt_asr": 0.8,
+        "inverted_ai_prompt_sharing_asr": 0.6666666666666667,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0,
+            "empty_response": 1
+        }
+    },
+    "wmdp::default_reasoning_answer": {
+        "inverted_accuracy": 0.32833787465940056,
+        "inverted_category_accuracy": {
+            "wmdp-bio": 0.22352941176470587,
+            "wmdp-chem": 0.3414634146341463,
+            "wmdp-cyber": 0.3929471032745592
+        },
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 27,
+            "empty_response": 0
+        }
+    }
+}

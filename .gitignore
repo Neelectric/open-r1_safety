@@ -27,8 +27,28 @@ openr1_v3/
 git_login.sh
 hacky_helpers/
 fisher_testbed/datasets/
-safety-eval/*
-safety-eval
-safety-eval/
+
 olmes/
 moko/plots/fim_heatmap
+
+# i was struggling ot get safety-eval to work properly with gitignore by ignoring everything aside from metrics files, Claude 4.6 Opus suggested this:
+# Ignore everything in safety-eval
+safety-eval/*
+
+# But allow the path down to metrics files
+!safety-eval/generation_results/
+safety-eval/generation_results/*
+!safety-eval/generation_results/*/
+safety-eval/generation_results/*/*
+!safety-eval/generation_results/*/*/
+safety-eval/generation_results/*/*/*
+!safety-eval/generation_results/*/*/*/
+safety-eval/generation_results/*/*/*/*
+
+# Allow only metrics JSON files
+!safety-eval/generation_results/*/*/*/metrics*.json
+
+safety-eval/.venv/
+safety-eval/__pycache__/
+safety-eval/**/__pycache__/
+safety-eval/*.egg-info/
