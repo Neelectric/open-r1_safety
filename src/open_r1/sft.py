@@ -114,6 +114,8 @@ def main(script_args, training_args, model_args):
             eval_dataset = dataset[script_args.dataset_test_split]
     else:
         eval_dataset = None
+        
+    print(f"The zero accelerate configs under /recipes/accelerate_config_ablations/ still hardcode gradient clipping to 0.3!!!!"*10)
 
     ############################
     # Initialize the SFT Trainer
