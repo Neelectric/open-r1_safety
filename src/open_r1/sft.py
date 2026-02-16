@@ -105,6 +105,15 @@ def main(script_args, training_args, model_args):
     #     model, tokenizer = setup_chat_format(model, tokenizer, format="chatml")
     if tokenizer.chat_template is None:
         print("NO LONGER SUPPORTING setup_chat_format(model, tokenizer, format='chatml')")
+        
+    # Build eval dataset (single or multi-split)
+    if training_args.eval_strategy != "no":
+        if script_args.dataset_eval_splits:
+            eval_dataset = {split: dataset[split] for split in script_args.dataset_eval_splits}
+        else:
+            eval_dataset = dataset[script_args.dataset_test_split]
+    else:
+        eval_dataset = None
 
     ############################
     # Initialize the SFT Trainer
@@ -119,7 +128,8 @@ def main(script_args, training_args, model_args):
             model=model,
             args=training_args,
             train_dataset=dataset[script_args.dataset_train_split],
-            eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
+            # eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
+            eval_dataset=eval_dataset,
             processing_class=tokenizer,
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
@@ -133,7 +143,8 @@ def main(script_args, training_args, model_args):
             model=model,
             args=training_args,
             train_dataset=dataset[script_args.dataset_train_split],
-            eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
+            # eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
+            eval_dataset=eval_dataset,
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args),
             retain_dataset_id=script_args.retain_dataset_id,
@@ -152,7 +163,8 @@ def main(script_args, training_args, model_args):
             model=model,
             args=training_args,
             train_dataset=dataset[script_args.dataset_train_split],
-            eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
+            # eval_dataset=(dataset[script_args.dataset_test_split] if training_args.eval_strategy != "no" else None),
+            eval_dataset=eval_dataset,
             processing_class=tokenizer,
             peft_config=get_peft_config(model_args),
             callbacks=get_callbacks(training_args, model_args, script_args=script_args),
@@ -203,7 +215,11 @@ def main(script_args, training_args, model_args):
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
         metrics = trainer.evaluate()
-        metrics["eval_samples"] = len(dataset[script_args.dataset_test_split])
+        if script_args.dataset_eval_splits:
+            for split in script_args.dataset_eval_splits:
+                metrics[f"eval_{split}_samples"] = len(dataset[split])
+        else:
+            metrics["eval_samples"] = len(dataset[script_args.dataset_test_split])
         trainer.log_metrics("eval", metrics)
         trainer.save_metrics("eval", metrics)
 

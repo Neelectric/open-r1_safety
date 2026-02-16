@@ -6,11 +6,9 @@ dtype: bfloat16
 attn_implementation: flash_attention_2
 
 # Data training arguments
-dataset_name: Neelectric/wikipedia_20231101_en_eu_train_test_374k_41k # this includes train and test splits in english and basque. train and test splits are 374k and 41k in size respectively
-dataset_train_split: train_en # CPT value
-dataset_eval_splits:
-  - test_en
-  - test_ba
+dataset_name: Neelectric/wikipedia_20231101.374k_en_41k_eu # this includes train split with 9k english texts and test split with 1k basque texts
+dataset_train_split: train # CPT value
+dataset_test_split: test # CPT value
 dataset_config: default # CPT value
 dataset_text_field: text
 dataset_num_proc: 12
@@ -18,20 +16,16 @@ dataset_num_proc: 12
 
 #SFT hyperparam
 # assistant_only_loss: true # CPT value
-max_length: 1024 #6144 #8192 #16384 # 65536 
+max_length: 4096 #6144 #8192 #16384 # 65536 
 optim: adamw_torch
 weight_decay: 0.0
-
-lr_scheduler_type: warmup_stable_decay
-warmup_steps: 50
-lr_scheduler_kwargs:
-  num_decay_steps: 50
-
-learning_rate: 1.5e-3
+lr_scheduler_type: constant_with_warmup
+warmup_ratio: 0.1
+learning_rate: 5.0e-4
 gradient_accumulation_steps: 1
-per_device_eval_batch_size: 1024
-per_device_train_batch_size: 256
-max_grad_norm: 0.3 # 
+per_device_eval_batch_size: 512
+per_device_train_batch_size: 128
+max_grad_norm: 1.0 # 
 padding_free: true # following https://github.com/huggingface/trl/pull/3076
 
 # SFT trainer config
@@ -46,16 +40,16 @@ eval_on_start: true # CPT value
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-# hub_model_id: Neelectric/SmolLM2-135M_CPT_sciencev00.17
-# hub_model_revision: v00.17 # CPT value
-# hub_strategy: end # CPT value
+hub_model_id: Neelectric/SmolLM2-135M_SFT_science${VERSION}
+# hub_model_revision: ${VERSION} # CPT value
+hub_strategy: end # CPT value
 log_level: info
 logging_steps: 1
 logging_strategy: steps
 packing: true # CPT value
-output_dir: data/Neelectric/SmolLM2-135M_CPT_sciencev00.17
+output_dir: data/Neelectric/SmolLM2-135M_SFT_science${VERSION}
 overwrite_output_dir: true
-push_to_hub: false
+push_to_hub: true
 report_to:
 - wandb
 save_strategy: 'no' # CPT value
@@ -66,10 +60,9 @@ torch_compile: false # CPT value
 use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_science
-run_name: smol135m-zero1-seed44
-# run_name: Neelectric/SmolLM2-135M_CPT_sciencev00.17
-# callbacks:
-# - push_to_hub_revision
+run_name: Neelectric/SmolLM2-135M_SFT_science${VERSION}
+callbacks:
+- push_to_hub_revision
 
 # custom_optim: fisher
 # recompute_fisher_mode: never

@@ -5,4 +5,4 @@ VERSION=v00.02 envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/conf
 VERSION=v00.01 envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/config_distill_v00.01.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/fsdp.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 ##cpt ddp
-VERSION=v00.03 envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/config_distill_v00.03.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/ddp.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
+VERSION=v00.05 envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/config_distill_v00.05.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/ddp.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml

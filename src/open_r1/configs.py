@@ -75,6 +75,13 @@ class ScriptArguments(trl.ScriptArguments):
         default=None,
         metadata={"help": "Configuration for creating dataset mixtures with advanced options like shuffling."},
     )
+    dataset_eval_splits: Optional[list[str]] = field(
+        default=None,
+        metadata={"help": "List of eval split names for multi-eval. Overrides dataset_test_split when set."}
+    )
+    
+    
+    # Custom Optim fields
     custom_optim: Optional[str] = field(
         default=None,
         metadata={"help": "Custom optimiser."},

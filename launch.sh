@@ -42,18 +42,39 @@ uv pip install vllm==0.11.2
 # VERSION=v00.21 envsubst < recipes/meta-llama/Llama-3.1-8B-Instruct/sft_science/config_distill_v00.21.yaml > temp_config.yaml && accelerate launch --config_file recipes/accelerate_configs/zero1_claude.yaml --num_processes=4 src/open_r1/sft.py --config temp_config.yaml
 
 
+
+for backend in ddp fsdp zero0 zero1 zero2 zero3; do
+  for seed in 42 43 44; do
+    export VERSION=v00.16
+    export RUN_NAME="smol135m-${backend}-seed${seed}"
+    export WANDB_RUN_GROUP="smol135m-${backend}"
+    export WANDB_TAGS="${backend},smol135m,ablation"
+
+    envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/config_distill_v00.16.yaml > temp_config.yaml && \
+    accelerate launch \
+      --config_file recipes/accelerate_config_ablations/${backend}.yaml \
+      --num_processes=4 \
+      src/open_r1/sft.py \
+      --config temp_config.yaml \
+      --seed ${seed}
+  done
+done
+
+
+
+
+
+
+
 # launch evals
-uv pip install vllm==0.10.1
-uv pip uninstall flashinfer-python
-uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
+# uv pip install vllm==0.10.1
+# uv pip uninstall flashinfer-python
+# uv pip install more_itertools syllapy "spacy[ja,ko,th]>=3.8.0" emoji "numpy==2.2"
 
-VERSION=main
+# VERSION=main
 
-MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.21
-bash eval_commands/gpqa.sh $MODEL $VERSION 1
-
-
-
+# MODEL=Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.21
+# bash eval_commands/gpqa.sh $MODEL $VERSION 1
 
 
 
@@ -64,5 +85,5 @@ bash eval_commands/gpqa.sh $MODEL $VERSION 1
 
 
 
-uv pip install vllm==0.11.2
+# uv pip install vllm==0.11.2
 # uv run fisher_testbed/vllm_inference.py -m Neelectric/Llama-3.1-8B-Instruct_SFT_sciencev00.20 -mm 4096
