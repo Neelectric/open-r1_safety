@@ -2,6 +2,7 @@ compute_environment: LOCAL_MACHINE
 debug: false
 deepspeed_config:
   deepspeed_multinode_launcher: standard
+  gradient_clipping: 0.3
   zero_stage: 0
 
 distributed_type: DEEPSPEED

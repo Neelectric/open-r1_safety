@@ -1,7 +1,7 @@
 
 
 
-for backend in ddp fsdp zero0 zero1 zero2 zero3; do
+for backend in zero0 zero1 zero2 zero3; do
   for seed in 42 43 44; do
     export VERSION=v00.17
     export RUN_NAME="smol135m-${backend}-${VERSION}-seed${seed}"
