@@ -8,6 +8,7 @@ from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader
 import torch.distributed as dist
 
+from traitlets import default
 from trl import ModelConfig, SFTTrainer
 from trl.trainer.sft_trainer import DataCollatorForLanguageModeling
 from transformers.optimization import get_constant_schedule_with_warmup
@@ -57,20 +58,23 @@ class FisherCallback(TrainerCallback):
         print("Fisher: BSZ is still 1 to avoid OOM!")
         if not trainer.fisher_initialised:
             trainer._compute_fisher_distributed()
-        if wandb.run is not None:
-            wandb.run.config.update({
-                "recompute_fisher_mode": trainer.recompute_fisher_mode, 
-                "recompute_fisher_intervals": trainer.recompute_fisher_intervals,
-                "retain_dataset_id": trainer.retain_dataset_id,
-                "retain_dataset_config": trainer.retain_dataset_config,
-                "ewc_lambda": trainer.ewc_lambda,
-                "fisher_batch_size": trainer.fisher_batch_size,
-                "fisher_num_batches": trainer.fisher_num_batches,
-                "fisher_completion_only_loss": trainer.fisher_completion_only_loss,
-                })
-            print("Fisher: Updated config with all vars")
-        else: 
-            print("wandb.run is None?")
+        if self.trainer.accelerator.is_main_process: # should not trigger this check/error on ranks other than 0!
+            if wandb.run is not None:
+                wandb.run.config.update({
+                    "recompute_fisher_mode": trainer.recompute_fisher_mode, 
+                    "recompute_fisher_intervals": trainer.recompute_fisher_intervals,
+                    "retain_dataset_id": trainer.retain_dataset_id,
+                    "retain_dataset_config": trainer.retain_dataset_config,
+                    "retain_dataset_split": trainer.retain_dataset_split,
+                    "retain_dataset_column": trainer.retain_dataset_column,
+                    "ewc_lambda": trainer.ewc_lambda,
+                    "fisher_batch_size": trainer.fisher_batch_size,
+                    "fisher_num_batches": trainer.fisher_num_batches,
+                    "fisher_completion_only_loss": trainer.fisher_completion_only_loss,
+                    })
+                print("Fisher: Updated config with all vars")
+            else: 
+                raise ValueError("wandb.run is None?")
 
 
         
@@ -108,6 +112,10 @@ class SFTTrainerWithFisher(SFTTrainer):
             The 🤗 identifier of the dataset to use for commputing Fisher Information.
         retain_dataset_config (`string`):
             The 🤗 subset/config of the retain dataset ('default' if left empty or None).
+        retain_dataset_split (`string`):
+            The 🤗 split of the retain dataset ('default' if left empty or None).
+        retain_dataset_column (`string`):
+            The column of the 🤗 dataset to use for computing Fisher Information. 
         ewc_lambda (`float`):
             The lambda weight that scales the EWC loss during training, e.g. 50.0.
         fisher_batch_size (`int`):
@@ -128,6 +136,8 @@ class SFTTrainerWithFisher(SFTTrainer):
         *args, 
         retain_dataset_id: str,
         retain_dataset_config: str,
+        retain_dataset_split: str,
+        retain_dataset_column: str,
         ewc_lambda: float,
         fisher_batch_size: int,
         recompute_fisher_mode: str,
@@ -139,17 +149,21 @@ class SFTTrainerWithFisher(SFTTrainer):
         ):
         print(f"Fisher: Init with ewc_lambda {ewc_lambda}")
         # simple check that all variables are reasonable
-        assert (type(ewc_lambda) == float) and (ewc_lambda >= 25.0), "probably needs to be higher than 25.0?"
+        # assert (type(ewc_lambda) == float) and (ewc_lambda >= 25.0), "probably needs to be higher than 25.0?"
+        print("ewc_lambda check currently disabled")
+        print(f"Fischer: we have retain_dataset_column {retain_dataset_column}")
         assert (type(fisher_batch_size) == int) and (fisher_batch_size > 0) 
         assert recompute_fisher_mode == "never", "recomputation modes 'intervals' and 'dynamically' are not yet implemented"
         assert (recompute_fisher_intervals < 1.0)
-        assert (fisher_num_batches > 100)
+        assert (fisher_num_batches >= 100)
         if (retain_dataset_config == None) or (retain_dataset_config == ""):
             retain_dataset_config = "default"
         
         # then attach them to trainer object
         self.retain_dataset_id = retain_dataset_id
         self.retain_dataset_config = retain_dataset_config
+        self.retain_dataset_split = retain_dataset_split
+        self.retain_dataset_column = retain_dataset_column
         self.ewc_lambda = ewc_lambda
         self.fisher_batch_size = fisher_batch_size
         self.recompute_fisher_mode = recompute_fisher_mode
@@ -162,6 +176,9 @@ class SFTTrainerWithFisher(SFTTrainer):
         # each fork copies entire memory space including the model?
         self.raw_retain_dataset = self.preprocess_retain_dataset(
             retain_dataset_id=retain_dataset_id,
+            retain_dataset_config=retain_dataset_config,
+            retain_dataset_split=retain_dataset_split,
+            retain_dataset_column=retain_dataset_column,
             processing_class=processing_class,
             max_length=kwargs.get('args').max_length,
             fisher_completion_only_loss=fisher_completion_only_loss,
@@ -191,32 +208,65 @@ class SFTTrainerWithFisher(SFTTrainer):
         self.add_callback(fisher_callback)
 
     @staticmethod # needs to be static because it gets called before super().__init__(), but we need access to its attrs
-    def preprocess_retain_dataset(retain_dataset_id: str, processing_class, max_length, fisher_completion_only_loss):
+    def preprocess_retain_dataset(
+        retain_dataset_id: str, 
+        retain_dataset_config: str,
+        retain_dataset_split: str,
+        retain_dataset_column: str,
+        processing_class, 
+        max_length: int, 
+        fisher_completion_only_loss: bool,
+        ):
         print(f"Fisher: Pre-processing dataset while respecting self.fisher_completion_only_loss = {fisher_completion_only_loss}")
         # if using self.tokenizer, we get thousands of "Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead." because of .map()
         tokenizer = processing_class 
 
         # making sure the chat template was passed reasoning format and generation format correctly before filtering with it
-        assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in tokenizer.chat_template
-        assert "{% generation %}" in tokenizer.chat_template
+        if tokenizer.chat_template: # should probably only check this if we actually have a chat template right? eg in CPT we don't need to verify
+            assert "<think>\n...\n</think>\n<answer>\n...\n</answer>\"" in tokenizer.chat_template
+            assert "{% generation %}" in tokenizer.chat_template
+            
         print('num proc still hardcoded')
         num_proc = 1
-        raw_dataset = load_dataset(retain_dataset_id)["train"]
+        
+        if (retain_dataset_config == None) or (retain_dataset_config =='None'):
+            retain_dataset_config = "default"
+            print("Fisher: No retain_dataset_config was passed, so we are defaulting to 'default'.")
+        if (retain_dataset_column == None) or (retain_dataset_config == "None"):
+            retain_dataset_column = "messages"
+            print("Fisher: No retain_dataset_column was passed, so we are defaulting to 'messages'.")
+                
+        if retain_dataset_split != "train":
+            print(f"Fisher: Loading dataset {retain_dataset_id} with config {retain_dataset_config} and split {retain_dataset_split}.")
+            raw_dataset = load_dataset(retain_dataset_id, retain_dataset_config)[retain_dataset_split]
+        else:
+            print(f"Fisher: Loading dataset {retain_dataset_id} with config {retain_dataset_config} and split 'train'.")
+            raw_dataset = load_dataset(retain_dataset_id, retain_dataset_config)["train"]
+        
+        
         # small_subset_size = 2000
         # print(f"Still only using {small_subset_size} samples of retain!!! " * 10)
         # raw_dataset = raw_dataset.select(range(0,small_subset_size))
         
         # tokenize to check full lengths of sequences
         def preprocess(examples):
-            processed = [
-                tokenizer.apply_chat_template(
-                    messages,
-                    tokenize=True,
-                    return_assistant_tokens_mask=fisher_completion_only_loss,
-                    return_dict=True,
-                )
-                for messages in examples["messages"]
-            ]
+            if tokenizer.chat_template:
+                processed = [
+                    tokenizer.apply_chat_template(
+                        messages,
+                        tokenize=True,
+                        return_assistant_tokens_mask=fisher_completion_only_loss,
+                        return_dict=True,
+                    )
+                    for messages in examples[retain_dataset_column]
+                ]
+            else:
+                processed = [
+                    tokenizer(
+                        text,
+                    )
+                    for text in examples[retain_dataset_column]
+                ]
             
             if fisher_completion_only_loss:
                 return {
@@ -226,7 +276,8 @@ class SFTTrainerWithFisher(SFTTrainer):
             return {
                 "input_ids": [p["input_ids"] for p in processed],
             }
-
+            
+        
         tokenized_dataset = raw_dataset.map(
             preprocess, 
             remove_columns=raw_dataset.column_names, 
@@ -331,90 +382,93 @@ class SFTTrainerWithFisher(SFTTrainer):
         return
     
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
-        print_mem = False
-        print_debug = False
-        if print_mem:
-            print("Fisher: before super compute loss"
-                f"Rank {self.accelerator.process_index}: "
-                f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
-                f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
-        
-        if print_debug:
-            # Debug: check Fisher types
-            if not hasattr(self, '_fisher_debug_done'):
-                for name, val in list(self.fisher.items())[:3]:
-                    print(f"Fisher type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
-                for name, val in list(self.reference_params.items())[:3]:
-                    print(f"Ref params type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
+        if self.model.training:
+            print_mem = False
+            print_debug = False
+            if print_mem:
+                print("Fisher: before super compute loss"
+                    f"Rank {self.accelerator.process_index}: "
+                    f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+                    f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+            
+            if print_debug:
+                # Debug: check Fisher types
+                if not hasattr(self, '_fisher_debug_done'):
+                    for name, val in list(self.fisher.items())[:3]:
+                        print(f"Fisher type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
+                    for name, val in list(self.reference_params.items())[:3]:
+                        print(f"Ref params type check: {name} -> {type(val)}, shape: {getattr(val, 'shape', 'N/A')}, dtype: {getattr(val, 'dtype', 'N/A')}, requires_grad: {getattr(val, 'requires_grad', 'N/A')}")
+                        
+                    self._fisher_debug_done = True
                     
-                self._fisher_debug_done = True
+            loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
+            
+            if print_mem:
+                print("Fisher: after super compute loss"
+                    f"Rank {self.accelerator.process_index}: "
+                    f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+                    f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+            
+            # assert self.accelerator.num_processes == 1, "don't think multi-GPU will train correctly yet - need to look into all-reduce of ewc_loss, though i think it should be the same on all devices?"
+            # update: in Z-1, each device will have a different batch, and hence different loss and different local gradients
+            # to ensure that everything is correct when synchronization happens before optimizer causes param update, 
+            # i suspect it is important for us to all-gather ewc_loss
+            
+            ewc_loss = 0.0
+            for name, param in model.named_parameters():
+                if "module." in name:
+                    name = name.replace("module.", "")
+                if name in self.fisher:
+                    # L(θ) = LB (θ) +  ∑_i  λ/2 F_i (θ_i − θ_{A,i}^*)^2
+                    diff_of_params = (param - self.reference_params[name])
+                    sq_diff_of_params = diff_of_params.pow(2)
+                    fisher_times_sq_diff_of_params = (self.fisher[name] * sq_diff_of_params)
+                    sum_fisher_times_sq_diff_of_params = fisher_times_sq_diff_of_params.sum()
+                    full = (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
+                    ewc_loss += (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
+                else:
+                    print(f"Fisher: Encountered param {name} which is not fisher. Continuing training as param.requires_grad may have intentionally been False at Fisher instantiation")
+                    
+                    
+            # edit: I was unusure whether we would need to all_reduce ewc_loss across accelerators before adding it to our loss. However, when using DeepSpeed ZeRO Stage 1 this prints a lot of
+            # "Fisher: Rank 1 - ewc_loss before all_reduce SUM and avg 1.4823076576950256e-19"
+            # "Fisher: Rank 1 - ewc_loss after all_reduce SUM and avg 1.4823076576950256e-19"
+            # So in Stage 1 im fairly certain we don't need this
+            
+            assert model.optimizer.zero_stage_string == "ZeRO-1", "I need to revisit 'ZeRO-2' to make check whether we need to all_reduce ewc_loss on every compute_loss call..."
+            
+            if model.optimizer.zero_stage_string != "ZeRO-1":
+                # according to https://docs.pytorch.org/docs/stable/distributed.html,
+                # AVG divides values by the world size before summing across ranks. AVG is only available with the NCCL backend, and only for NCCL versions 2.10 or later.
+                # so we will do it manually for now
                 
-        loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
-        
-        if print_mem:
-            print("Fisher: after super compute loss"
-                f"Rank {self.accelerator.process_index}: "
-                f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
-                f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
-        
-        # assert self.accelerator.num_processes == 1, "don't think multi-GPU will train correctly yet - need to look into all-reduce of ewc_loss, though i think it should be the same on all devices?"
-        # update: in Z-1, each device will have a different batch, and hence different loss and different local gradients
-        # to ensure that everything is correct when synchronization happens before optimizer causes param update, 
-        # i suspect it is important for us to all-gather ewc_loss
-        
-        ewc_loss = 0.0
-        for name, param in model.named_parameters():
-            if "module." in name:
-                name = name.replace("module.", "")
-            if name in self.fisher:
-                # L(θ) = LB (θ) +  ∑_i  λ/2 F_i (θ_i − θ_{A,i}^*)^2
-                diff_of_params = (param - self.reference_params[name])
-                sq_diff_of_params = diff_of_params.pow(2)
-                fisher_times_sq_diff_of_params = (self.fisher[name] * sq_diff_of_params)
-                sum_fisher_times_sq_diff_of_params = fisher_times_sq_diff_of_params.sum()
-                full = (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
-                ewc_loss += (self.fisher[name] * (param - self.reference_params[name]).pow(2)).sum()
-            else:
-                print(f"Fisher: Encountered param {name} which is not fisher. Continuing training as param.requires_grad may have intentionally been False at Fisher instantiation")
+                print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss before all_reduce SUM and avg {ewc_loss}") # this prints stuff like: 
+                dist.all_reduce(ewc_loss, op=dist.ReduceOp.SUM) #
+                ewc_loss = ewc_loss / self.accelerator.num_processes
+                print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss after all_reduce SUM and avg {ewc_loss}") # this prints stuff like: 
                 
+                # also this currently seems to cause:
                 
-        # edit: I was unusure whether we would need to all_reduce ewc_loss across accelerators before adding it to our loss. However, when using DeepSpeed ZeRO Stage 1 this prints a lot of
-        # "Fisher: Rank 1 - ewc_loss before all_reduce SUM and avg 1.4823076576950256e-19"
-        # "Fisher: Rank 1 - ewc_loss after all_reduce SUM and avg 1.4823076576950256e-19"
-        # So in Stage 1 im fairly certain we don't need this
-        
-        assert model.optimizer.zero_stage_string == "ZeRO-1", "I need to revisit 'ZeRO-2' to make check whether we need to all_reduce ewc_loss on every compute_loss call..."
-        
-        if model.optimizer.zero_stage_string != "ZeRO-1":
-            # according to https://docs.pytorch.org/docs/stable/distributed.html,
-            # AVG divides values by the world size before summing across ranks. AVG is only available with the NCCL backend, and only for NCCL versions 2.10 or later.
-            # so we will do it manually for now
+                # /root/openr1_v2/lib/python3.12/site-packages/torch/autograd/graph.py:841: UserWarning: c10d::allreduce_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at /pytorch/torch/csrc/autograd/autograd_not_implemented_fallback.cpp:62.)
+                
+                # which is concerning. need to read up on how all_reduce interacts with Autograd/backprop
             
-            print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss before all_reduce SUM and avg {ewc_loss}") # this prints stuff like: 
-            dist.all_reduce(ewc_loss, op=dist.ReduceOp.SUM) #
-            ewc_loss = ewc_loss / self.accelerator.num_processes
-            print(f"Fisher: Rank {self.accelerator.process_index} - ewc_loss after all_reduce SUM and avg {ewc_loss}") # this prints stuff like: 
             
-            # also this currently seems to cause:
+            # apply lambda, add to loss, log and return
+            loss = loss + self.ewc_lambda * ewc_loss
+            if print_mem:
+                print("Fisher: after ewc compute loss"
+                    f"Rank {self.accelerator.process_index}: "
+                    f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
+                    f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
+                
+            # AFAICT we can't trivially access self.log() here so storing it as an attr for CallBack to log with on_log()
+            self._ewc_loss = ewc_loss.item() if isinstance(ewc_loss, torch.Tensor) else float(ewc_loss)
+            if print_debug:
+                print(f"Fisher: ewc_loss: {ewc_loss}")
+        else:
+            loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
             
-            # /root/openr1_v2/lib/python3.12/site-packages/torch/autograd/graph.py:841: UserWarning: c10d::allreduce_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at /pytorch/torch/csrc/autograd/autograd_not_implemented_fallback.cpp:62.)
-            
-            # which is concerning. need to read up on how all_reduce interacts with Autograd/backprop
-        
-        
-        # apply lambda, add to loss, log and return
-        loss = loss + self.ewc_lambda * ewc_loss
-        if print_mem:
-            print("Fisher: after ewc compute loss"
-                f"Rank {self.accelerator.process_index}: "
-                f"Allocated: {torch.cuda.memory_allocated()/1e9:.2f}GB, "
-                f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
-            
-        # AFAICT we can't trivially access self.log() here so storing it as an attr for CallBack to log with on_log()
-        self._ewc_loss = ewc_loss.item() if isinstance(ewc_loss, torch.Tensor) else float(ewc_loss)
-        if print_debug:
-            print(f"Fisher: ewc_loss: {ewc_loss}")
-        
         return (loss, outputs) if return_outputs else loss
     
     def log(self, logs: dict[str, float], start_time: Optional[float] = None) -> None:

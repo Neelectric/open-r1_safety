@@ -103,7 +103,15 @@ class ScriptArguments(trl.ScriptArguments):
     retain_dataset_config: str = field(
         default="default",
         metadata={"help": "The 🤗 subset/config of the retain dataset ('default' if left empty or None)."}
-    )    
+    )  
+    retain_dataset_split: str = field(
+        default="train",
+        metadata={"help": "The 🤗 split of the retain dataset ('default' if left empty or None)."}
+    )   
+    retain_dataset_column: str = field(
+        default="messages",
+        metadata={"help": "The column of the 🤗 dataset to use for computing Fisher Information. "}
+    )   
     ewc_lambda: float = field(
         default=50.0,
         metadata={"help": "The lambda weight that scales the EWC loss during training, e.g. 50.0."}

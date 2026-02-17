@@ -160,6 +160,8 @@ def main(script_args, training_args, model_args):
             callbacks=get_callbacks(training_args, model_args),
             retain_dataset_id=script_args.retain_dataset_id,
             retain_dataset_config=script_args.retain_dataset_config,
+            retain_dataset_split=script_args.retain_dataset_split,
+            retain_dataset_column=script_args.retain_dataset_column,
             ewc_lambda=script_args.ewc_lambda,
             fisher_batch_size=script_args.fisher_batch_size,
             recompute_fisher_mode=script_args.recompute_fisher_mode,
