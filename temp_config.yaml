@@ -13,13 +13,13 @@ dataset_mixture:
       split: train_en
       columns:
         - text
-      weight: 0.99
+      weight: 0.89
     - id: Neelectric/wikipedia_20231101_en_eu_train_test_374k_41k
       config: default
       split: train_ba
       columns:
         - text
-      weight: 0.01
+      weight: 0.11
   seed: 42
 
 dataset_eval_splits:
@@ -80,7 +80,7 @@ torch_compile: false # CPT value
 use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_science
-run_name: smol135m-0.01-v00.19-seed42
+run_name: smol135m-0.11-v00.19-seed42
 # run_name: Neelectric/SmolLM2-135M_CPT_sciencev00.19
 # callbacks:
 # - push_to_hub_revision

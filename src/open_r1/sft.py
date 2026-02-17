@@ -228,7 +228,7 @@ def main(script_args, training_args, model_args):
         metrics = trainer.evaluate()
         if script_args.dataset_eval_splits:
             for split in script_args.dataset_eval_splits:
-                metrics[f"eval_{split}_samples"] = len(dataset[split])
+                metrics[f"eval_{split}_samples"] = len(eval_dataset[split])
         else:
             metrics["eval_samples"] = len(dataset[script_args.dataset_test_split])
         trainer.log_metrics("eval", metrics)
