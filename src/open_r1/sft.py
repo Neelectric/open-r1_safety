@@ -109,7 +109,16 @@ def main(script_args, training_args, model_args):
     # Build eval dataset (single or multi-split)
     if training_args.eval_strategy != "no":
         if script_args.dataset_eval_splits:
-            eval_dataset = {split: dataset[split] for split in script_args.dataset_eval_splits}
+            if script_args.dataset_mixture:
+                # using both a mixture and separate eval splits can be hairy, let's be careful here
+                # this impl assumes that the different eval splits come from the same dataset, ie. that dataset_mixture is one big dataset that we get evals from
+                src = script_args.dataset_mixture.datasets[0]
+                eval_dataset = {
+                    split: datasets.load_dataset(src.id, src.config, split=split)
+                    for split in script_args.dataset_eval_splits
+                }
+            else:
+                eval_dataset = {split: dataset[split] for split in script_args.dataset_eval_splits}
         else:
             eval_dataset = dataset[script_args.dataset_test_split]
     else:
