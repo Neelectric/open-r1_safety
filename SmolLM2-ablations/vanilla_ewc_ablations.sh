@@ -29,9 +29,9 @@ EWC_LAMBDA=0.0
 VERSION=00.20
 seed=42
 
-export RUN_NAME="smol135m-ewc_lambda${EWC_LAMBDA}_v${VERSION}_seed${seed}"
-export WANDB_RUN_GROUP="smol135m-ewc_lambda${REPLAY_PCT}"
-export WANDB_TAGS="ewc_lambda${REPLAY_PCT},smol135m,ablation"
+export RUN_NAME="SmolLM2-135M-ewc_lambda${EWC_LAMBDA}_v${VERSION}_seed${seed}"
+export WANDB_RUN_GROUP="SmolLM2-135M-ewc_lambda${REPLAY_PCT}"
+export WANDB_TAGS="ewc_lambda${REPLAY_PCT},SmolLM2-135M,ablation"
 
 
 envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/config_distill_v00.20.yaml > temp_config.yaml && \

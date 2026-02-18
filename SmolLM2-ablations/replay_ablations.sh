@@ -13,9 +13,9 @@ for i in $(seq 0.01 0.01 $MAX_REPLAY_PCT); do
     export VERSION=v00.19
 
     for seed in 42 43 44; do
-        export RUN_NAME="smol135m-${REPLAY_PCT}-${VERSION}-seed${seed}"
-        export WANDB_RUN_GROUP="smol135m-${REPLAY_PCT}"
-        export WANDB_TAGS="${REPLAY_PCT},smol135m,ablation"
+        export RUN_NAME="SmolLM2-135M-${REPLAY_PCT}replay-${VERSION}-seed${seed}"
+        export WANDB_RUN_GROUP="SmolLM2-135M-${REPLAY_PCT}replay"
+        export WANDB_TAGS="${REPLAY_PCT},SmolLM2-135M,ablation"
 
         envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/config_distill_v00.19.yaml > temp_config.yaml && \
         accelerate launch \

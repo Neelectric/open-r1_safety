@@ -36,7 +36,7 @@ padding_free: true # following https://github.com/huggingface/trl/pull/3076
 
 # SFT trainer config
 max_steps: -1 #701/3348
-num_train_epochs: 1
+num_train_epochs: ${EPOCHS}
 bf16: true
 do_eval: true # CPT value
 eval_strategy: 'steps' # CPT value
@@ -46,14 +46,14 @@ eval_on_start: true # CPT value
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-# hub_model_id: Neelectric/SmolLM2-135M_CPT_sciencev00.18_epochs
-# hub_model_revision: v00.18_epochs # CPT value
+# hub_model_id: Neelectric/SmolLM2-135M_CPT_science${VERSION}
+# hub_model_revision: ${VERSION} # CPT value
 # hub_strategy: end # CPT value
 log_level: info
 logging_steps: 1
 logging_strategy: steps
 packing: true # CPT value
-output_dir: data/Neelectric/SmolLM2-135M_CPT_sciencev00.18_epochs
+output_dir: data/Neelectric/SmolLM2-135M_CPT_science${VERSION}
 overwrite_output_dir: true
 push_to_hub: false
 report_to:
@@ -66,8 +66,8 @@ torch_compile: false # CPT value
 use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_science
-run_name: SmolLM2-135M-epochs1-v00.18_epochs-seed42
-# run_name: Neelectric/SmolLM2-135M_CPT_sciencev00.18_epochs
+run_name: ${RUN_NAME}
+# run_name: Neelectric/SmolLM2-135M_CPT_science${VERSION}
 # callbacks:
 # - push_to_hub_revision
 

@@ -12,7 +12,7 @@ from traitlets import default
 from trl import ModelConfig, SFTTrainer
 from trl.trainer.sft_trainer import DataCollatorForLanguageModeling
 from transformers.optimization import get_constant_schedule_with_warmup
-from transformers import TrainerCallback
+from transformers import TrainerCallback, set_seed
 from datasets import load_dataset
 import accelerate
 
@@ -56,6 +56,9 @@ class FisherCallback(TrainerCallback):
         trainer = self.trainer
         print("Fisher: calling FisherCallback in hopes model is properly wrapped with accelerator")
         print("Fisher: BSZ is still 1 to avoid OOM!")
+        if trainer.ewc_lambda == 0.0:
+            print(f"Fisher: ewc_lambda is 0, so we are skipping fisher computation to ensure random number generators are not advanced, and run metrics are perfectly comparable to non-Fisher training.")
+            return
         if not trainer.fisher_initialised:
             trainer._compute_fisher_distributed()
         if self.trainer.accelerator.is_main_process: # should not trigger this check/error on ranks other than 0!
@@ -298,7 +301,7 @@ class SFTTrainerWithFisher(SFTTrainer):
         
         return final_dataset
     
-    def _compute_fisher_distributed(self,):
+    def _compute_fisher_distributed(self):
         # TODO: pull out some of this logic into smaller methods, write tests for them!!!
         print("Fisher: before start of fisher computation"
             f"Rank {self.accelerator.process_index}: "
@@ -379,10 +382,20 @@ class SFTTrainerWithFisher(SFTTrainer):
             f"Reserved: {torch.cuda.memory_reserved()/1e9:.2f}GB")
         print("NOTE TO SELF: Implement Frobenius Norm or Average of Fisher visualized and saved as plot to disk!\n"*5)
         print("NOTE TO SELF: Actually it might be interesting to plot GIF of FIM across its computation, how many batches of D_retain do we need before FIM convergence?\n This is interesting because through the use of empirical fisher, we add grad.pow(2) to FIM_i for every batch and then divide by num_batches. So in theory, we would expect that given randomly shuffled dataset, computing fisher wrt more batches should just make our approximation of FIM wrt safety data more accurate!"*5)
+        
+        ### Update: We probably don't want to naively use set_seed(self.args.seed) here, because normally it is used right at the start of sft.py and RNGs might've already been advanced during ZeRO-1 setup etc.
+        # when ewc_lambda==0.0, every metric should match that of a normal, non-fisher training run. to this end we re-set the random seed in case the above advanced any CUDA/CPU random number generators
+        # if self.ewc_lambda == 0.0:
+        #     print(f"Fisher: Because self.ewc_lambda is 0, we are again using set_seed(self.args.seed) to ensure there are no RNG discrepancies.")
+        #     set_seed(self.args.seed)
+        
         return
     
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
-        if self.model.training:
+        if not self.model.training or self.ewc_lambda == 0.0:
+            loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
+            return (loss, outputs) if return_outputs else loss
+        else:
             print_mem = False
             print_debug = False
             if print_mem:
@@ -466,9 +479,6 @@ class SFTTrainerWithFisher(SFTTrainer):
             self._ewc_loss = ewc_loss.item() if isinstance(ewc_loss, torch.Tensor) else float(ewc_loss)
             if print_debug:
                 print(f"Fisher: ewc_loss: {ewc_loss}")
-        else:
-            loss, outputs = super().compute_loss(model, inputs, return_outputs=True, **kwargs)
-            
         return (loss, outputs) if return_outputs else loss
     
     def log(self, logs: dict[str, float], start_time: Optional[float] = None) -> None:
@@ -485,7 +495,4 @@ class SFTTrainerWithFisher(SFTTrainer):
         """
         if hasattr(self, '_ewc_loss'):
             logs['ewc_loss'] = self._ewc_loss
-            if wandb.run is not None:
-                    wandb.log({"train/ewc_loss": self._ewc_loss}, step=self.state.global_step)
-            
         super().log(logs, start_time)
