@@ -13,13 +13,13 @@ dataset_mixture:
       split: train_en
       columns:
         - text
-      weight: 0.99
+      weight: ${FT_PCT}
     - id: Neelectric/wikipedia_20231101_en_eu_train_test_374k_41k
       config: default
       split: train_ba
       columns:
         - text
-      weight: 0.01
+      weight: ${REPLAY_PCT}
   seed: 42
 
 dataset_eval_splits:
@@ -60,14 +60,14 @@ eval_on_start: true # CPT value
 gradient_checkpointing: true
 gradient_checkpointing_kwargs:
   use_reentrant: false
-# hub_model_id: Neelectric/SmolLM2-135M_CPT_sciencev00.18_replay
-# hub_model_revision: v00.18_replay # CPT value
+# hub_model_id: Neelectric/SmolLM2-135M_CPT_science${VERSION}
+# hub_model_revision: ${VERSION} # CPT value
 # hub_strategy: end # CPT value
 log_level: info
 logging_steps: 1
 logging_strategy: steps
 packing: true # CPT value
-output_dir: data/Neelectric/SmolLM2-135M_CPT_sciencev00.18_replay
+output_dir: data/Neelectric/SmolLM2-135M_CPT_science${VERSION}
 overwrite_output_dir: true
 push_to_hub: false
 report_to:
@@ -80,8 +80,8 @@ torch_compile: false # CPT value
 use_liger_kernel: true
 wandb_entity: Neelectric
 wandb_project: open-r1_science
-run_name: SmolLM2-135M_replay0.01_lr2.9e-3_v00.18_replay_seed42
-# run_name: Neelectric/SmolLM2-135M_CPT_sciencev00.18_replay
+run_name: ${RUN_NAME}
+# run_name: Neelectric/SmolLM2-135M_CPT_science${VERSION}
 # callbacks:
 # - push_to_hub_revision
 

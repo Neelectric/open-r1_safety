@@ -10,14 +10,14 @@ for i in $(seq 0.01 0.01 $MAX_REPLAY_PCT); do
 
     export REPLAY_PCT=$i
     export FT_PCT=$a
-    export VERSION=v00.19
+    export VERSION=v00.18_replay
 
     for seed in 42 43 44; do
-        export RUN_NAME="SmolLM2-135M-${REPLAY_PCT}replay-${VERSION}-seed${seed}"
-        export WANDB_RUN_GROUP="SmolLM2-135M-${REPLAY_PCT}replay"
-        export WANDB_TAGS="${REPLAY_PCT},SmolLM2-135M,ablation"
+        export RUN_NAME="SmolLM2-135M_replay${REPLAY_PCT}_lr2.9e-3_${VERSION}_seed${seed}"
+        export WANDB_RUN_GROUP="SmolLM2-135M_replay${REPLAY_PCT}_lr2.9e-3_${VERSION}"
+        export WANDB_TAGS="$replay{REPLAY_PCT},SmolLM2-135M,ablation"
 
-        envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/config_distill_v00.19.yaml > temp_config.yaml && \
+        envsubst < recipes/HuggingFaceTB/SmolLM2-135M/cl_experiments/config_distill_v00.18_replay.yaml > temp_config.yaml && \
         accelerate launch \
         --config_file recipes/accelerate_config_ablations/zero1.yaml \
         --num_processes=4 \
